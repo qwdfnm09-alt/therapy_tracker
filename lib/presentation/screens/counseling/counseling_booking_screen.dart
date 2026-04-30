@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/app_routes.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/form_text_field.dart';
@@ -32,6 +33,8 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final latestBooking = context.watch<AppState>().latestBooking;
+
     return AppPage(
       title: context.tr('booking'),
       child: Form(
@@ -39,6 +42,50 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
+            if (latestBooking != null) ...[
+              SectionCard(
+                title: context.tr('latestBooking'),
+                icon: Icons.history_toggle_off_outlined,
+                child: Column(
+                  children: [
+                    _BookingRow(
+                      label: context.tr('bookingType'),
+                      value: _sessionTypeLabel(latestBooking['sessionType']),
+                    ),
+                    const SizedBox(height: 10),
+                    _BookingRow(
+                      label: context.tr('bookingDate'),
+                      value: latestBooking['preferredDate'] ?? '-',
+                    ),
+                    const SizedBox(height: 10),
+                    _BookingRow(
+                      label: context.tr('bookingPhone'),
+                      value: latestBooking['phone'] ?? '-',
+                    ),
+                    if ((latestBooking['message'] ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      _BookingRow(
+                        label: context.tr('bookingMessage'),
+                        value: latestBooking['message']!,
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: OutlinedButton.icon(
+                        onPressed: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.bookingHistory,
+                        ),
+                        icon: const Icon(Icons.history_rounded),
+                        label: Text(context.tr('viewBookingHistory')),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             SectionCard(
               title: context.tr('sessions'),
               icon: Icons.support_agent_outlined,
@@ -76,13 +123,15 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                     controller: _phoneController,
                     label: context.tr('phone'),
                     keyboardType: TextInputType.phone,
-                    validator: _required,
+                    validator: _validatePhone,
                   ),
                   const SizedBox(height: 14),
                   AppTextField(
                     controller: _dateController,
                     label: context.tr('preferredDate'),
-                    validator: _required,
+                    validator: _validateDate,
+                    readOnly: true,
+                    onTap: _pickDate,
                   ),
                   const SizedBox(height: 14),
                   AppTextField(
@@ -110,9 +159,32 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     setState(() => _sessionType = value);
   }
 
-  String? _required(String? value) {
-    if (value == null || value.trim().isEmpty) return '*';
+  String? _validatePhone(String? value) {
+    final input = value?.trim() ?? '';
+    if (input.isEmpty) return context.tr('fieldRequired');
+    final digitsOnly = input.replaceAll(RegExp(r'[^0-9+]'), '');
+    if (digitsOnly.length < 8) return context.tr('invalidPhone');
     return null;
+  }
+
+  String? _validateDate(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return context.tr('selectPreferredDate');
+    }
+    return null;
+  }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: now,
+      lastDate: DateTime(now.year + 2),
+    );
+    if (picked == null || !mounted) return;
+    _dateController.text =
+        '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
   }
 
   Future<void> _submit() async {
@@ -128,6 +200,20 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(context.tr('bookingSaved'))));
+    _formKey.currentState?.reset();
+    _phoneController.clear();
+    _dateController.clear();
+    _messageController.clear();
+    setState(() => _sessionType = 'family');
+  }
+
+  String _sessionTypeLabel(String? value) {
+    return switch (value) {
+      'family' => context.tr('sessionTypeFamily'),
+      'individual' => context.tr('sessionTypeIndividual'),
+      'coaching' => context.tr('sessionTypeCoaching'),
+      _ => '-',
+    };
   }
 }
 
@@ -149,6 +235,25 @@ class _SessionTile extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       secondary: Icon(icon, color: Theme.of(context).colorScheme.primary),
       title: Text(title),
+    );
+  }
+}
+
+class _BookingRow extends StatelessWidget {
+  const _BookingRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(width: 110, child: Text(label)),
+        const SizedBox(width: 10),
+        Expanded(child: Text(value)),
+      ],
     );
   }
 }

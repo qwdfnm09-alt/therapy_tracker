@@ -3,6 +3,9 @@ class CompatibilityResult {
     required this.compatibilityPercentage,
     required this.marriageReadinessScore,
     required this.categoryScores,
+    required this.partnerArchetypes,
+    required this.partnerProfiles,
+    required this.relationshipDynamics,
     required this.strengthAreas,
     required this.riskAreas,
     required this.psychologicalNotes,
@@ -12,6 +15,9 @@ class CompatibilityResult {
   final int compatibilityPercentage;
   final int marriageReadinessScore;
   final Map<String, int> categoryScores;
+  final Map<String, String> partnerArchetypes;
+  final Map<String, List<String>> partnerProfiles;
+  final List<String> relationshipDynamics;
   final List<String> strengthAreas;
   final List<String> riskAreas;
   final List<String> psychologicalNotes;
@@ -22,6 +28,9 @@ class CompatibilityResult {
       'compatibilityPercentage': compatibilityPercentage,
       'marriageReadinessScore': marriageReadinessScore,
       'categoryScores': categoryScores,
+      'partnerArchetypes': partnerArchetypes,
+      'partnerProfiles': partnerProfiles,
+      'relationshipDynamics': relationshipDynamics,
       'strengthAreas': strengthAreas,
       'riskAreas': riskAreas,
       'psychologicalNotes': psychologicalNotes,
@@ -31,6 +40,9 @@ class CompatibilityResult {
 
   factory CompatibilityResult.fromJson(Map<String, dynamic> json) {
     final rawScores = json['categoryScores'] as Map<String, dynamic>? ?? {};
+    final rawArchetypes =
+        json['partnerArchetypes'] as Map<String, dynamic>? ?? {};
+    final rawProfiles = json['partnerProfiles'] as Map<String, dynamic>? ?? {};
     return CompatibilityResult(
       compatibilityPercentage:
           (json['compatibilityPercentage'] as num?)?.toInt() ?? 0,
@@ -38,6 +50,15 @@ class CompatibilityResult {
           (json['marriageReadinessScore'] as num?)?.toInt() ?? 0,
       categoryScores: rawScores.map(
         (key, value) => MapEntry(key, (value as num).toInt()),
+      ),
+      partnerArchetypes: rawArchetypes.map(
+        (key, value) => MapEntry(key, value?.toString() ?? ''),
+      ),
+      partnerProfiles: rawProfiles.map(
+        (key, value) => MapEntry(key, List<String>.from(value as List? ?? const [])),
+      ),
+      relationshipDynamics: List<String>.from(
+        json['relationshipDynamics'] as List? ?? const [],
       ),
       strengthAreas: List<String>.from(
         json['strengthAreas'] as List? ?? const [],

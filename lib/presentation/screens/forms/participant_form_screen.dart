@@ -78,7 +78,9 @@ class _ParticipantFormScreenState extends State<ParticipantFormScreen> {
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       final age = int.tryParse(value ?? '');
-                      if (age == null || age < 18) return '18+';
+                      if (age == null || age < 18) {
+                        return context.tr('invalidAge');
+                      }
                       return null;
                     },
                   ),
@@ -110,7 +112,9 @@ class _ParticipantFormScreenState extends State<ParticipantFormScreen> {
   }
 
   String? _required(String? value) {
-    if (value == null || value.trim().isEmpty) return '*';
+    if (value == null || value.trim().isEmpty) {
+      return context.tr('fieldRequired');
+    }
     return null;
   }
 

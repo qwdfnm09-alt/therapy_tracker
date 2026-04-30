@@ -16,6 +16,8 @@ class LocalStorageService {
   static const _languageKey = 'language_code';
   static const _themeKey = 'theme_mode';
   static const _bookingKey = 'latest_booking';
+  static const _bookingHistoryKey = 'booking_history';
+  static const _personalityStageKey = 'personality_stage_index';
 
   static Future<LocalStorageService> create() async {
     return LocalStorageService._(await SharedPreferences.getInstance());
@@ -55,6 +57,10 @@ class LocalStorageService {
     return _preferences.setString(_resultKey, jsonEncode(result.toJson()));
   }
 
+  Future<void> clearResult() {
+    return _preferences.remove(_resultKey);
+  }
+
   String readLanguageCode() => _preferences.getString(_languageKey) ?? 'en';
 
   Future<void> saveLanguageCode(String languageCode) {
@@ -66,8 +72,37 @@ class LocalStorageService {
   Future<void> saveThemeMode(String mode) =>
       _preferences.setString(_themeKey, mode);
 
+  int readPersonalityStageIndex() => _preferences.getInt(_personalityStageKey) ?? 0;
+
+  Future<void> savePersonalityStageIndex(int value) =>
+      _preferences.setInt(_personalityStageKey, value);
+
   Future<void> saveBooking(Map<String, String> booking) {
     return _preferences.setString(_bookingKey, jsonEncode(booking));
+  }
+
+  Map<String, String>? readBooking() {
+    final value = _preferences.getString(_bookingKey);
+    if (value == null) return null;
+    final decoded = jsonDecode(value) as Map<String, dynamic>;
+    return decoded.map((key, value) => MapEntry(key, value?.toString() ?? ''));
+  }
+
+  Future<void> saveBookingHistory(List<Map<String, String>> bookings) {
+    return _preferences.setString(_bookingHistoryKey, jsonEncode(bookings));
+  }
+
+  List<Map<String, String>> readBookingHistory() {
+    final value = _preferences.getString(_bookingHistoryKey);
+    if (value == null) return [];
+    final decoded = jsonDecode(value) as List<dynamic>;
+    return decoded
+        .map(
+          (item) => (item as Map<String, dynamic>).map(
+            (key, value) => MapEntry(key, value?.toString() ?? ''),
+          ),
+        )
+        .toList();
   }
 
   Future<void> clearAssessment() async {
@@ -75,5 +110,7 @@ class LocalStorageService {
     await _preferences.remove(_userBKey);
     await _preferences.remove(_resultKey);
     await _preferences.remove(_bookingKey);
+    await _preferences.remove(_bookingHistoryKey);
+    await _preferences.remove(_personalityStageKey);
   }
 }

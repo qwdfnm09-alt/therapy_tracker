@@ -1,16 +1,43 @@
-# therapy_tracker
+# Taalof
 
-A new Flutter project.
+Taalof is a Flutter app for pre-marital compatibility assessment and counseling booking.
 
-## Getting Started
+## Current Features
 
-This project is a starting point for a Flutter application.
+- Splash screen and dedicated home screen
+- Two-participant profile flow
+- Compatibility questionnaire for both users
+- Compatibility and marriage-readiness result screen
+- Local counseling booking request flow
+- Arabic and English UI
+- Theme and language settings
 
-A few resources to get you started if this is your first Flutter project:
+## Local Storage
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The app currently stores data locally using `SharedPreferences`:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Participant A profile
+- Participant B profile
+- Latest compatibility result
+- Latest counseling booking request
+- Theme and language preference
+
+## Run
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Quality Checks
+
+```bash
+flutter analyze
+flutter test
+```
+
+## Notes
+
+- The booking flow is local-only for now.
+- Compatibility calculation is enabled only after both profiles and all questions are completed.
+- If profile data or answers change, the old result is cleared automatically to avoid stale output.

@@ -1,6 +1,6 @@
 {
-    "name": "therapy_tracker",
-    "short_name": "therapy_tracker",
+    "name": "Taalof",
+    "short_name": "Taalof",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

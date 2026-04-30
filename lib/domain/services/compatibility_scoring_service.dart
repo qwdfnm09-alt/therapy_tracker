@@ -6,11 +6,12 @@ class CompatibilityScoringService {
   CompatibilityResult analyze(
     ParticipantProfile userA,
     ParticipantProfile userB,
+    List<CompatibilityQuestion> activeQuestions,
   ) {
     final categoryScores = <String, int>{};
 
     for (final category in QuestionCategory.values) {
-      final questions = compatibilityQuestions
+      final questions = activeQuestions
           .where((q) => q.category == category)
           .toList();
       final scores = questions.map((q) {
@@ -21,7 +22,7 @@ class CompatibilityScoringService {
           ScoringMode.healthyAverage => _healthyAverageScore(a, b),
         };
       });
-      categoryScores[_categoryLabel(category)] = _average(scores);
+      categoryScores[_categoryKey(category)] = _average(scores);
     }
 
     final compatibility = _average(categoryScores.values);
@@ -31,6 +32,15 @@ class CompatibilityScoringService {
       compatibilityPercentage: compatibility,
       marriageReadinessScore: readiness,
       categoryScores: categoryScores,
+      partnerArchetypes: {
+        'userA': _partnerArchetype(userA),
+        'userB': _partnerArchetype(userB),
+      },
+      partnerProfiles: {
+        'userA': _partnerProfile(userA),
+        'userB': _partnerProfile(userB),
+      },
+      relationshipDynamics: _relationshipDynamics(userA, userB),
       strengthAreas: _strengths(categoryScores),
       riskAreas: _risks(categoryScores),
       psychologicalNotes: _notes(categoryScores, compatibility, readiness),
@@ -57,14 +67,14 @@ class CompatibilityScoringService {
 
   int _readinessScore(Map<String, int> scores) {
     const weights = {
-      'Emotional intelligence': 1.25,
-      'Anger management': 1.25,
-      'Communication': 1.2,
-      'Responsibility': 1.15,
-      'Family boundaries': 1.0,
-      'Financial mindset': 0.95,
-      'Future goals': 0.9,
-      'Personality': 0.8,
+      'emotionalIntelligence': 1.25,
+      'angerManagement': 1.25,
+      'communication': 1.2,
+      'responsibility': 1.15,
+      'familyBoundaries': 1.0,
+      'financialMindset': 0.95,
+      'futureGoals': 0.9,
+      'personality': 0.8,
     };
 
     var total = 0.0;
@@ -81,12 +91,10 @@ class CompatibilityScoringService {
     final entries = scores.entries.where((entry) => entry.value >= 75).toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     if (entries.isEmpty) {
-      return [
-        'Shared effort is visible, but no category is strongly aligned yet.',
-      ];
+      return const ['strength:none'];
     }
     return entries
-        .map((entry) => '${entry.key}: ${entry.value}% alignment')
+        .map((entry) => 'strength:${entry.key}:${entry.value}')
         .toList();
   }
 
@@ -94,11 +102,9 @@ class CompatibilityScoringService {
     final entries = scores.entries.where((entry) => entry.value < 60).toList()
       ..sort((a, b) => a.value.compareTo(b.value));
     if (entries.isEmpty) {
-      return ['No high-risk area detected by the current scoring profile.'];
+      return const ['risk:none'];
     }
-    return entries
-        .map((entry) => '${entry.key}: needs structured discussion')
-        .toList();
+    return entries.map((entry) => 'risk:${entry.key}').toList();
   }
 
   List<String> _notes(
@@ -108,33 +114,21 @@ class CompatibilityScoringService {
   ) {
     final notes = <String>[];
     if (compatibility >= 80) {
-      notes.add(
-        'The couple shows strong alignment, but expectations should still be discussed explicitly.',
-      );
+      notes.add('note:strongAlignment');
     } else if (compatibility >= 65) {
-      notes.add(
-        'The relationship has workable compatibility with several topics needing guided conversation.',
-      );
+      notes.add('note:workableCompatibility');
     } else {
-      notes.add(
-        'Compatibility is currently fragile. A counselor should review the main gaps before commitment.',
-      );
+      notes.add('note:fragileCompatibility');
     }
 
-    if ((scores['Anger management'] ?? 100) < 60) {
-      notes.add(
-        'Conflict repair and anger regulation need attention before marriage pressure increases.',
-      );
+    if ((scores['angerManagement'] ?? 100) < 60) {
+      notes.add('note:angerManagement');
     }
-    if ((scores['Family boundaries'] ?? 100) < 60) {
-      notes.add(
-        'Family boundary expectations may cause repeated stress if they remain vague.',
-      );
+    if ((scores['familyBoundaries'] ?? 100) < 60) {
+      notes.add('note:familyBoundaries');
     }
     if (readiness < 65) {
-      notes.add(
-        'Marriage readiness is below the recommended threshold for a confident decision.',
-      );
+      notes.add('note:readinessThreshold');
     }
     return notes;
   }
@@ -145,34 +139,129 @@ class CompatibilityScoringService {
     int readiness,
   ) {
     final sessions = <String>[];
-    if ((scores['Communication'] ?? 100) < 70) {
-      sessions.add('Communication and conflict dialogue session');
+    if ((scores['communication'] ?? 100) < 70) {
+      sessions.add('session:communication');
     }
-    if ((scores['Family boundaries'] ?? 100) < 70) {
-      sessions.add('Family boundaries consultation');
+    if ((scores['familyBoundaries'] ?? 100) < 70) {
+      sessions.add('session:familyBoundaries');
     }
-    if ((scores['Financial mindset'] ?? 100) < 70 ||
-        (scores['Future goals'] ?? 100) < 70) {
-      sessions.add('Future planning and financial expectations session');
+    if ((scores['financialMindset'] ?? 100) < 70 ||
+        (scores['futureGoals'] ?? 100) < 70) {
+      sessions.add('session:futurePlanning');
     }
     if (compatibility < 65 || readiness < 65) {
-      sessions.add('Individual psychological readiness review');
+      sessions.add('session:individualReadiness');
     }
     return sessions.isEmpty
-        ? ['One pre-marriage coaching session for final alignment']
+        ? const ['session:alignment']
         : sessions;
   }
 
-  String _categoryLabel(QuestionCategory category) {
+  String _categoryKey(QuestionCategory category) {
     return switch (category) {
-      QuestionCategory.personality => 'Personality',
-      QuestionCategory.emotionalIntelligence => 'Emotional intelligence',
-      QuestionCategory.angerManagement => 'Anger management',
-      QuestionCategory.communication => 'Communication',
-      QuestionCategory.financialMindset => 'Financial mindset',
-      QuestionCategory.familyBoundaries => 'Family boundaries',
-      QuestionCategory.futureGoals => 'Future goals',
-      QuestionCategory.responsibility => 'Responsibility',
+      QuestionCategory.personality => 'personality',
+      QuestionCategory.emotionalIntelligence => 'emotionalIntelligence',
+      QuestionCategory.angerManagement => 'angerManagement',
+      QuestionCategory.communication => 'communication',
+      QuestionCategory.financialMindset => 'financialMindset',
+      QuestionCategory.familyBoundaries => 'familyBoundaries',
+      QuestionCategory.futureGoals => 'futureGoals',
+      QuestionCategory.responsibility => 'responsibility',
     };
+  }
+
+  List<String> _partnerProfile(ParticipantProfile user) {
+    final energy = user.answers['personality_social_energy'] ?? 3;
+    final structure = user.answers['personality_structure'] ?? 3;
+    final emotionalAwareness = user.answers['emotion_self_awareness'] ?? 3;
+    final angerPause = user.answers['anger_pause'] ?? 3;
+    final angerRepair = user.answers['anger_repair'] ?? 3;
+    final conflictAverage = ((angerPause + angerRepair) / 2).round();
+
+    return [
+      _energyToken(energy),
+      _structureToken(structure),
+      _emotionToken(emotionalAwareness),
+      _conflictToken(conflictAverage),
+    ];
+  }
+
+  String _partnerArchetype(ParticipantProfile user) {
+    final structure = user.answers['personality_structure'] ?? 3;
+    final empathy = user.answers['emotion_empathy'] ?? 3;
+    final directness = user.answers['communication_direct'] ?? 3;
+    final angerPause = user.answers['anger_pause'] ?? 3;
+
+    final primary = switch (structure) {
+      >= 4 => 'planner',
+      <= 2 => 'flexible',
+      _ => 'balanced',
+    };
+
+    final secondary = empathy >= 4 && directness >= 4
+        ? 'warmCommunicator'
+        : empathy >= 4
+        ? 'reflectivePartner'
+        : angerPause >= 4
+        ? 'steadyResponder'
+        : 'directProcessor';
+
+    return '$primary+$secondary';
+  }
+
+  List<String> _relationshipDynamics(
+    ParticipantProfile userA,
+    ParticipantProfile userB,
+  ) {
+    final socialGap =
+        ((userA.answers['personality_social_energy'] ?? 3) -
+                (userB.answers['personality_social_energy'] ?? 3))
+            .abs();
+    final structureGap =
+        ((userA.answers['personality_structure'] ?? 3) -
+                (userB.answers['personality_structure'] ?? 3))
+            .abs();
+    final repairA =
+        ((userA.answers['anger_pause'] ?? 3) + (userA.answers['anger_repair'] ?? 3)) / 2;
+    final repairB =
+        ((userB.answers['anger_pause'] ?? 3) + (userB.answers['anger_repair'] ?? 3)) / 2;
+    final empathyA = userA.answers['emotion_empathy'] ?? 3;
+    final empathyB = userB.answers['emotion_empathy'] ?? 3;
+
+    return [
+      socialGap <= 1 ? 'dynamic:energy:aligned' : 'dynamic:energy:bridge',
+      structureGap <= 1
+          ? 'dynamic:planning:aligned'
+          : 'dynamic:planning:bridge',
+      repairA >= 4 && repairB >= 4 && empathyA >= 4 && empathyB >= 4
+          ? 'dynamic:repair:strong'
+          : repairA <= 2.5 || repairB <= 2.5
+          ? 'dynamic:repair:fragile'
+          : 'dynamic:repair:developing',
+    ];
+  }
+
+  String _energyToken(int value) {
+    if (value >= 4) return 'profile:energy:outgoing';
+    if (value <= 2) return 'profile:energy:reserved';
+    return 'profile:energy:balanced';
+  }
+
+  String _structureToken(int value) {
+    if (value >= 4) return 'profile:structure:structured';
+    if (value <= 2) return 'profile:structure:flexible';
+    return 'profile:structure:balanced';
+  }
+
+  String _emotionToken(int value) {
+    if (value >= 4) return 'profile:emotion:aware';
+    if (value <= 2) return 'profile:emotion:guarded';
+    return 'profile:emotion:growing';
+  }
+
+  String _conflictToken(int value) {
+    if (value >= 4) return 'profile:conflict:steady';
+    if (value <= 2) return 'profile:conflict:reactive';
+    return 'profile:conflict:developing';
   }
 }

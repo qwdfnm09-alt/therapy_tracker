@@ -5,13 +5,15 @@ import 'package:provider/provider.dart';
 import 'core/constants/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/providers/app_state.dart';
+import 'presentation/screens/counseling/booking_history_screen.dart';
 import 'presentation/screens/counseling/counseling_booking_screen.dart';
 import 'presentation/screens/forms/participant_form_screen.dart';
+import 'presentation/screens/home/home_screen.dart';
+import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/splash/splash_screen.dart';
-import 'presentation/screens/welcome/welcome_screen.dart';
 
 class PreMaritalMatchApp extends StatelessWidget {
   const PreMaritalMatchApp({super.key});
@@ -22,7 +24,7 @@ class PreMaritalMatchApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'PreMarital Match',
+      title: 'Taalof',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: appState.themeMode,
@@ -36,14 +38,16 @@ class PreMaritalMatchApp extends StatelessWidget {
       initialRoute: AppRoutes.splash,
       routes: {
         AppRoutes.splash: (_) => const SplashScreen(),
-        AppRoutes.welcome: (_) => const WelcomeScreen(),
+        AppRoutes.home: (_) => const HomeScreen(),
         AppRoutes.userAForm: (_) =>
             const ParticipantFormScreen(slot: ParticipantSlot.userA),
         AppRoutes.userBForm: (_) =>
             const ParticipantFormScreen(slot: ParticipantSlot.userB),
-        AppRoutes.personalityTest: (_) => const PersonalityTestScreen(),
+        AppRoutes.personalityTest: (_) => const PersonalityIntroScreen(),
+        AppRoutes.personalityQuestions: (_) => const PersonalityTestScreen(),
         AppRoutes.results: (_) => const CompatibilityResultScreen(),
         AppRoutes.counseling: (_) => const CounselingBookingScreen(),
+        AppRoutes.bookingHistory: (_) => const BookingHistoryScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
       },
     );
