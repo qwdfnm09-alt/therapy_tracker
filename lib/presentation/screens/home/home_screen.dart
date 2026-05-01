@@ -48,7 +48,10 @@ class HomeScreen extends StatelessWidget {
     ];
 
     return AppPage(
-      title: context.tr('appName'),
+      titleWidget: Text(
+        context.tr('appName'),
+        style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w900),
+      ),
       actions: [
         IconButton(
           tooltip: context.tr('settings'),

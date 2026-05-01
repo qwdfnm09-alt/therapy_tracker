@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_routes.dart';
@@ -399,14 +401,122 @@ Future<void> _exportPdf(
 ) async {
   final service = CompatibilityPdfExportService();
   final data = _buildPdfReportData(context, appState, result);
+  await Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => _PdfOptionsScreen(service: service, data: data),
+    ),
+  );
+}
 
-  try {
-    await service.saveReport(data);
-  } catch (_) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(context.tr('pdfExportFailed'))));
+class _PdfOptionsScreen extends StatefulWidget {
+  const _PdfOptionsScreen({required this.service, required this.data});
+
+  final CompatibilityPdfExportService service;
+  final CompatibilityPdfReportData data;
+
+  @override
+  State<_PdfOptionsScreen> createState() => _PdfOptionsScreenState();
+}
+
+class _PdfOptionsScreenState extends State<_PdfOptionsScreen> {
+  String? _statusMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    final fileName = widget.service.fileNameFor(widget.data);
+
+    return AppPage(
+      title: context.tr('pdfReadyTitle'),
+      child: FutureBuilder<Uint8List>(
+        future: widget.service.buildPdfBytes(widget.data),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 12),
+                    Text(context.tr('pdfPreparing')),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          if (snapshot.hasError || !snapshot.hasData) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(context.tr('pdfExportFailed')),
+              ),
+            );
+          }
+
+          final pdfBytes = snapshot.data!;
+          return ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              SectionCard(
+                title: context.tr('pdfReadyTitle'),
+                icon: Icons.picture_as_pdf_outlined,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(fileName),
+                    if ((_statusMessage ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Text(_statusMessage!),
+                    ],
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: () => _runPdfAction(
+                          () =>
+                              widget.service.sharePdfBytes(pdfBytes, fileName),
+                        ),
+                        icon: const Icon(Icons.download_rounded),
+                        label: Text(context.tr('pdfSaveAction')),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => _runPdfAction(
+                          () =>
+                              widget.service.printPdfBytes(pdfBytes, fileName),
+                        ),
+                        icon: const Icon(Icons.print_outlined),
+                        label: Text(context.tr('pdfPrintAction')),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _runPdfAction(Future<bool> Function() action) async {
+    try {
+      final ok = await action();
+      if (!mounted) return;
+      setState(
+        () => _statusMessage = context.tr(
+          ok ? 'pdfExportReady' : 'pdfActionFailed',
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _statusMessage = context.tr('pdfExportFailed'));
+    }
   }
 }
 

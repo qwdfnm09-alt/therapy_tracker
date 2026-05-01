@@ -40,6 +40,13 @@ class AppStrings {
       'bookRecommendedSession': 'Book recommended session',
       'saveAsPdf': 'Save as PDF',
       'generatedAt': 'Generated at',
+      'pdfOpeningOptions': 'Opening PDF options...',
+      'pdfReadyTitle': 'PDF options',
+      'pdfPreparing': 'Preparing the PDF file...',
+      'pdfSaveAction': 'Save or share PDF',
+      'pdfPrintAction': 'Print PDF',
+      'pdfExportReady': 'The PDF file is ready to share or save.',
+      'pdfActionFailed': 'The PDF action could not be completed.',
       'pdfExportFailed': 'The PDF report could not be prepared.',
       'recommendedReasonIndividual':
           'The current result suggests that individual readiness needs deeper review before any fast commitment.',
@@ -254,11 +261,16 @@ class AppStrings {
       'bookingSent': 'Booking request was opened for sending to the clinic.',
       'bookingSendFailed':
           'The booking was saved, but the phone could not open the sending app.',
+      'bookingActionFailed':
+          'The app could not open this action on the device.',
       'bookingStatusWhatsapp': 'Opened in WhatsApp',
       'bookingStatusSms': 'Opened in SMS',
       'bookingStatusCall': 'Opened phone call',
       'bookingStatusFailed': 'Saved locally only',
       'bookingConfirmationTitle': 'Booking request ready',
+      'openWhatsapp': 'Open WhatsApp',
+      'openSms': 'Open SMS',
+      'callClinicAction': 'Call clinic',
       'copyBookingMessage': 'Copy request text',
       'bookingMessageCopied': 'Booking request text copied.',
       'openBookingHistory': 'Open booking history',
@@ -396,6 +408,13 @@ class AppStrings {
       'bookRecommendedSession': 'احجز الجلسة الموصى بها',
       'saveAsPdf': 'حفظ كملف PDF',
       'generatedAt': 'تاريخ التصدير',
+      'pdfOpeningOptions': 'جارٍ فتح خيارات ملف PDF...',
+      'pdfReadyTitle': 'خيارات ملف PDF',
+      'pdfPreparing': 'جارٍ تجهيز ملف PDF...',
+      'pdfSaveAction': 'حفظ أو مشاركة ملف PDF',
+      'pdfPrintAction': 'طباعة ملف PDF',
+      'pdfExportReady': 'ملف الـ PDF جاهز للمشاركة أو الحفظ.',
+      'pdfActionFailed': 'تعذر تنفيذ إجراء ملف PDF على هذا الجهاز.',
       'pdfExportFailed': 'تعذر تجهيز ملف PDF للنتيجة.',
       'recommendedReasonIndividual':
           'النتيجة الحالية تشير إلى أن الجاهزية الفردية تحتاج مراجعة أعمق قبل أي التزام سريع.',
@@ -605,11 +624,15 @@ class AppStrings {
       'bookingSent': 'تم فتح طلب الحجز للإرسال إلى العيادة.',
       'bookingSendFailed':
           'تم حفظ الحجز، لكن لم يتمكن الهاتف من فتح تطبيق الإرسال.',
+      'bookingActionFailed': 'تعذر فتح هذا الإجراء على الجهاز.',
       'bookingStatusWhatsapp': 'تم فتح واتساب',
       'bookingStatusSms': 'تم فتح الرسائل',
       'bookingStatusCall': 'تم فتح الاتصال',
       'bookingStatusFailed': 'محفوظ محليًا فقط',
       'bookingConfirmationTitle': 'طلب الحجز جاهز',
+      'openWhatsapp': 'فتح واتساب',
+      'openSms': 'فتح الرسائل',
+      'callClinicAction': 'الاتصال بالعيادة',
       'copyBookingMessage': 'انسخ نص الطلب',
       'bookingMessageCopied': 'تم نسخ نص طلب الحجز.',
       'openBookingHistory': 'افتح سجل الحجوزات',
@@ -704,7 +727,7 @@ class AppStrings {
   };
 
   static String of(BuildContext context, String key) {
-    final languageCode = context.watch<AppState>().languageCode;
+    final languageCode = context.read<AppState>().languageCode;
     return _values[languageCode]?[key] ?? _values['en']?[key] ?? key;
   }
 }

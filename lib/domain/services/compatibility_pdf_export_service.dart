@@ -86,12 +86,21 @@ class CompatibilityPdfReportData {
 }
 
 class CompatibilityPdfExportService {
-  Future<void> saveReport(CompatibilityPdfReportData data) async {
+  String fileNameFor(CompatibilityPdfReportData data) {
+    return '${data.appName}-report.pdf';
+  }
+
+  Future<bool> saveReport(CompatibilityPdfReportData data) async {
     final bytes = await buildPdfBytes(data);
-    await Printing.layoutPdf(
-      name: '${data.appName}-report.pdf',
-      onLayout: (_) async => bytes,
-    );
+    return sharePdfBytes(bytes, fileNameFor(data));
+  }
+
+  Future<bool> sharePdfBytes(Uint8List bytes, String filename) {
+    return Printing.sharePdf(bytes: bytes, filename: filename);
+  }
+
+  Future<bool> printPdfBytes(Uint8List bytes, String filename) {
+    return Printing.layoutPdf(name: filename, onLayout: (_) async => bytes);
   }
 
   Future<Uint8List> buildPdfBytes(CompatibilityPdfReportData data) async {

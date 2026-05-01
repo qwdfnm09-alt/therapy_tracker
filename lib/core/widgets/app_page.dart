@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 
 class AppPage extends StatelessWidget {
-  const AppPage({super.key, this.title, this.actions, required this.child});
+  const AppPage({
+    super.key,
+    this.title,
+    this.titleWidget,
+    this.actions,
+    required this.child,
+  });
 
   final String? title;
+  final Widget? titleWidget;
   final List<Widget>? actions;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: title == null
+      appBar: title == null && titleWidget == null
           ? null
-          : AppBar(title: Text(title!), actions: actions),
+          : AppBar(title: titleWidget ?? Text(title!), actions: actions),
       body: SafeArea(
         child: DecoratedBox(
           decoration: BoxDecoration(

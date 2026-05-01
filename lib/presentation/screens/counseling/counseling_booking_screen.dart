@@ -28,6 +28,8 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   final _messageController = TextEditingController();
   String _sessionType = 'family';
   CompatibilityResult? _resultSnapshot;
+  bool _isSubmitting = false;
+  bool _submitted = false;
 
   @override
   void initState() {
@@ -53,6 +55,9 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       title: context.tr('booking'),
       child: Form(
         key: _formKey,
+        autovalidateMode: _submitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
@@ -191,8 +196,14 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              onPressed: _submit,
-              icon: const Icon(Icons.send_outlined),
+              onPressed: _isSubmitting ? null : _submit,
+              icon: _isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.send_outlined),
               label: Text(
                 _resultSnapshot == null
                     ? context.tr('confirmBooking')
@@ -239,7 +250,10 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   }
 
   Future<void> _submit() async {
+    setState(() => _submitted = true);
     if (!_formKey.currentState!.validate()) return;
+    setState(() => _isSubmitting = true);
+    FocusScope.of(context).unfocus();
     final appState = context.read<AppState>();
     final recommendedReason = _recommendedReason(context, _resultSnapshot);
     final resultVerdict = _resultVerdict(context, _resultSnapshot);
@@ -252,32 +266,42 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       'resultVerdict': resultVerdict,
       'createdAt': DateTime.now().toIso8601String(),
     };
-    final submission = await _submissionService.submit(
-      sessionTypeLabel: _sessionTypeLabel(_sessionType),
-      clientPhone: booking['phone'] ?? '',
-      preferredDate: booking['preferredDate'] ?? '',
-      message: booking['message'] ?? '',
-      recommendedReason: booking['recommendedReason'],
-      resultVerdict: booking['resultVerdict'],
-    );
-    await appState.saveBooking({...booking, 'sendStatus': submission.channel});
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          submission.success
-              ? context.tr('bookingSent')
-              : context.tr('bookingSendFailed'),
+    try {
+      final messageText = _submissionService.buildMessage(
+        sessionTypeLabel: _sessionTypeLabel(_sessionType),
+        clientPhone: booking['phone'] ?? '',
+        preferredDate: booking['preferredDate'] ?? '',
+        message: booking['message'] ?? '',
+        recommendedReason: booking['recommendedReason'],
+        resultVerdict: booking['resultVerdict'],
+      );
+      await appState
+          .saveBooking({...booking, 'sendStatus': 'failed'})
+          .timeout(const Duration(seconds: 2), onTimeout: () {});
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => _BookingConfirmationPage(
+            submission: BookingSubmissionResult(
+              success: false,
+              channel: 'failed',
+              messageText: messageText,
+            ),
+          ),
         ),
-      ),
-    );
-    await _showBookingConfirmation(submission);
-    if (!mounted) return;
-    _formKey.currentState?.reset();
-    _phoneController.clear();
-    _dateController.clear();
-    _messageController.clear();
-    setState(() => _sessionType = 'family');
+      );
+      if (!mounted) return;
+      _formKey.currentState?.reset();
+      _phoneController.clear();
+      _dateController.clear();
+      _messageController.clear();
+      setState(() => _sessionType = 'family');
+    } finally {
+      if (mounted && _isSubmitting) {
+        setState(() => _isSubmitting = false);
+      }
+    }
   }
 
   String _sessionTypeLabel(String? value) {
@@ -339,29 +363,28 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       _ => '-',
     };
   }
+}
 
-  Future<void> _showBookingConfirmation(
-    BookingSubmissionResult submission,
-  ) async {
-    final messenger = ScaffoldMessenger.of(context);
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+class _BookingConfirmationPage extends StatelessWidget {
+  _BookingConfirmationPage({required this.submission});
+
+  final BookingSubmissionResult submission;
+  final BookingSubmissionService _submissionService =
+      BookingSubmissionService();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppPage(
+      title: context.tr('bookingConfirmationTitle'),
+      child: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          SectionCard(
+            title: context.tr('bookingConfirmationTitle'),
+            icon: Icons.check_circle_outline,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  context.tr('bookingConfirmationTitle'),
-                  style: Theme.of(
-                    sheetContext,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-                ),
-                const SizedBox(height: 10),
                 _BookingRow(
                   label: context.tr('clinicPhone'),
                   value: clinicPhoneNumber,
@@ -369,77 +392,101 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                 const SizedBox(height: 10),
                 _BookingRow(
                   label: context.tr('bookingStatus'),
-                  value: _submissionStatusLabel(context, submission.channel),
+                  value: switch (submission.channel) {
+                    'whatsapp' => context.tr('bookingStatusWhatsapp'),
+                    'sms' => context.tr('bookingStatusSms'),
+                    'call' => context.tr('bookingStatusCall'),
+                    _ => context.tr('bookingStatusFailed'),
+                  },
                 ),
                 const SizedBox(height: 16),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final stackActions = constraints.maxWidth < 460;
-                    final primaryButton = FilledButton.icon(
-                      onPressed: () => Navigator.pop(sheetContext),
-                      icon: const Icon(Icons.check_rounded),
-                      label: Text(context.tr('done')),
-                    );
-                    final secondaryButton = OutlinedButton.icon(
-                      onPressed: () async {
-                        final copiedMessage = context.tr(
-                          'bookingMessageCopied',
-                        );
-                        await Clipboard.setData(
-                          ClipboardData(text: submission.messageText),
-                        );
-                        if (!mounted) return;
-                        messenger.showSnackBar(
-                          SnackBar(content: Text(copiedMessage)),
-                        );
-                      },
-                      icon: const Icon(Icons.copy_all_rounded),
-                      label: Text(context.tr('copyBookingMessage')),
-                    );
-
-                    if (stackActions) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: primaryButton,
-                          ),
-                          const SizedBox(height: 10),
-                          SizedBox(
-                            width: double.infinity,
-                            child: secondaryButton,
-                          ),
-                        ],
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () => _openBookingAction(
+                        context,
+                        () => _submissionService.openWhatsApp(
+                          submission.messageText,
+                        ),
+                      ),
+                      icon: const Icon(Icons.chat_outlined),
+                      label: Text(context.tr('openWhatsapp')),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _openBookingAction(
+                        context,
+                        () =>
+                            _submissionService.openSms(submission.messageText),
+                      ),
+                      icon: const Icon(Icons.sms_outlined),
+                      label: Text(context.tr('openSms')),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _openBookingAction(
+                        context,
+                        _submissionService.openCall,
+                      ),
+                      icon: const Icon(Icons.call_outlined),
+                      label: Text(context.tr('callClinicAction')),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      await Clipboard.setData(
+                        ClipboardData(text: submission.messageText),
                       );
-                    }
-
-                    return Row(
-                      children: [
-                        Expanded(child: primaryButton),
-                        const SizedBox(width: 12),
-                        Expanded(child: secondaryButton),
-                      ],
-                    );
-                  },
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                        SnackBar(
+                          content: Text(context.tr('bookingMessageCopied')),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.copy_all_rounded),
+                    label: Text(context.tr('copyBookingMessage')),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
                   child: TextButton.icon(
-                    onPressed: () {
-                      Navigator.pop(sheetContext);
-                      Navigator.pushNamed(context, AppRoutes.bookingHistory);
-                    },
+                    onPressed: () =>
+                        Navigator.pushNamed(context, AppRoutes.bookingHistory),
                     icon: const Icon(Icons.history_rounded),
                     label: Text(context.tr('openBookingHistory')),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(context.tr('done')),
                   ),
                 ),
               ],
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
+  }
+
+  Future<void> _openBookingAction(
+    BuildContext context,
+    Future<bool> Function() action,
+  ) async {
+    final opened = await action();
+    if (!context.mounted || opened) return;
+    ScaffoldMessenger.maybeOf(
+      context,
+    )?.showSnackBar(SnackBar(content: Text(context.tr('bookingActionFailed'))));
   }
 }
 

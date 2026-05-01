@@ -994,14 +994,26 @@ class _ParticipantChoiceRow extends StatelessWidget {
             );
 
             if (compact) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              return Row(
                 children: [
-                  Text(lowAnchor, style: theme.textTheme.bodySmall),
-                  const SizedBox(height: 4),
+                  Expanded(
+                    child: Text(
+                      lowAnchor,
+                      style: theme.textTheme.bodySmall,
+                      maxLines: 2,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   scoreText,
-                  const SizedBox(height: 4),
-                  Text(highAnchor, style: theme.textTheme.bodySmall),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      highAnchor,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.bodySmall,
+                      maxLines: 2,
+                    ),
+                  ),
                 ],
               );
             }
