@@ -13,7 +13,7 @@ import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
-import 'presentation/screens/splash/splash_screen.dart';
+import 'presentation/screens/welcome/welcome_screen.dart';
 
 class PreMaritalMatchApp extends StatelessWidget {
   const PreMaritalMatchApp({super.key});
@@ -35,9 +35,9 @@ class PreMaritalMatchApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.welcome,
       routes: {
-        AppRoutes.splash: (_) => const SplashScreen(),
+        AppRoutes.welcome: (_) => const WelcomeScreen(),
         AppRoutes.home: (_) => const HomeScreen(),
         AppRoutes.userAForm: (_) =>
             const ParticipantFormScreen(slot: ParticipantSlot.userA),

@@ -53,6 +53,30 @@ class BookingHistoryScreen extends StatelessWidget {
                         label: context.tr('bookingPhone'),
                         value: booking['phone'] ?? '-',
                       ),
+                      if ((booking['sendStatus'] ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _BookingRow(
+                          label: context.tr('bookingStatus'),
+                          value: _submissionStatusLabel(
+                            context,
+                            booking['sendStatus'],
+                          ),
+                        ),
+                      ],
+                      if ((booking['resultVerdict'] ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _BookingRow(
+                          label: context.tr('bookingResultVerdict'),
+                          value: booking['resultVerdict']!,
+                        ),
+                      ],
+                      if ((booking['recommendedReason'] ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        _BookingRow(
+                          label: context.tr('bookingRecommendation'),
+                          value: booking['recommendedReason']!,
+                        ),
+                      ],
                       if ((booking['message'] ?? '').isNotEmpty) ...[
                         const SizedBox(height: 10),
                         _BookingRow(
@@ -80,6 +104,16 @@ class BookingHistoryScreen extends StatelessWidget {
       'family' => context.tr('sessionTypeFamily'),
       'individual' => context.tr('sessionTypeIndividual'),
       'coaching' => context.tr('sessionTypeCoaching'),
+      _ => '-',
+    };
+  }
+
+  String _submissionStatusLabel(BuildContext context, String? value) {
+    return switch (value) {
+      'whatsapp' => context.tr('bookingStatusWhatsapp'),
+      'sms' => context.tr('bookingStatusSms'),
+      'call' => context.tr('bookingStatusCall'),
+      'failed' => context.tr('bookingStatusFailed'),
       _ => '-',
     };
   }

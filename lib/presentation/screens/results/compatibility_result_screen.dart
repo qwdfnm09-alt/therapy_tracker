@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_routes.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/metric_ring.dart';
 import '../../../core/widgets/score_bar.dart';
 import '../../../core/widgets/section_card.dart';
+import '../../../domain/models/compatibility_result.dart';
 import '../../providers/app_state.dart';
 
 class CompatibilityResultScreen extends StatelessWidget {
@@ -41,8 +41,10 @@ class CompatibilityResultScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     FilledButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, _assessmentRoute(appState)),
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        _assessmentRoute(appState),
+                      ),
                       child: Text(context.tr('openAssessment')),
                     ),
                   ],
@@ -52,89 +54,256 @@ class CompatibilityResultScreen extends StatelessWidget {
           : ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                SectionCard(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MetricRing(
-                        value: result.compatibilityPercentage,
-                        label: context.tr('compatibility'),
+                _AnimatedReveal(
+                  delayFraction: 0,
+                  child: _ResultHeroSection(
+                    verdict: _verdictHeadline(
+                      context,
+                      result.compatibilityPercentage,
+                    ),
+                    summary: _verdictBody(
+                      context,
+                      result.compatibilityPercentage,
+                      result.marriageReadinessScore,
+                    ),
+                    compatibility: result.compatibilityPercentage,
+                    readiness: result.marriageReadinessScore,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
+                  delayFraction: 0.12,
+                  child: _TakeawaysSection(
+                    title: context.tr('keyTakeaways'),
+                    pulse: _firstMeaningfulItem(
+                      context,
+                      result.relationshipDynamics,
+                      emptyToken: '',
+                    ),
+                    watchpoint: _firstMeaningfulItem(
+                      context,
+                      result.riskAreas,
+                      emptyToken: 'risk:none',
+                    ),
+                    advantage: _firstMeaningfulItem(
+                      context,
+                      result.strengthAreas,
+                      emptyToken: 'strength:none',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
+                  delayFraction: 0.22,
+                  child: _VerdictSection(
+                    title: context.tr('verdictTitle'),
+                    headline: _verdictHeadline(
+                      context,
+                      result.compatibilityPercentage,
+                    ),
+                    body: _verdictBody(
+                      context,
+                      result.compatibilityPercentage,
+                      result.marriageReadinessScore,
+                    ),
+                    discussionLead: _firstMeaningfulItem(
+                      context,
+                      result.riskAreas,
+                      emptyToken: 'risk:none',
+                    ),
+                    strengthLead: _firstMeaningfulItem(
+                      context,
+                      result.strengthAreas,
+                      emptyToken: 'strength:none',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
+                  delayFraction: 0.32,
+                  child: _ComparisonSection(
+                    title: context.tr('comparisonLens'),
+                    userALabel: appState.userA?.name.isNotEmpty == true
+                        ? appState.userA!.name
+                        : context.tr('userA'),
+                    userBLabel: appState.userB?.name.isNotEmpty == true
+                        ? appState.userB!.name
+                        : context.tr('userB'),
+                    rows: [
+                      _ComparisonRowData(
+                        label: context.tr('mapEnergy'),
+                        userAValue:
+                            appState
+                                .userA
+                                ?.answers['personality_social_energy'] ??
+                            3,
+                        userBValue:
+                            appState
+                                .userB
+                                ?.answers['personality_social_energy'] ??
+                            3,
+                        highKey: 'leanEnergyHigh',
+                        lowKey: 'leanEnergyLow',
                       ),
-                      const SizedBox(width: 12),
-                      MetricRing(
-                        value: result.marriageReadinessScore,
-                        label: context.tr('readiness'),
+                      _ComparisonRowData(
+                        label: context.tr('mapStructure'),
+                        userAValue:
+                            appState.userA?.answers['personality_structure'] ??
+                            3,
+                        userBValue:
+                            appState.userB?.answers['personality_structure'] ??
+                            3,
+                        highKey: 'leanStructureHigh',
+                        lowKey: 'leanStructureLow',
+                      ),
+                      _ComparisonRowData(
+                        label: context.tr('mapEmotion'),
+                        userAValue:
+                            appState.userA?.answers['emotion_self_awareness'] ??
+                            3,
+                        userBValue:
+                            appState.userB?.answers['emotion_self_awareness'] ??
+                            3,
+                        highKey: 'leanEmotionHigh',
+                        lowKey: 'leanEmotionLow',
+                      ),
+                      _ComparisonRowData(
+                        label: context.tr('mapConflict'),
+                        userAValue:
+                            (((appState.userA?.answers['anger_pause'] ?? 3) +
+                                        (appState
+                                                .userA
+                                                ?.answers['anger_repair'] ??
+                                            3)) /
+                                    2)
+                                .round(),
+                        userBValue:
+                            (((appState.userB?.answers['anger_pause'] ?? 3) +
+                                        (appState
+                                                .userB
+                                                ?.answers['anger_repair'] ??
+                                            3)) /
+                                    2)
+                                .round(),
+                        highKey: 'leanConflictHigh',
+                        lowKey: 'leanConflictLow',
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
-                _ArchetypeSection(
-                  title: context.tr('archetypeSummary'),
-                  userALabel: appState.userA?.name.isNotEmpty == true
-                      ? appState.userA!.name
-                      : context.tr('userA'),
-                  userBLabel: appState.userB?.name.isNotEmpty == true
-                      ? appState.userB!.name
-                      : context.tr('userB'),
-                  userAValue: _localizeArchetype(
-                    context,
-                    result.partnerArchetypes['userA'] ?? '',
-                  ),
-                  userBValue: _localizeArchetype(
-                    context,
-                    result.partnerArchetypes['userB'] ?? '',
+                _AnimatedReveal(
+                  delayFraction: 0.42,
+                  child: _ArchetypeSection(
+                    title: context.tr('archetypeSummary'),
+                    userALabel: appState.userA?.name.isNotEmpty == true
+                        ? appState.userA!.name
+                        : context.tr('userA'),
+                    userBLabel: appState.userB?.name.isNotEmpty == true
+                        ? appState.userB!.name
+                        : context.tr('userB'),
+                    userAValue: _localizeArchetype(
+                      context,
+                      result.partnerArchetypes['userA'] ?? '',
+                    ),
+                    userBValue: _localizeArchetype(
+                      context,
+                      result.partnerArchetypes['userB'] ?? '',
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                _PersonalityMapSection(
-                  title: context.tr('personalityMap'),
-                  userALabel: appState.userA?.name.isNotEmpty == true
-                      ? appState.userA!.name
-                      : context.tr('userA'),
-                  userBLabel: appState.userB?.name.isNotEmpty == true
-                      ? appState.userB!.name
-                      : context.tr('userB'),
-                  rows: [
-                    _MapRowData(
-                      label: context.tr('mapEnergy'),
-                      userAValue:
-                          appState.userA?.answers['personality_social_energy'] ??
-                          3,
-                      userBValue:
-                          appState.userB?.answers['personality_social_energy'] ??
-                          3,
-                    ),
-                    _MapRowData(
-                      label: context.tr('mapStructure'),
-                      userAValue:
-                          appState.userA?.answers['personality_structure'] ?? 3,
-                      userBValue:
-                          appState.userB?.answers['personality_structure'] ?? 3,
-                    ),
-                    _MapRowData(
-                      label: context.tr('mapEmotion'),
-                      userAValue:
-                          appState.userA?.answers['emotion_self_awareness'] ?? 3,
-                      userBValue:
-                          appState.userB?.answers['emotion_self_awareness'] ?? 3,
-                    ),
-                    _MapRowData(
-                      label: context.tr('mapConflict'),
-                      userAValue:
-                          (((appState.userA?.answers['anger_pause'] ?? 3) +
-                                      (appState.userA?.answers['anger_repair'] ??
-                                          3)) /
-                                  2)
-                              .round(),
-                      userBValue:
-                          (((appState.userB?.answers['anger_pause'] ?? 3) +
-                                      (appState.userB?.answers['anger_repair'] ??
-                                          3)) /
-                                  2)
-                              .round(),
-                    ),
-                  ],
+                _AnimatedReveal(
+                  delayFraction: 0.52,
+                  child: _PersonalityMapSection(
+                    title: context.tr('personalityMap'),
+                    userALabel: appState.userA?.name.isNotEmpty == true
+                        ? appState.userA!.name
+                        : context.tr('userA'),
+                    userBLabel: appState.userB?.name.isNotEmpty == true
+                        ? appState.userB!.name
+                        : context.tr('userB'),
+                    rows: [
+                      _MapRowData(
+                        label: context.tr('mapEnergy'),
+                        userAValue:
+                            appState
+                                .userA
+                                ?.answers['personality_social_energy'] ??
+                            3,
+                        userBValue:
+                            appState
+                                .userB
+                                ?.answers['personality_social_energy'] ??
+                            3,
+                      ),
+                      _MapRowData(
+                        label: context.tr('mapStructure'),
+                        userAValue:
+                            appState.userA?.answers['personality_structure'] ??
+                            3,
+                        userBValue:
+                            appState.userB?.answers['personality_structure'] ??
+                            3,
+                      ),
+                      _MapRowData(
+                        label: context.tr('mapEmotion'),
+                        userAValue:
+                            appState.userA?.answers['emotion_self_awareness'] ??
+                            3,
+                        userBValue:
+                            appState.userB?.answers['emotion_self_awareness'] ??
+                            3,
+                      ),
+                      _MapRowData(
+                        label: context.tr('mapConflict'),
+                        userAValue:
+                            (((appState.userA?.answers['anger_pause'] ?? 3) +
+                                        (appState
+                                                .userA
+                                                ?.answers['anger_repair'] ??
+                                            3)) /
+                                    2)
+                                .round(),
+                        userBValue:
+                            (((appState.userB?.answers['anger_pause'] ?? 3) +
+                                        (appState
+                                                .userB
+                                                ?.answers['anger_repair'] ??
+                                            3)) /
+                                    2)
+                                .round(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
+                  delayFraction: 0.62,
+                  child: SectionCard(
+                    title: context.tr('narrativeSummary'),
+                    icon: Icons.text_snippet_outlined,
+                    child: Text(_buildNarrativeSummary(context, appState)),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
+                  delayFraction: 0.7,
+                  child: _ActionPlanSection(
+                    nextStepTitle: context.tr('nextStepTitle'),
+                    nextStepBody: _recommendedNextStep(context, result),
+                    topicsTitle: context.tr('discussionTopicsTitle'),
+                    topics: _discussionTopics(context, result),
+                    onBook: () =>
+                        Navigator.pushNamed(context, AppRoutes.counseling),
+                    onReview: () async {
+                      await context.read<AppState>().setPersonalityStageIndex(
+                        0,
+                      );
+                      if (!context.mounted) return;
+                      Navigator.pushNamed(context, AppRoutes.personalityTest);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 16),
                 SectionCard(
@@ -213,10 +382,37 @@ class CompatibilityResultScreen extends StatelessWidget {
                   onPressed: () =>
                       Navigator.pushNamed(context, AppRoutes.counseling),
                   icon: const Icon(Icons.calendar_month_outlined),
-                  label: Text(context.tr('booking')),
+                  label: Text(context.tr('bookRecommendedSession')),
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _AnimatedReveal extends StatelessWidget {
+  const _AnimatedReveal({required this.child, required this.delayFraction});
+
+  final Widget child;
+  final double delayFraction;
+
+  @override
+  Widget build(BuildContext context) {
+    final clampedDelay = delayFraction.clamp(0.0, 0.92);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 900),
+      curve: Interval(clampedDelay, 1, curve: Curves.easeOutCubic),
+      builder: (context, value, builtChild) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 22),
+            child: builtChild,
+          ),
+        );
+      },
+      child: child,
     );
   }
 }
@@ -255,6 +451,544 @@ class _ListSection extends StatelessWidget {
                 ],
               ),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TakeawaysSection extends StatelessWidget {
+  const _TakeawaysSection({
+    required this.title,
+    required this.pulse,
+    required this.watchpoint,
+    required this.advantage,
+  });
+
+  final String title;
+  final String pulse;
+  final String watchpoint;
+  final String advantage;
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionCard(
+      title: title,
+      icon: Icons.bolt_outlined,
+      child: Column(
+        children: [
+          if (pulse.isNotEmpty)
+            _TakeawayTile(
+              label: context.tr('relationshipPulse'),
+              icon: Icons.favorite_border_rounded,
+              value: pulse,
+            ),
+          if (watchpoint.isNotEmpty) ...[
+            if (pulse.isNotEmpty) const SizedBox(height: 10),
+            _TakeawayTile(
+              label: context.tr('watchpoint'),
+              icon: Icons.error_outline_rounded,
+              value: watchpoint,
+            ),
+          ],
+          if (advantage.isNotEmpty) ...[
+            if (pulse.isNotEmpty || watchpoint.isNotEmpty)
+              const SizedBox(height: 10),
+            _TakeawayTile(
+              label: context.tr('advantage'),
+              icon: Icons.trending_up_rounded,
+              value: advantage,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _TakeawayTile extends StatelessWidget {
+  const _TakeawayTile({
+    required this.label,
+    required this.icon,
+    required this.value,
+  });
+
+  final String label;
+  final IconData icon;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.55,
+        ),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(value, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ActionPlanSection extends StatelessWidget {
+  const _ActionPlanSection({
+    required this.nextStepTitle,
+    required this.nextStepBody,
+    required this.topicsTitle,
+    required this.topics,
+    required this.onBook,
+    required this.onReview,
+  });
+
+  final String nextStepTitle;
+  final String nextStepBody;
+  final String topicsTitle;
+  final List<String> topics;
+  final VoidCallback onBook;
+  final VoidCallback onReview;
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionCard(
+      title: nextStepTitle,
+      icon: Icons.route_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(nextStepBody),
+          const SizedBox(height: 14),
+          Text(
+            topicsTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 10),
+          for (final topic in topics)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.arrow_right_alt_rounded,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(topic)),
+                ],
+              ),
+            ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: onBook,
+                  icon: const Icon(Icons.calendar_month_outlined),
+                  label: Text(context.tr('booking')),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: onReview,
+                  icon: const Icon(Icons.restart_alt_rounded),
+                  label: Text(context.tr('retakeLater')),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResultHeroSection extends StatelessWidget {
+  const _ResultHeroSection({
+    required this.verdict,
+    required this.summary,
+    required this.compatibility,
+    required this.readiness,
+  });
+
+  final String verdict;
+  final String summary;
+  final int compatibility;
+  final int readiness;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.primaryContainer.withBlue(210),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.tr('heroSummaryLead'),
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.82),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            verdict,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            summary,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onPrimary.withValues(alpha: 0.92),
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: MetricRing(
+                    value: compatibility,
+                    label: context.tr('compatibility'),
+                    size: 132,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: MetricRing(
+                    value: readiness,
+                    label: context.tr('readiness'),
+                    size: 132,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerdictSection extends StatelessWidget {
+  const _VerdictSection({
+    required this.title,
+    required this.headline,
+    required this.body,
+    required this.discussionLead,
+    required this.strengthLead,
+  });
+
+  final String title;
+  final String headline;
+  final String body;
+  final String discussionLead;
+  final String strengthLead;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SectionCard(
+      title: title,
+      icon: Icons.lightbulb_outline_rounded,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            headline,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(body, style: theme.textTheme.bodyMedium),
+          if (discussionLead.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            _VerdictPill(
+              label: context.tr('whatToDiscussNow'),
+              value: discussionLead,
+              icon: Icons.chat_outlined,
+            ),
+          ],
+          if (strengthLead.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            _VerdictPill(
+              label: context.tr('topStrengthNow'),
+              value: strengthLead,
+              icon: Icons.trending_up_rounded,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ComparisonSection extends StatelessWidget {
+  const _ComparisonSection({
+    required this.title,
+    required this.userALabel,
+    required this.userBLabel,
+    required this.rows,
+  });
+
+  final String title;
+  final String userALabel;
+  final String userBLabel;
+  final List<_ComparisonRowData> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    return SectionCard(
+      title: title,
+      icon: Icons.compare_arrows_rounded,
+      child: Column(
+        children: [
+          for (final row in rows) ...[
+            _ComparisonCard(
+              row: row,
+              userALabel: userALabel,
+              userBLabel: userBLabel,
+            ),
+            if (row != rows.last) const SizedBox(height: 12),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ComparisonRowData {
+  const _ComparisonRowData({
+    required this.label,
+    required this.userAValue,
+    required this.userBValue,
+    required this.highKey,
+    required this.lowKey,
+  });
+
+  final String label;
+  final int userAValue;
+  final int userBValue;
+  final String highKey;
+  final String lowKey;
+}
+
+class _ComparisonCard extends StatelessWidget {
+  const _ComparisonCard({
+    required this.row,
+    required this.userALabel,
+    required this.userBLabel,
+  });
+
+  final _ComparisonRowData row;
+  final String userALabel;
+  final String userBLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final delta = row.userAValue - row.userBValue;
+    final gap = delta.abs();
+    final same = gap == 0;
+
+    String lead;
+    if (same) {
+      lead = context.tr('comparisonClose');
+    } else {
+      final leader = delta > 0 ? userALabel : userBLabel;
+      final leanKey = (delta > 0 ? row.userAValue : row.userBValue) >= 3
+          ? row.highKey
+          : row.lowKey;
+      lead = '$leader ${context.tr(leanKey)}';
+    }
+
+    final support = same
+        ? ''
+        : gap >= 2
+        ? context.tr('comparisonGapStrong')
+        : context.tr('comparisonGapLight');
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.48,
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            row.label,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _MiniScoreChip(label: userALabel, value: row.userAValue),
+              _MiniScoreChip(label: userBLabel, value: row.userBValue),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(lead, style: theme.textTheme.bodyMedium),
+          if (support.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              support,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniScoreChip extends StatelessWidget {
+  const _MiniScoreChip({required this.label, required this.value});
+
+  final String label;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(width: 8),
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: value.toDouble()),
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeOutCubic,
+            builder: (context, animatedValue, _) {
+              return Text(
+                '${animatedValue.round()}/5',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: theme.colorScheme.primary,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerdictPill extends StatelessWidget {
+  const _VerdictPill({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.55,
+        ),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(value, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -346,14 +1080,8 @@ class _PersonalityMapSection extends StatelessWidget {
             spacing: 12,
             runSpacing: 8,
             children: [
-              _LegendChip(
-                label: userALabel,
-                color: theme.colorScheme.primary,
-              ),
-              _LegendChip(
-                label: userBLabel,
-                color: theme.colorScheme.tertiary,
-              ),
+              _LegendChip(label: userALabel, color: theme.colorScheme.primary),
+              _LegendChip(label: userBLabel, color: theme.colorScheme.tertiary),
             ],
           ),
           const SizedBox(height: 16),
@@ -496,22 +1224,159 @@ String _assessmentRoute(AppState appState) {
   return AppRoutes.personalityTest;
 }
 
+String _verdictHeadline(BuildContext context, int compatibility) {
+  return switch (compatibility) {
+    >= 80 => context.tr('verdictStrong'),
+    >= 65 => context.tr('verdictWorkable'),
+    _ => context.tr('verdictFragile'),
+  };
+}
+
+String _verdictBody(BuildContext context, int compatibility, int readiness) {
+  if (compatibility >= 80 && readiness >= 75) {
+    return context.tr('verdictStrongBody');
+  }
+  if (compatibility >= 65 && readiness >= 65) {
+    return context.tr('verdictWorkableBody');
+  }
+  return context.tr('verdictFragileBody');
+}
+
+String _firstMeaningfulItem(
+  BuildContext context,
+  List<String> items, {
+  required String emptyToken,
+}) {
+  for (final item in items) {
+    if (item == emptyToken) {
+      continue;
+    }
+    final localized = _localizeResultItem(context, item);
+    if (localized.isNotEmpty) {
+      return localized;
+    }
+  }
+  return '';
+}
+
+String _buildNarrativeSummary(BuildContext context, AppState appState) {
+  final result = appState.result;
+  if (result == null) return '';
+
+  final compatibilityLead = switch (result.compatibilityPercentage) {
+    >= 80 => context.tr('narrativeCompatibilityHigh'),
+    >= 65 => context.tr('narrativeCompatibilityMid'),
+    _ => context.tr('narrativeCompatibilityLow'),
+  };
+
+  final readinessLead = switch (result.marriageReadinessScore) {
+    >= 75 => context.tr('narrativeReadinessHigh'),
+    >= 65 => context.tr('narrativeReadinessMid'),
+    _ => context.tr('narrativeReadinessLow'),
+  };
+
+  final userAName = appState.userA?.name.isNotEmpty == true
+      ? appState.userA!.name
+      : context.tr('userA');
+  final userBName = appState.userB?.name.isNotEmpty == true
+      ? appState.userB!.name
+      : context.tr('userB');
+
+  final archetypeSentence =
+      '${context.tr("narrativeArchetypeLead")} $userAName ${_localizeArchetype(context, result.partnerArchetypes["userA"] ?? "")}، '
+      '$userBName ${_localizeArchetype(context, result.partnerArchetypes["userB"] ?? "")}.';
+
+  final dynamics = result.relationshipDynamics
+      .map((item) => _localizeResultItem(context, item))
+      .where((item) => item.isNotEmpty)
+      .toList();
+  final dynamicSentence = dynamics.isEmpty
+      ? ''
+      : '${context.tr("narrativeDynamicLead")} ${dynamics.take(2).join(', ')}.';
+
+  final firstRisk = result.riskAreas
+      .map((item) => _localizeResultItem(context, item))
+      .firstWhere(
+        (item) => item.isNotEmpty && item != context.tr('noHighRisk'),
+        orElse: () => '',
+      );
+  final firstStrength = result.strengthAreas
+      .map((item) => _localizeResultItem(context, item))
+      .firstWhere(
+        (item) => item.isNotEmpty && item != context.tr('noStrongAlignmentYet'),
+        orElse: () => '',
+      );
+
+  final emphasisSentence = firstRisk.isNotEmpty
+      ? '${context.tr("narrativeRiskLead")} $firstRisk.'
+      : firstStrength.isNotEmpty
+      ? '${context.tr("narrativeStrengthLead")} $firstStrength.'
+      : '';
+
+  return [
+    compatibilityLead,
+    readinessLead,
+    archetypeSentence,
+    dynamicSentence,
+    emphasisSentence,
+    context.tr('narrativeSupportLead'),
+  ].where((line) => line.isNotEmpty).join(' ');
+}
+
+String _recommendedNextStep(BuildContext context, CompatibilityResult result) {
+  if (result.marriageReadinessScore < 60 ||
+      result.compatibilityPercentage < 60) {
+    return context.tr('nextStepCounselorFirst');
+  }
+  if (!result.riskAreas.contains('risk:none')) {
+    return context.tr('nextStepGuidedDiscussion');
+  }
+  return context.tr('nextStepAlignment');
+}
+
+List<String> _discussionTopics(
+  BuildContext context,
+  CompatibilityResult result,
+) {
+  final topics = <String>[];
+  for (final risk in result.riskAreas) {
+    final topic = switch (risk) {
+      'risk:angerManagement' => context.tr('topicConflictRepair'),
+      'risk:familyBoundaries' => context.tr('topicFamilyBoundaries'),
+      'risk:financialMindset' => context.tr('topicMoneyPlanning'),
+      'risk:futureGoals' => context.tr('topicFutureTiming'),
+      'risk:communication' => context.tr('topicCommunicationRhythm'),
+      'risk:responsibility' => context.tr('topicHouseholdResponsibility'),
+      _ => '',
+    };
+    if (topic.isNotEmpty && !topics.contains(topic)) {
+      topics.add(topic);
+    }
+  }
+
+  if (topics.isEmpty) {
+    topics.add(context.tr('topicCommunicationRhythm'));
+    topics.add(context.tr('topicFutureTiming'));
+  }
+
+  return topics.take(3).toList();
+}
+
 String _categoryLabel(BuildContext context, String key) {
   return switch (key) {
     'personality' || 'Personality' => context.tr('categoryPersonality'),
-    'emotionalIntelligence' || 'Emotional intelligence' =>
-      context.tr('categoryEmotionalIntelligence'),
-    'angerManagement' || 'Anger management' =>
-      context.tr('categoryAngerManagement'),
-    'communication' || 'Communication' =>
-      context.tr('categoryCommunication'),
-    'financialMindset' || 'Financial mindset' =>
-      context.tr('categoryFinancialMindset'),
-    'familyBoundaries' || 'Family boundaries' =>
-      context.tr('categoryFamilyBoundaries'),
+    'emotionalIntelligence' ||
+    'Emotional intelligence' => context.tr('categoryEmotionalIntelligence'),
+    'angerManagement' ||
+    'Anger management' => context.tr('categoryAngerManagement'),
+    'communication' || 'Communication' => context.tr('categoryCommunication'),
+    'financialMindset' ||
+    'Financial mindset' => context.tr('categoryFinancialMindset'),
+    'familyBoundaries' ||
+    'Family boundaries' => context.tr('categoryFamilyBoundaries'),
     'futureGoals' || 'Future goals' => context.tr('categoryFutureGoals'),
-    'responsibility' || 'Responsibility' =>
-      context.tr('categoryResponsibility'),
+    'responsibility' ||
+    'Responsibility' => context.tr('categoryResponsibility'),
     _ => key,
   };
 }
@@ -559,30 +1424,20 @@ String _localizeResultItem(BuildContext context, String item) {
     'dynamic:repair:strong' => context.tr('dynamicRepairStrong'),
     'dynamic:repair:fragile' => context.tr('dynamicRepairFragile'),
     'dynamic:repair:developing' => context.tr('dynamicRepairDeveloping'),
-    'note:strongAlignment' =>
-      context.tr('noteStrongAlignment'),
-    'note:workableCompatibility' =>
-      context.tr('noteWorkableCompatibility'),
-    'note:fragileCompatibility' =>
-      context.tr('noteFragileCompatibility'),
-    'note:angerManagement' =>
-      context.tr('noteAngerManagement'),
-    'note:familyBoundaries' =>
-      context.tr('noteFamilyBoundaries'),
-    'note:readinessThreshold' =>
-      context.tr('noteReadinessThreshold'),
-    'session:communication' =>
-      context.tr('sessionCommunication'),
-    'session:familyBoundaries' =>
-      context.tr('sessionFamilyBoundaries'),
-    'session:futurePlanning' =>
-      context.tr('sessionFuturePlanning'),
-    'session:individualReadiness' =>
-      context.tr('sessionIndividualReadiness'),
-    'session:alignment' =>
-      context.tr('sessionAlignment'),
-    'No high-risk area detected by the current scoring profile.' =>
-      context.tr('noHighRisk'),
+    'note:strongAlignment' => context.tr('noteStrongAlignment'),
+    'note:workableCompatibility' => context.tr('noteWorkableCompatibility'),
+    'note:fragileCompatibility' => context.tr('noteFragileCompatibility'),
+    'note:angerManagement' => context.tr('noteAngerManagement'),
+    'note:familyBoundaries' => context.tr('noteFamilyBoundaries'),
+    'note:readinessThreshold' => context.tr('noteReadinessThreshold'),
+    'session:communication' => context.tr('sessionCommunication'),
+    'session:familyBoundaries' => context.tr('sessionFamilyBoundaries'),
+    'session:futurePlanning' => context.tr('sessionFuturePlanning'),
+    'session:individualReadiness' => context.tr('sessionIndividualReadiness'),
+    'session:alignment' => context.tr('sessionAlignment'),
+    'No high-risk area detected by the current scoring profile.' => context.tr(
+      'noHighRisk',
+    ),
     'The couple shows strong alignment, but expectations should still be discussed explicitly.' =>
       context.tr('noteStrongAlignment'),
     'The relationship has workable compatibility with several topics needing guided conversation.' =>
@@ -595,16 +1450,19 @@ String _localizeResultItem(BuildContext context, String item) {
       context.tr('noteFamilyBoundaries'),
     'Marriage readiness is below the recommended threshold for a confident decision.' =>
       context.tr('noteReadinessThreshold'),
-    'Communication and conflict dialogue session' =>
-      context.tr('sessionCommunication'),
-    'Family boundaries consultation' =>
-      context.tr('sessionFamilyBoundaries'),
-    'Future planning and financial expectations session' =>
-      context.tr('sessionFuturePlanning'),
-    'Individual psychological readiness review' =>
-      context.tr('sessionIndividualReadiness'),
-    'One pre-marriage coaching session for final alignment' =>
-      context.tr('sessionAlignment'),
+    'Communication and conflict dialogue session' => context.tr(
+      'sessionCommunication',
+    ),
+    'Family boundaries consultation' => context.tr('sessionFamilyBoundaries'),
+    'Future planning and financial expectations session' => context.tr(
+      'sessionFuturePlanning',
+    ),
+    'Individual psychological readiness review' => context.tr(
+      'sessionIndividualReadiness',
+    ),
+    'One pre-marriage coaching session for final alignment' => context.tr(
+      'sessionAlignment',
+    ),
     _ => item,
   };
 }

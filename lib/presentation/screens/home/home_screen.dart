@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_routes.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
@@ -22,7 +21,8 @@ class HomeScreen extends StatelessWidget {
         subtitle: context.tr('featurePersonality'),
         icon: Icons.psychology_alt_outlined,
         enabled: hasProfiles,
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.personalityTest),
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.personalityTest),
       ),
       _FeatureItem(
         title: context.tr('result'),
@@ -59,55 +59,116 @@ class HomeScreen extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          SectionCard(
-            child: Row(
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.favorite_rounded,
-                    color: theme.colorScheme.onPrimary,
-                  ),
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  theme.colorScheme.primary,
+                  theme.colorScheme.primaryContainer.withBlue(200),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
                 ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.tr('homeTitle'),
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.tr('homeTitle'),
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            context.tr('homeBody'),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary.withValues(
+                                alpha: 0.85,
+                              ),
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        context.tr('homeBody'),
-                        style: theme.textTheme.bodyMedium,
+                    ),
+                    const SizedBox(width: 16),
+                    Icon(
+                      Icons.favorite_rounded,
+                      size: 64,
+                      color: theme.colorScheme.onPrimary.withValues(
+                        alpha: 0.15,
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      _assessmentRoute(appState),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.onPrimary,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.play_arrow_rounded,
+                            color: theme.colorScheme.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            appState.userA == null && appState.userB == null
+                                ? context.tr('startAssessment')
+                                : context.tr('continueAssessment'),
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          FilledButton.icon(
-            onPressed: () =>
-                Navigator.pushNamed(context, _assessmentRoute(appState)),
-            icon: const Icon(Icons.play_arrow_rounded),
-            label: Text(
-              appState.userA == null && appState.userB == null
-                  ? context.tr('startAssessment')
-                  : context.tr('continueAssessment'),
-            ),
-          ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           SectionCard(
             title: context.tr('quickAccess'),
             icon: Icons.dashboard_outlined,
@@ -122,11 +183,11 @@ class HomeScreen extends StatelessWidget {
               ),
               itemCount: featureItems.length,
               itemBuilder: (context, index) {
-                return _FeatureCard(item: featureItems[index]);
+                return _FeatureCard(item: featureItems[index], index: index);
               },
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
           SectionCard(
             title: context.tr('assessmentStatus'),
             icon: Icons.assignment_turned_in_outlined,
@@ -160,46 +221,97 @@ class HomeScreen extends StatelessWidget {
             icon: Icons.event_note_outlined,
             child: appState.latestBooking == null
                 ? Text(context.tr('noBookingYet'))
-                : Column(
-                    children: [
-                      _BookingRow(
-                        label: context.tr('bookingType'),
-                        value: _sessionTypeLabel(
-                          context,
-                          appState.latestBooking!['sessionType'],
+                : Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: theme.colorScheme.secondary.withValues(
+                          alpha: 0.1,
                         ),
                       ),
-                      const SizedBox(height: 10),
-                      _BookingRow(
-                        label: context.tr('bookingDate'),
-                        value: appState.latestBooking!['preferredDate'] ?? '-',
-                      ),
-                      const SizedBox(height: 10),
-                      _BookingRow(
-                        label: context.tr('bookingPhone'),
-                        value: appState.latestBooking!['phone'] ?? '-',
-                      ),
-                      if ((appState.latestBooking!['message'] ?? '').isNotEmpty)
-                        ...[
-                          const SizedBox(height: 10),
+                    ),
+                    child: Column(
+                      children: [
+                        _BookingRow(
+                          icon: Icons.category_outlined,
+                          label: context.tr('bookingType'),
+                          value: _sessionTypeLabel(
+                            context,
+                            appState.latestBooking!['sessionType'],
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(height: 1, thickness: 0.5),
+                        ),
+                        _BookingRow(
+                          icon: Icons.calendar_today_outlined,
+                          label: context.tr('bookingDate'),
+                          value:
+                              appState.latestBooking!['preferredDate'] ?? '-',
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Divider(height: 1, thickness: 0.5),
+                        ),
+                        _BookingRow(
+                          icon: Icons.phone_outlined,
+                          label: context.tr('bookingPhone'),
+                          value: appState.latestBooking!['phone'] ?? '-',
+                        ),
+                        if ((appState.latestBooking!['sendStatus'] ?? '')
+                            .isNotEmpty) ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(height: 1, thickness: 0.5),
+                          ),
                           _BookingRow(
+                            icon: Icons.send_time_extension_outlined,
+                            label: context.tr('bookingStatus'),
+                            value: _submissionStatusLabel(
+                              context,
+                              appState.latestBooking!['sendStatus'],
+                            ),
+                          ),
+                        ],
+                        if ((appState.latestBooking!['message'] ?? '')
+                            .isNotEmpty) ...[
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(height: 1, thickness: 0.5),
+                          ),
+                          _BookingRow(
+                            icon: Icons.chat_bubble_outline_rounded,
                             label: context.tr('bookingMessage'),
                             value: appState.latestBooking!['message']!,
                           ),
                         ],
-                      const SizedBox(height: 16),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: OutlinedButton.icon(
-                          onPressed: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.bookingHistory,
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: () => Navigator.pushNamed(
+                              context,
+                              AppRoutes.bookingHistory,
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(
+                              Icons.open_in_new_rounded,
+                              size: 18,
+                            ),
+                            label: Text(context.tr('viewBookingHistory')),
                           ),
-                          icon: const Icon(Icons.open_in_new_rounded),
-                          label: Text(context.tr('viewBookingHistory')),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
           ),
         ],
@@ -224,6 +336,16 @@ class HomeScreen extends StatelessWidget {
       _ => '-',
     };
   }
+
+  String _submissionStatusLabel(BuildContext context, String? value) {
+    return switch (value) {
+      'whatsapp' => context.tr('bookingStatusWhatsapp'),
+      'sms' => context.tr('bookingStatusSms'),
+      'call' => context.tr('bookingStatusCall'),
+      'failed' => context.tr('bookingStatusFailed'),
+      _ => '-',
+    };
+  }
 }
 
 class _FeatureItem {
@@ -243,61 +365,100 @@ class _FeatureItem {
 }
 
 class _FeatureCard extends StatelessWidget {
-  const _FeatureCard({required this.item});
+  const _FeatureCard({required this.item, required this.index});
 
   final _FeatureItem item;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorList = [
+      Colors.indigo,
+      Colors.teal,
+      Colors.orange,
+      Colors.blueGrey,
+    ];
+    final baseColor = colorList[index % colorList.length];
+
     final foreground = item.enabled
         ? theme.colorScheme.onSurface
         : theme.colorScheme.onSurfaceVariant;
-    final iconColor = item.enabled
-        ? theme.colorScheme.primary
-        : theme.colorScheme.outline;
 
-    return Card(
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: item.enabled ? item.onPressed : null,
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(item.icon, color: iconColor),
-                  const Spacer(),
-                  Icon(
-                    item.enabled
-                        ? Icons.arrow_forward_rounded
-                        : Icons.lock_outline_rounded,
-                    size: 18,
-                    color: iconColor,
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Text(
-                item.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: foreground,
+    final bgColor = item.enabled
+        ? baseColor.withValues(alpha: 0.08)
+        : theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4);
+
+    final iconBgColor = item.enabled
+        ? baseColor.withValues(alpha: 0.12)
+        : theme.colorScheme.surface;
+
+    final iconColor = item.enabled ? baseColor : theme.colorScheme.outline;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: item.enabled
+              ? baseColor.withValues(alpha: 0.1)
+              : Colors.transparent,
+          width: 1,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: item.enabled ? item.onPressed : null,
+          borderRadius: BorderRadius.circular(24),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: iconBgColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(item.icon, color: iconColor, size: 22),
+                    ),
+                    const Spacer(),
+                    if (!item.enabled)
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        size: 18,
+                        color: theme.colorScheme.outline,
+                      ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                item.subtitle,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall?.copyWith(color: foreground),
-              ),
-            ],
+                const Spacer(),
+                Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    color: foreground,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  item.subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: foreground.withValues(alpha: 0.65),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -315,45 +476,112 @@ class _StatusRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Row(
-      children: [
-        Icon(
-          ready ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-          size: 20,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: ready
+            ? theme.colorScheme.primary.withValues(alpha: 0.04)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
           color: ready
-              ? theme.colorScheme.primary
-              : theme.colorScheme.outline,
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
+              : Colors.transparent,
         ),
-        const SizedBox(width: 10),
-        Expanded(child: Text(label)),
-        Text(
-          ready ? context.tr('completed') : context.tr('pending'),
-          style: theme.textTheme.labelLarge?.copyWith(
+      ),
+      child: Row(
+        children: [
+          Icon(
+            ready
+                ? Icons.check_circle_rounded
+                : Icons.radio_button_unchecked_rounded,
+            size: 22,
             color: ready
                 ? theme.colorScheme.primary
-                : theme.colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w700,
+                : theme.colorScheme.outline.withValues(alpha: 0.5),
           ),
-        ),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: ready ? FontWeight.w700 : FontWeight.w500,
+                color: ready
+                    ? theme.colorScheme.onSurface
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: ready
+                  ? theme.colorScheme.primary.withValues(alpha: 0.1)
+                  : theme.colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.5,
+                    ),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              ready ? context.tr('completed') : context.tr('pending'),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: ready
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w900,
+                fontSize: 10,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _BookingRow extends StatelessWidget {
-  const _BookingRow({required this.label, required this.value});
+  const _BookingRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
 
+  final IconData icon;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(width: 110, child: Text(label)),
-        const SizedBox(width: 10),
-        Expanded(child: Text(value)),
+        Icon(
+          icon,
+          size: 16,
+          color: theme.colorScheme.secondary.withValues(alpha: 0.7),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 90,
+          child: Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
+          ),
+        ),
       ],
     );
   }

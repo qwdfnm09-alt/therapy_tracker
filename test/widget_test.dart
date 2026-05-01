@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:premarital_match/app.dart';
 import 'package:premarital_match/data/local/local_storage_service.dart';
@@ -10,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('shows splash then navigates to home screen', (
+  testWidgets('shows welcome then navigates to home screen', (
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -23,10 +22,11 @@ void main() {
       ),
     );
 
-    expect(find.text('Taalof'), findsOneWidget);
-    expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
+    expect(find.text('Start Usage'), findsOneWidget);
 
-    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.text('Start Usage'));
+    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump(const Duration(milliseconds: 900));
     await tester.pumpAndSettle();
 
     expect(find.text('Choose the feature you want to open'), findsOneWidget);
@@ -105,86 +105,181 @@ void main() {
     expect(appState.result, isNull);
   });
 
-  test('builds richer personality profile insights in compatibility result', () async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-    final answersA = {
-      for (final question in compatibilityQuestions) question.id: 5,
-    };
-    final answersB = {
-      for (final question in compatibilityQuestions) question.id: 4,
-    };
+  test(
+    'builds richer personality profile insights in compatibility result',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+      final answersA = {
+        for (final question in compatibilityQuestions) question.id: 5,
+      };
+      final answersB = {
+        for (final question in compatibilityQuestions) question.id: 4,
+      };
 
-    await appState.saveProfile(
-      ParticipantSlot.userA,
-      ParticipantProfile(
-        name: 'A',
-        age: 26,
-        job: 'Engineer',
-        education: 'College',
-        answers: answersA,
-      ),
-    );
-    await appState.saveProfile(
-      ParticipantSlot.userB,
-      ParticipantProfile(
-        name: 'B',
-        age: 25,
-        job: 'Designer',
-        education: 'College',
-        answers: answersB,
-      ),
-    );
+      await appState.saveProfile(
+        ParticipantSlot.userA,
+        ParticipantProfile(
+          name: 'A',
+          age: 26,
+          job: 'Engineer',
+          education: 'College',
+          answers: answersA,
+        ),
+      );
+      await appState.saveProfile(
+        ParticipantSlot.userB,
+        ParticipantProfile(
+          name: 'B',
+          age: 25,
+          job: 'Designer',
+          education: 'College',
+          answers: answersB,
+        ),
+      );
 
-    expect(await appState.calculateCompatibility(), isTrue);
-    expect(appState.result!.partnerArchetypes['userA'], isNotEmpty);
-    expect(appState.result!.partnerArchetypes['userB'], isNotEmpty);
-    expect(appState.result!.partnerProfiles['userA'], isNotEmpty);
-    expect(appState.result!.partnerProfiles['userB'], isNotEmpty);
-    expect(appState.result!.relationshipDynamics, isNotEmpty);
-  });
+      expect(await appState.calculateCompatibility(), isTrue);
+      expect(appState.result!.partnerArchetypes['userA'], isNotEmpty);
+      expect(appState.result!.partnerArchetypes['userB'], isNotEmpty);
+      expect(appState.result!.partnerProfiles['userA'], isNotEmpty);
+      expect(appState.result!.partnerProfiles['userB'], isNotEmpty);
+      expect(appState.result!.relationshipDynamics, isNotEmpty);
+    },
+  );
 
-  test('branching questions appear and prune answers when trigger changes', () async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
+  test(
+    'critical regulation weaknesses reduce readiness and trigger readiness support',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+      final answersA = {
+        for (final question in compatibilityQuestions) question.id: 4,
+      };
+      final answersB = {
+        for (final question in compatibilityQuestions) question.id: 4,
+      };
 
-    await appState.saveProfile(
-      ParticipantSlot.userA,
-      const ParticipantProfile(
-        name: 'A',
-        age: 25,
-        job: 'Engineer',
-        education: 'College',
-        answers: {},
-      ),
-    );
-    await appState.saveProfile(
-      ParticipantSlot.userB,
-      const ParticipantProfile(
-        name: 'B',
-        age: 24,
-        job: 'Designer',
-        education: 'College',
-        answers: {},
-      ),
-    );
+      answersA['anger_pause'] = 1;
+      answersA['anger_repair'] = 1;
+      answersA['emotion_self_awareness'] = 2;
+      answersA['responsibility_commitment'] = 2;
 
-    final initialCount = appState.totalQuestionCount;
-    await appState.updateAnswer(ParticipantSlot.userA, 'anger_pause', 2);
-    expect(appState.totalQuestionCount, greaterThan(initialCount));
+      await appState.saveProfile(
+        ParticipantSlot.userA,
+        ParticipantProfile(
+          name: 'A',
+          age: 26,
+          job: 'Engineer',
+          education: 'College',
+          answers: answersA,
+        ),
+      );
+      await appState.saveProfile(
+        ParticipantSlot.userB,
+        ParticipantProfile(
+          name: 'B',
+          age: 25,
+          job: 'Designer',
+          education: 'College',
+          answers: answersB,
+        ),
+      );
 
-    await appState.updateAnswer(
-      ParticipantSlot.userA,
-      'anger_escalation',
-      4,
-    );
-    expect(appState.userA!.answers.containsKey('anger_escalation'), isTrue);
+      expect(await appState.calculateCompatibility(), isTrue);
+      expect(
+        appState.result!.marriageReadinessScore,
+        lessThan(appState.result!.compatibilityPercentage),
+      );
+      expect(appState.result!.riskAreas, contains('risk:angerManagement'));
+      expect(
+        appState.result!.suggestedSessions,
+        contains('session:individualReadiness'),
+      );
+    },
+  );
 
-    await appState.updateAnswer(ParticipantSlot.userA, 'anger_pause', 4);
-    expect(appState.userA!.answers.containsKey('anger_escalation'), isFalse);
-  });
+  test(
+    'stable high-quality answers avoid risk flags and keep alignment coaching only',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+      final answers = {
+        for (final question in compatibilityQuestions) question.id: 4,
+      };
+
+      await appState.saveProfile(
+        ParticipantSlot.userA,
+        ParticipantProfile(
+          name: 'A',
+          age: 26,
+          job: 'Engineer',
+          education: 'College',
+          answers: answers,
+        ),
+      );
+      await appState.saveProfile(
+        ParticipantSlot.userB,
+        ParticipantProfile(
+          name: 'B',
+          age: 25,
+          job: 'Designer',
+          education: 'College',
+          answers: answers,
+        ),
+      );
+
+      expect(await appState.calculateCompatibility(), isTrue);
+      expect(appState.result!.riskAreas, contains('risk:none'));
+      expect(appState.result!.suggestedSessions, contains('session:alignment'));
+      expect(
+        appState.result!.compatibilityPercentage,
+        greaterThanOrEqualTo(80),
+      );
+    },
+  );
+
+  test(
+    'branching questions appear and prune answers when trigger changes',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+
+      await appState.saveProfile(
+        ParticipantSlot.userA,
+        const ParticipantProfile(
+          name: 'A',
+          age: 25,
+          job: 'Engineer',
+          education: 'College',
+          answers: {},
+        ),
+      );
+      await appState.saveProfile(
+        ParticipantSlot.userB,
+        const ParticipantProfile(
+          name: 'B',
+          age: 24,
+          job: 'Designer',
+          education: 'College',
+          answers: {},
+        ),
+      );
+
+      final initialCount = appState.totalQuestionCount;
+      await appState.updateAnswer(ParticipantSlot.userA, 'anger_pause', 2);
+      expect(appState.totalQuestionCount, greaterThan(initialCount));
+
+      await appState.updateAnswer(ParticipantSlot.userA, 'anger_escalation', 4);
+      expect(appState.userA!.answers.containsKey('anger_escalation'), isTrue);
+
+      await appState.updateAnswer(ParticipantSlot.userA, 'anger_pause', 4);
+      expect(appState.userA!.answers.containsKey('anger_escalation'), isFalse);
+    },
+  );
 
   test('loads latest booking from storage and updates app state', () async {
     SharedPreferences.setMockInitialValues({});
@@ -236,4 +331,23 @@ void main() {
     expect(reloaded.bookingHistory, hasLength(2));
     expect(reloaded.bookingHistory.first['sessionType'], 'coaching');
   });
+
+  test(
+    'persists personality stage index between app state instances',
+    () async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+
+      await appState.setPersonalityStageIndex(3);
+
+      final reloaded = AppState(storage)..initialize();
+      expect(reloaded.personalityStageIndex, 3);
+
+      await reloaded.clearAssessment();
+
+      final cleared = AppState(storage)..initialize();
+      expect(cleared.personalityStageIndex, 0);
+    },
+  );
 }

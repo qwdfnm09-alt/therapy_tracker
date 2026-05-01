@@ -1,5 +1,5 @@
 class AppRoutes {
-  static const splash = '/';
+  static const welcome = '/';
   static const home = '/home';
   static const userAForm = '/user-a';
   static const userBForm = '/user-b';

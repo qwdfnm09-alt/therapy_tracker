@@ -9,6 +9,7 @@ class AppStrings {
       'appName': 'Taalof',
       'tagline': 'Marriage compatibility and family counseling',
       'startAssessment': 'Start assessment',
+      'startUsage': 'Start Usage',
       'continueAssessment': 'Continue assessment',
       'settings': 'Settings',
       'welcomeTitle': 'Build a clearer marriage decision',
@@ -31,6 +32,22 @@ class AppStrings {
       'bookingType': 'Session type',
       'bookingPhone': 'Phone',
       'bookingMessage': 'Message',
+      'clinicPhone': 'Clinic phone',
+      'bookingStatus': 'Send status',
+      'bookingRecommendation': 'Recommendation',
+      'bookingResultVerdict': 'Result verdict',
+      'recommendedSessionTitle': 'Recommended session from your result',
+      'bookRecommendedSession': 'Book recommended session',
+      'recommendedReasonIndividual':
+          'The current result suggests that individual readiness needs deeper review before any fast commitment.',
+      'recommendedReasonFamily':
+          'The current result points to family-boundary pressure that fits a family consultation best.',
+      'recommendedReasonPlanning':
+          'The current result points to expectation and planning gaps that fit a coaching session well.',
+      'recommendedReasonCommunication':
+          'The current result shows communication pressure that will benefit from a guided coaching conversation.',
+      'recommendedReasonAlignment':
+          'The current result mainly needs one alignment-focused session to confirm expectations clearly.',
       'viewBookingDetails': 'View booking details',
       'viewBookingHistory': 'View booking history',
       'createdAt': 'Created at',
@@ -56,9 +73,37 @@ class AppStrings {
       'resumePersonalityJourney': 'Resume personality journey',
       'restartPersonalityJourney': 'Restart from beginning',
       'stageProgress': 'Stage progress',
+      'questionProgress': 'Question progress',
+      'questionOfStage': 'Question {current} of {total}',
+      'answerBothUsersPrompt':
+          'Answer for both people before moving through the stage smoothly.',
+      'questionAwaitingAnswer':
+          'This question is still waiting for one or both answers.',
+      'questionReadyToAdvance': 'Both answers are set. You can keep moving.',
       'previousStage': 'Previous',
       'nextStage': 'Next',
+      'previousQuestion': 'Previous question',
+      'nextQuestion': 'Next question',
+      'continueToNextStage': 'Next stage',
+      'reviewPreviousStage': 'Previous stage',
       'stageComplete': 'This stage is complete',
+      'stageInsight': 'Stage insight',
+      'stageInsightPrompt':
+          'This stage helps reveal how both people handle this part of marriage in real life.',
+      'stageInsightStrong':
+          'The answers here already suggest a stable rhythm between both people.',
+      'stageInsightGap':
+          'A visible gap is forming here. This is not fatal, but it does need an explicit agreement.',
+      'stageInsightMixed':
+          'This area shows partial alignment. The next discussion matters more than the score alone.',
+      'midJourneyInsightTitle': 'What we are seeing so far',
+      'midJourneyStrong':
+          'Across {stages}, the answers suggest a naturally compatible rhythm so far.',
+      'midJourneyGap':
+          'Across {stages}, a visible difference is emerging and needs direct conversation.',
+      'midJourneyMixed':
+          'Across {stages}, there is partial alignment with a few topics that need clearer expectations.',
+      'midJourneyContinue': 'Continue journey',
       'adaptiveFocusTitle': 'Adaptive focus',
       'adaptiveStagePlanning': 'Planning under change',
       'adaptiveStageAnger': 'Escalation control',
@@ -70,11 +115,87 @@ class AppStrings {
       'relationshipDynamics': 'Relationship dynamics',
       'personalityProfile': 'Personality profile',
       'archetypeSummary': 'Archetype summary',
+      'narrativeSummary': 'Narrative summary',
       'personalityMap': 'Visual personality map',
+      'comparisonLens': 'Comparison lens',
+      'keyTakeaways': 'Key takeaways',
+      'relationshipPulse': 'Relationship pulse',
+      'watchpoint': 'Watchpoint',
+      'advantage': 'Advantage',
+      'nextStepTitle': 'Recommended next step',
+      'discussionTopicsTitle': 'Topics to discuss before engagement',
+      'retakeLater': 'Review answers again',
+      'nextStepCounselorFirst':
+          'A guided counseling session should come before any fast commitment decision.',
+      'nextStepGuidedDiscussion':
+          'Hold a structured conversation around the main pressure points before moving forward.',
+      'nextStepAlignment':
+          'Use one focused pre-marriage conversation to confirm expectations and preserve the current alignment.',
+      'topicConflictRepair':
+          'How each person slows conflict down and repairs trust after tension.',
+      'topicFamilyBoundaries':
+          'How boundaries with both families will be set and protected.',
+      'topicMoneyPlanning':
+          'How budgeting, saving, and daily spending decisions will be shared.',
+      'topicFutureTiming':
+          'How children, work priorities, and timing expectations will be negotiated.',
+      'topicCommunicationRhythm':
+          'How often emotional check-ins and direct conversations are needed.',
+      'topicHouseholdResponsibility':
+          'How promises, roles, and daily responsibilities will be divided fairly.',
+      'comparisonClose': 'Both people are close here.',
+      'comparisonGapLight':
+          'This difference looks manageable and may even complement the relationship.',
+      'comparisonGapStrong':
+          'This difference is strong enough to need explicit agreement before pressure rises.',
+      'leanEnergyHigh': 'leans more social and externally energized',
+      'leanEnergyLow': 'leans more quiet and internally recharged',
+      'leanStructureHigh': 'leans more structured and plan-oriented',
+      'leanStructureLow': 'leans more flexible and open-ended',
+      'leanEmotionHigh': 'shows clearer emotional naming and expression',
+      'leanEmotionLow': 'needs more time to identify and express feelings',
+      'leanConflictHigh': 'stays steadier during conflict',
+      'leanConflictLow': 'reacts faster under pressure',
+      'heroSummaryLead': 'Overall read',
       'mapEnergy': 'Energy style',
       'mapStructure': 'Structure style',
       'mapEmotion': 'Emotional clarity',
       'mapConflict': 'Conflict regulation',
+      'narrativeCompatibilityHigh':
+          'The overall pattern points to strong compatibility with a stable base for marriage.',
+      'narrativeCompatibilityMid':
+          'The relationship looks workable, with clear strengths and a few areas that need deliberate agreement.',
+      'narrativeCompatibilityLow':
+          'The current pattern shows fragile compatibility and needs slower, more structured discussion.',
+      'narrativeReadinessHigh':
+          'Marriage readiness is also strong, which suggests the pair can carry responsibility with reasonable steadiness.',
+      'narrativeReadinessMid':
+          'Marriage readiness is moderate, so the relationship may benefit from a bit more preparation before a final decision.',
+      'narrativeReadinessLow':
+          'Marriage readiness is below the safer range, so pressure points should be reviewed before commitment.',
+      'narrativeArchetypeLead': 'Their current archetypes read as',
+      'narrativeDynamicLead': 'In practice, the relationship tends to show',
+      'narrativeRiskLead': 'The main pressure area right now is',
+      'narrativeStrengthLead': 'The clearest strength right now is',
+      'narrativeSupportLead':
+          'A guided conversation around these patterns would likely make the result more dependable.',
+      'verdictTitle': 'Relationship verdict',
+      'verdictStrong': 'Strong base',
+      'verdictWorkable': 'Promising with discussion',
+      'verdictFragile': 'Needs slower discussion',
+      'verdictStrongBody':
+          'The relationship shows a solid base, with differences that look manageable if expectations stay explicit.',
+      'verdictWorkableBody':
+          'The relationship has real potential, but several patterns should be discussed before decisions get serious.',
+      'verdictFragileBody':
+          'The current pattern needs slower and more structured conversation before a confident commitment.',
+      'whatToDiscussNow': 'What to discuss now',
+      'topStrengthNow': 'Top strength now',
+      'finalRevealTitle': 'Ready for the final readout',
+      'finalRevealBody':
+          'You have completed the full journey. The next step will turn these answers into archetypes, a compatibility map, and the clearest discussion points.',
+      'finalRevealPrimary': 'Reveal compatibility result',
+      'reviewLastQuestion': 'Review last question',
       'completed': 'Completed',
       'pending': 'Pending',
       'userA': 'User A',
@@ -83,6 +204,28 @@ class AppStrings {
       'age': 'Age',
       'job': 'Job',
       'education': 'Education',
+      'profileSetupTitle': 'Build the personal profile first',
+      'profileSetupBody':
+          'This part sets the context for the personality journey, so keep it clean and realistic.',
+      'profileProgress': 'Profile progress',
+      'profileCompleteFields': '{current} of {total} fields complete',
+      'identitySection': 'Identity basics',
+      'identitySectionBody':
+          'These details anchor the profile before the deeper compatibility reading starts.',
+      'contextSection': 'Daily life context',
+      'contextSectionBody':
+          'Work and education help frame routines, pressure, and expectations.',
+      'profileNextUserB':
+          'After saving this profile, you will move to the second person.',
+      'profileNextTest':
+          'After saving this profile, you will move directly into the personality journey.',
+      'nameHint': 'How should this person appear in the report?',
+      'ageHint': '18+',
+      'jobHint': 'Current role or main work',
+      'educationHint': 'Highest completed education',
+      'profileReady': 'Profile is ready for the next step.',
+      'profileNeedsMore':
+          'Complete the remaining fields to unlock the next step smoothly.',
       'next': 'Next',
       'saveContinue': 'Save and continue',
       'personalityTest': 'Personality test',
@@ -105,6 +248,13 @@ class AppStrings {
       'message': 'Message',
       'confirmBooking': 'Confirm booking',
       'bookingSaved': 'Booking request saved locally',
+      'bookingSent': 'Booking request was opened for sending to the clinic.',
+      'bookingSendFailed':
+          'The booking was saved, but the phone could not open the sending app.',
+      'bookingStatusWhatsapp': 'Opened in WhatsApp',
+      'bookingStatusSms': 'Opened in SMS',
+      'bookingStatusCall': 'Opened phone call',
+      'bookingStatusFailed': 'Saved locally only',
       'pickDate': 'Pick date',
       'appearance': 'Appearance',
       'language': 'Language',
@@ -131,7 +281,8 @@ class AppStrings {
       'categoryFamilyBoundaries': 'Family boundaries',
       'categoryFutureGoals': 'Future goals',
       'categoryResponsibility': 'Responsibility',
-      'noHighRisk': 'No high-risk area detected by the current scoring profile.',
+      'noHighRisk':
+          'No high-risk area detected by the current scoring profile.',
       'noStrongAlignmentYet':
           'Shared effort is visible, but no category is strongly aligned yet.',
       'alignmentLabel': 'alignment',
@@ -152,9 +303,9 @@ class AppStrings {
       'sessionFamilyBoundaries': 'Family boundaries consultation',
       'sessionFuturePlanning':
           'Future planning and financial expectations session',
-      'sessionIndividualReadiness':
-          'Individual psychological readiness review',
-      'sessionAlignment': 'One pre-marriage coaching session for final alignment',
+      'sessionIndividualReadiness': 'Individual psychological readiness review',
+      'sessionAlignment':
+          'One pre-marriage coaching session for final alignment',
       'profileEnergyOutgoing':
           'Gets energy from people, movement, and visible interaction.',
       'profileEnergyReserved':
@@ -206,6 +357,7 @@ class AppStrings {
       'appName': 'Taalof',
       'tagline': 'توافق الزواج والاستشارات الأسرية',
       'startAssessment': 'ابدأ التقييم',
+      'startUsage': 'ابدأ الاستخدام',
       'continueAssessment': 'استكمال التقييم',
       'settings': 'الإعدادات',
       'welcomeTitle': 'اتخذ قرار زواج أوضح',
@@ -228,6 +380,22 @@ class AppStrings {
       'bookingType': 'نوع الجلسة',
       'bookingPhone': 'الهاتف',
       'bookingMessage': 'الرسالة',
+      'clinicPhone': 'رقم العيادة',
+      'bookingStatus': 'حالة الإرسال',
+      'bookingRecommendation': 'سبب التوصية',
+      'bookingResultVerdict': 'الحكم العام للنتيجة',
+      'recommendedSessionTitle': 'الجلسة الموصى بها من نتيجتك',
+      'bookRecommendedSession': 'احجز الجلسة الموصى بها',
+      'recommendedReasonIndividual':
+          'النتيجة الحالية تشير إلى أن الجاهزية الفردية تحتاج مراجعة أعمق قبل أي التزام سريع.',
+      'recommendedReasonFamily':
+          'النتيجة الحالية تشير إلى ضغط في الحدود الأسرية، وهذا يناسب جلسة استشارة أسرية أكثر.',
+      'recommendedReasonPlanning':
+          'النتيجة الحالية تشير إلى فجوات في التوقعات والتخطيط، وهذا يناسب جلسة تأهيل أو تدريب أكثر.',
+      'recommendedReasonCommunication':
+          'النتيجة الحالية تظهر ضغطًا في التواصل، وسيستفيد من جلسة حوار موجهة.',
+      'recommendedReasonAlignment':
+          'النتيجة الحالية تحتاج أساسًا إلى جلسة واحدة مركزة لتثبيت التوقعات بوضوح.',
       'viewBookingDetails': 'عرض تفاصيل الحجز',
       'viewBookingHistory': 'عرض سجل الحجوزات',
       'createdAt': 'تاريخ الإنشاء',
@@ -253,9 +421,37 @@ class AppStrings {
       'resumePersonalityJourney': 'استكمل رحلة الشخصية',
       'restartPersonalityJourney': 'ابدأ من البداية',
       'stageProgress': 'تقدم المراحل',
+      'questionProgress': 'تقدم الأسئلة',
+      'questionOfStage': 'السؤال {current} من {total}',
+      'answerBothUsersPrompt':
+          'أجب عن السؤال للطرفين حتى تتحرك داخل المرحلة بشكل واضح.',
+      'questionAwaitingAnswer':
+          'هذا السؤال ما زال ينتظر إجابة أحد الطرفين أو كليهما.',
+      'questionReadyToAdvance': 'تمت الإجابتان، ويمكنك المتابعة.',
       'previousStage': 'السابق',
       'nextStage': 'التالي',
+      'previousQuestion': 'السؤال السابق',
+      'nextQuestion': 'السؤال التالي',
+      'continueToNextStage': 'المرحلة التالية',
+      'reviewPreviousStage': 'المرحلة السابقة',
       'stageComplete': 'هذه المرحلة مكتملة',
+      'stageInsight': 'قراءة المرحلة',
+      'stageInsightPrompt':
+          'هذه المرحلة تكشف كيف يتعامل الطرفان مع هذا الجانب من الزواج على أرض الواقع.',
+      'stageInsightStrong':
+          'الإجابات هنا توحي بإيقاع مستقر نسبيًا بين الطرفين.',
+      'stageInsightGap':
+          'يوجد فرق واضح هنا. ليس بالضرورة خطرًا، لكنه يحتاج اتفاقًا صريحًا.',
+      'stageInsightMixed':
+          'هذا الجانب فيه توافق جزئي، والنقاش القادم أهم من الدرجة وحدها.',
+      'midJourneyInsightTitle': 'ما الذي يظهر حتى الآن',
+      'midJourneyStrong':
+          'عبر {stages}، توحي الإجابات حتى الآن بإيقاع متقارب وطبيعي بين الطرفين.',
+      'midJourneyGap':
+          'عبر {stages}، يظهر فرق واضح يحتاج إلى نقاش مباشر وصريح.',
+      'midJourneyMixed':
+          'عبر {stages}، يوجد توافق جزئي مع بعض النقاط التي تحتاج توقعات أوضح.',
+      'midJourneyContinue': 'استكمل الرحلة',
       'adaptiveFocusTitle': 'تركيز متكيف',
       'adaptiveStagePlanning': 'التخطيط وقت التغيير',
       'adaptiveStageAnger': 'التحكم في التصعيد',
@@ -267,11 +463,85 @@ class AppStrings {
       'relationshipDynamics': 'ديناميكية العلاقة',
       'personalityProfile': 'الملف الشخصي',
       'archetypeSummary': 'ملخص النمط',
+      'narrativeSummary': 'الملخص السردي',
       'personalityMap': 'الخريطة البصرية للشخصية',
+      'comparisonLens': 'عدسة المقارنة',
+      'keyTakeaways': 'أهم الخلاصات',
+      'relationshipPulse': 'نبض العلاقة',
+      'watchpoint': 'نقطة تحتاج انتباه',
+      'advantage': 'نقطة تفوق',
+      'nextStepTitle': 'الخطوة الموصى بها',
+      'discussionTopicsTitle': 'موضوعات يجب مناقشتها قبل الارتباط',
+      'retakeLater': 'راجع الإجابات مرة أخرى',
+      'nextStepCounselorFirst':
+          'من الأفضل أن تسبق جلسة إرشاد متخصصة أي قرار ارتباط سريع.',
+      'nextStepGuidedDiscussion':
+          'اعقدا نقاشًا منظمًا حول نقاط الضغط الأساسية قبل التقدم للخطوة التالية.',
+      'nextStepAlignment':
+          'يكفي حوار واحد مركز قبل الزواج لتثبيت التوقعات والحفاظ على الانسجام الحالي.',
+      'topicConflictRepair': 'كيف يهدئ كل طرف الخلاف ويصلح الثقة بعد التوتر.',
+      'topicFamilyBoundaries': 'كيف سيتم وضع الحدود مع العائلتين وحمايتها.',
+      'topicMoneyPlanning':
+          'كيف ستدار الميزانية والادخار والإنفاق اليومي بشكل مشترك.',
+      'topicFutureTiming':
+          'كيف سيتم التفاوض حول الأطفال والعمل وتوقيت الأولويات.',
+      'topicCommunicationRhythm':
+          'كم يحتاج كل طرف من المتابعة العاطفية والحوار المباشر.',
+      'topicHouseholdResponsibility':
+          'كيف ستقسم الوعود والأدوار والمسؤوليات اليومية بعدل.',
+      'comparisonClose': 'الطرفان متقاربان هنا.',
+      'comparisonGapLight':
+          'هذا الفرق يبدو قابلًا للإدارة، وقد يكون مكملًا للعلاقة.',
+      'comparisonGapStrong':
+          'هذا الفرق واضح بما يكفي ليحتاج اتفاقًا صريحًا قبل زيادة الضغوط.',
+      'leanEnergyHigh': 'يميل أكثر للاجتماعية والطاقة الخارجية',
+      'leanEnergyLow': 'يميل أكثر للهدوء واستعادة الطاقة داخليًا',
+      'leanStructureHigh': 'يميل أكثر للنظام والتخطيط',
+      'leanStructureLow': 'يميل أكثر للمرونة وترك الأمور مفتوحة',
+      'leanEmotionHigh': 'لديه وضوح أعلى في تسمية المشاعر والتعبير عنها',
+      'leanEmotionLow': 'يحتاج وقتًا أكبر لفهم المشاعر والتعبير عنها',
+      'leanConflictHigh': 'أكثر ثباتًا وقت الخلاف',
+      'leanConflictLow': 'أسرع في رد الفعل تحت الضغط',
+      'heroSummaryLead': 'القراءة العامة',
       'mapEnergy': 'أسلوب الطاقة',
       'mapStructure': 'أسلوب النظام',
       'mapEmotion': 'الوضوح العاطفي',
       'mapConflict': 'تنظيم الخلاف',
+      'narrativeCompatibilityHigh':
+          'النمط العام يشير إلى توافق قوي مع قاعدة مستقرة نسبيًا للزواج.',
+      'narrativeCompatibilityMid':
+          'العلاقة تبدو قابلة للاستمرار، مع نقاط قوة واضحة وبعض المساحات التي تحتاج اتفاقًا مقصودًا.',
+      'narrativeCompatibilityLow':
+          'النمط الحالي يشير إلى توافق هش ويحتاج إلى نقاش أهدأ وأكثر تنظيمًا.',
+      'narrativeReadinessHigh':
+          'جاهزية الزواج أيضًا قوية، وهذا يوحي بقدرة معقولة على حمل المسؤولية بثبات.',
+      'narrativeReadinessMid':
+          'جاهزية الزواج متوسطة، لذلك قد تستفيد العلاقة من قدر إضافي من التحضير قبل القرار النهائي.',
+      'narrativeReadinessLow':
+          'جاهزية الزواج أقل من النطاق الآمن نسبيًا، لذلك يجب مراجعة نقاط الضغط قبل الالتزام.',
+      'narrativeArchetypeLead': 'النمط الحالي لكل طرف يظهر كالتالي',
+      'narrativeDynamicLead': 'وعمليًا، تميل العلاقة إلى إظهار',
+      'narrativeRiskLead': 'أهم نقطة ضغط حاليًا هي',
+      'narrativeStrengthLead': 'أوضح نقطة قوة حاليًا هي',
+      'narrativeSupportLead':
+          'محادثة موجهة حول هذه الأنماط سترفع موثوقية النتيجة وتوضح القرار أكثر.',
+      'verdictTitle': 'الحكم العام على العلاقة',
+      'verdictStrong': 'قاعدة قوية',
+      'verdictWorkable': 'واعدة مع نقاش',
+      'verdictFragile': 'تحتاج نقاشًا أهدأ',
+      'verdictStrongBody':
+          'العلاقة تظهر قاعدة جيدة، والفروق الحالية تبدو قابلة للإدارة إذا ظلت التوقعات واضحة.',
+      'verdictWorkableBody':
+          'العلاقة لديها قابلية حقيقية، لكن توجد أنماط يجب مناقشتها قبل أن تصبح القرارات أكبر.',
+      'verdictFragileBody':
+          'النمط الحالي يحتاج نقاشًا أهدأ وأكثر تنظيمًا قبل التزام مطمئن.',
+      'whatToDiscussNow': 'ما الذي يجب مناقشته الآن',
+      'topStrengthNow': 'أهم نقطة قوة الآن',
+      'finalRevealTitle': 'جاهزون للقراءة النهائية',
+      'finalRevealBody':
+          'لقد أكملتما الرحلة كاملة. الخطوة التالية ستحول الإجابات إلى أنماط شخصية، وخريطة توافق، وأوضح نقاط للنقاش.',
+      'finalRevealPrimary': 'اكشف نتيجة التوافق',
+      'reviewLastQuestion': 'راجع السؤال الأخير',
       'completed': 'مكتمل',
       'pending': 'قيد الانتظار',
       'userA': 'الشخص الأول',
@@ -280,6 +550,25 @@ class AppStrings {
       'age': 'العمر',
       'job': 'الوظيفة',
       'education': 'التعليم',
+      'profileSetupTitle': 'ابدأ ببناء الملف الشخصي',
+      'profileSetupBody':
+          'هذا الجزء يضع سياق رحلة الشخصية، لذلك من الأفضل أن تكون البيانات واضحة وواقعية.',
+      'profileProgress': 'تقدم الملف الشخصي',
+      'profileCompleteFields': 'اكتمل {current} من {total} حقول',
+      'identitySection': 'البيانات الأساسية',
+      'identitySectionBody':
+          'هذه التفاصيل تثبت هوية الملف قبل أن تبدأ قراءة التوافق الأعمق.',
+      'contextSection': 'سياق الحياة اليومية',
+      'contextSectionBody':
+          'العمل والتعليم يساعدان في فهم الروتين والضغط والتوقعات.',
+      'profileNextUserB': 'بعد حفظ هذا الملف ستنتقل إلى الشخص الثاني.',
+      'profileNextTest': 'بعد حفظ هذا الملف ستدخل مباشرة إلى رحلة الشخصية.',
+      'nameHint': 'كيف تريد أن يظهر هذا الشخص داخل التقرير؟',
+      'ageHint': '18+',
+      'jobHint': 'الوظيفة الحالية أو العمل الأساسي',
+      'educationHint': 'أعلى مستوى تعليمي مكتمل',
+      'profileReady': 'الملف الشخصي جاهز للخطوة التالية.',
+      'profileNeedsMore': 'أكمل الحقول المتبقية لتنتقل للخطوة التالية بسلاسة.',
       'next': 'التالي',
       'saveContinue': 'حفظ ومتابعة',
       'personalityTest': 'اختبار الشخصية',
@@ -302,6 +591,13 @@ class AppStrings {
       'message': 'رسالة',
       'confirmBooking': 'تأكيد الحجز',
       'bookingSaved': 'تم حفظ طلب الحجز محلياً',
+      'bookingSent': 'تم فتح طلب الحجز للإرسال إلى العيادة.',
+      'bookingSendFailed':
+          'تم حفظ الحجز، لكن لم يتمكن الهاتف من فتح تطبيق الإرسال.',
+      'bookingStatusWhatsapp': 'تم فتح واتساب',
+      'bookingStatusSms': 'تم فتح الرسائل',
+      'bookingStatusCall': 'تم فتح الاتصال',
+      'bookingStatusFailed': 'محفوظ محليًا فقط',
       'pickDate': 'اختر التاريخ',
       'appearance': 'المظهر',
       'language': 'اللغة',
@@ -350,36 +646,28 @@ class AppStrings {
       'sessionFuturePlanning': 'جلسة للتخطيط المستقبلي والتوقعات المالية',
       'sessionIndividualReadiness': 'مراجعة فردية للجاهزية النفسية',
       'sessionAlignment': 'جلسة تأهيل قبل الزواج للمراجعة النهائية',
-      'profileEnergyOutgoing':
-          'يستمد طاقته من الناس والحركة والتفاعل الواضح.',
+      'profileEnergyOutgoing': 'يستمد طاقته من الناس والحركة والتفاعل الواضح.',
       'profileEnergyReserved':
           'يستعيد طاقته بشكل أفضل عبر الهدوء وتقليل الكثافة الاجتماعية.',
       'profileEnergyBalanced':
           'يستمتع بالتفاعل الاجتماعي وبالوقت الهادئ أيضًا.',
       'profileStructureStructured':
           'يشعر بالأمان أكثر مع التخطيط والوضوح والنظام.',
-      'profileStructureFlexible':
-          'يفضل المرونة وترك مساحة للتغيير.',
-      'profileStructureBalanced':
-          'يستخدم النظام عند الحاجة بدون جمود زائد.',
-      'profileEmotionAware':
-          'يفهم مشاعره غالبًا ويستطيع التعبير عنها بوضوح.',
-      'profileEmotionGuarded':
-          'قد يحتاج وقتًا أكبر لفهم مشاعره والتعبير عنها.',
+      'profileStructureFlexible': 'يفضل المرونة وترك مساحة للتغيير.',
+      'profileStructureBalanced': 'يستخدم النظام عند الحاجة بدون جمود زائد.',
+      'profileEmotionAware': 'يفهم مشاعره غالبًا ويستطيع التعبير عنها بوضوح.',
+      'profileEmotionGuarded': 'قد يحتاج وقتًا أكبر لفهم مشاعره والتعبير عنها.',
       'profileEmotionGrowing':
           'يمتلك وعيًا جيدًا مع مساحة لتعميق الوضوح العاطفي.',
-      'profileConflictSteady':
-          'يميل إلى تهدئة الخلاف وإصلاح العلاقة.',
-      'profileConflictReactive':
-          'قد يتفاعل بسرعة تحت الضغط قبل أن يهدأ.',
+      'profileConflictSteady': 'يميل إلى تهدئة الخلاف وإصلاح العلاقة.',
+      'profileConflictReactive': 'قد يتفاعل بسرعة تحت الضغط قبل أن يهدأ.',
       'profileConflictDeveloping':
           'عادات الخلاف لديه مختلطة ويمكن تطويرها بالممارسة.',
       'dynamicEnergyAligned':
           'الإيقاع الاجتماعي بينهما متقارب، وهذا يسهل بناء روتين مشترك.',
       'dynamicEnergyBridge':
           'الطاقة الاجتماعية بينهما مختلفة بما يكفي لتحتاج إلى توازن واعٍ.',
-      'dynamicPlanningAligned':
-          'يتعاملان مع التخطيط والنظام بوتيرة متقاربة.',
+      'dynamicPlanningAligned': 'يتعاملان مع التخطيط والنظام بوتيرة متقاربة.',
       'dynamicPlanningBridge':
           'أسلوب التخطيط بينهما مختلف، لذلك يجب الاتفاق على التوقعات مبكرًا.',
       'dynamicRepairStrong':

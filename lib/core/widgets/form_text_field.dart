@@ -10,6 +10,11 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.readOnly = false,
     this.onTap,
+    this.hintText,
+    this.helperText,
+    this.prefixIcon,
+    this.textInputAction,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -19,6 +24,11 @@ class AppTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final bool readOnly;
   final VoidCallback? onTap;
+  final String? hintText;
+  final String? helperText;
+  final IconData? prefixIcon;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +39,14 @@ class AppTextField extends StatelessWidget {
       validator: validator,
       readOnly: readOnly,
       onTap: onTap,
-      decoration: InputDecoration(labelText: label),
+      onChanged: onChanged,
+      textInputAction: textInputAction,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hintText,
+        helperText: helperText,
+        prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
+      ),
     );
   }
 }
