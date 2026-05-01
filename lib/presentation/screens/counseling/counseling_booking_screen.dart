@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/clinic_contact.dart';
@@ -259,10 +260,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       recommendedReason: booking['recommendedReason'],
       resultVerdict: booking['resultVerdict'],
     );
-    await appState.saveBooking({
-      ...booking,
-      'sendStatus': submission.channel,
-    });
+    await appState.saveBooking({...booking, 'sendStatus': submission.channel});
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -273,6 +271,8 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         ),
       ),
     );
+    await _showBookingConfirmation(submission);
+    if (!mounted) return;
     _formKey.currentState?.reset();
     _phoneController.clear();
     _dateController.clear();
@@ -339,6 +339,108 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       _ => '-',
     };
   }
+
+  Future<void> _showBookingConfirmation(
+    BookingSubmissionResult submission,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr('bookingConfirmationTitle'),
+                  style: Theme.of(
+                    sheetContext,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 10),
+                _BookingRow(
+                  label: context.tr('clinicPhone'),
+                  value: clinicPhoneNumber,
+                ),
+                const SizedBox(height: 10),
+                _BookingRow(
+                  label: context.tr('bookingStatus'),
+                  value: _submissionStatusLabel(context, submission.channel),
+                ),
+                const SizedBox(height: 16),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final stackActions = constraints.maxWidth < 460;
+                    final primaryButton = FilledButton.icon(
+                      onPressed: () => Navigator.pop(sheetContext),
+                      icon: const Icon(Icons.check_rounded),
+                      label: Text(context.tr('done')),
+                    );
+                    final secondaryButton = OutlinedButton.icon(
+                      onPressed: () async {
+                        final copiedMessage = context.tr(
+                          'bookingMessageCopied',
+                        );
+                        await Clipboard.setData(
+                          ClipboardData(text: submission.messageText),
+                        );
+                        if (!mounted) return;
+                        messenger.showSnackBar(
+                          SnackBar(content: Text(copiedMessage)),
+                        );
+                      },
+                      icon: const Icon(Icons.copy_all_rounded),
+                      label: Text(context.tr('copyBookingMessage')),
+                    );
+
+                    if (stackActions) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: primaryButton,
+                          ),
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: secondaryButton,
+                          ),
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        Expanded(child: primaryButton),
+                        const SizedBox(width: 12),
+                        Expanded(child: secondaryButton),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      Navigator.pushNamed(context, AppRoutes.bookingHistory);
+                    },
+                    icon: const Icon(Icons.history_rounded),
+                    label: Text(context.tr('openBookingHistory')),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _SessionTile extends StatelessWidget {
@@ -371,13 +473,40 @@ class _BookingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(width: 110, child: Text(label)),
-        const SizedBox(width: 10),
-        Expanded(child: Text(value)),
-      ],
+    final theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 420;
+        final labelText = Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        );
+        final valueText = Text(
+          value,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        );
+
+        if (compact) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [labelText, const SizedBox(height: 4), valueText],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(width: 112, child: labelText),
+            const SizedBox(width: 10),
+            Expanded(child: valueText),
+          ],
+        );
+      },
     );
   }
 }

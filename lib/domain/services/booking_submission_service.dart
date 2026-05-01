@@ -3,10 +3,15 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/clinic_contact.dart';
 
 class BookingSubmissionResult {
-  const BookingSubmissionResult({required this.success, required this.channel});
+  const BookingSubmissionResult({
+    required this.success,
+    required this.channel,
+    required this.messageText,
+  });
 
   final bool success;
   final String channel;
+  final String messageText;
 }
 
 class BookingSubmissionService {
@@ -31,7 +36,11 @@ class BookingSubmissionService {
       'https://wa.me/$clinicWhatsappNumber?text=${Uri.encodeComponent(text)}',
     );
     if (await launchUrl(whatsappUri, mode: LaunchMode.externalApplication)) {
-      return const BookingSubmissionResult(success: true, channel: 'whatsapp');
+      return BookingSubmissionResult(
+        success: true,
+        channel: 'whatsapp',
+        messageText: text,
+      );
     }
 
     final smsUri = Uri(
@@ -40,14 +49,26 @@ class BookingSubmissionService {
       queryParameters: {'body': text},
     );
     if (await launchUrl(smsUri, mode: LaunchMode.externalApplication)) {
-      return const BookingSubmissionResult(success: true, channel: 'sms');
+      return BookingSubmissionResult(
+        success: true,
+        channel: 'sms',
+        messageText: text,
+      );
     }
 
     final telUri = Uri(scheme: 'tel', path: clinicPhoneNumber);
     if (await launchUrl(telUri, mode: LaunchMode.externalApplication)) {
-      return const BookingSubmissionResult(success: true, channel: 'call');
+      return BookingSubmissionResult(
+        success: true,
+        channel: 'call',
+        messageText: text,
+      );
     }
-    return const BookingSubmissionResult(success: false, channel: 'failed');
+    return BookingSubmissionResult(
+      success: false,
+      channel: 'failed',
+      messageText: text,
+    );
   }
 
   String _buildMessage({

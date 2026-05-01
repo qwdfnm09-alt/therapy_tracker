@@ -16,6 +16,8 @@ dependencies:
   provider: ^6.1.5+1
   shared_preferences: ^2.5.5
   url_launcher: ^6.3.1
+  pdf: ^3.11.1
+  printing: ^5.13.4
   flutter_localizations:
     sdk: flutter
 
@@ -32,6 +34,8 @@ flutter:
   generate: true
   assets:
     - assets/images/app_logo.png
+    - assets/fonts/arial.ttf
+    - assets/fonts/arialbd.ttf
 
 
 flutter_launcher_icons:

@@ -236,49 +236,63 @@ class _PersonalityTestScreenState extends State<PersonalityTestScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed:
-                      _previousActionEnabled(
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stackActions = constraints.maxWidth < 460;
+              final previousButton = OutlinedButton.icon(
+                onPressed:
+                    _previousActionEnabled(
+                      displayStageIndex,
+                      questionIndex,
+                      showFinalReveal,
+                    )
+                    ? () => _goPrevious(
+                        context.read<AppState>(),
                         displayStageIndex,
                         questionIndex,
+                        currentStage,
                         showFinalReveal,
                       )
-                      ? () => _goPrevious(
-                          context.read<AppState>(),
-                          displayStageIndex,
-                          questionIndex,
-                          currentStage,
-                          showFinalReveal,
-                        )
-                      : null,
-                  icon: const Icon(Icons.arrow_back_rounded),
-                  label: Text(
-                    showFinalReveal
-                        ? context.tr('reviewLastQuestion')
-                        : questionIndex > 0
-                        ? context.tr('previousQuestion')
-                        : context.tr('reviewPreviousStage'),
-                  ),
+                    : null,
+                icon: const Icon(Icons.arrow_back_rounded),
+                label: Text(
+                  showFinalReveal
+                      ? context.tr('reviewLastQuestion')
+                      : questionIndex > 0
+                      ? context.tr('previousQuestion')
+                      : context.tr('reviewPreviousStage'),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildForwardButton(
-                  context,
-                  appState,
-                  stages,
-                  displayStageIndex,
-                  currentStage,
-                  questionIndex,
-                  currentAnswered,
-                  showMidJourneyInsight,
-                  showFinalReveal,
-                ),
-              ),
-            ],
+              );
+              final forwardButton = _buildForwardButton(
+                context,
+                appState,
+                stages,
+                displayStageIndex,
+                currentStage,
+                questionIndex,
+                currentAnswered,
+                showMidJourneyInsight,
+                showFinalReveal,
+              );
+
+              if (stackActions) {
+                return Column(
+                  children: [
+                    SizedBox(width: double.infinity, child: previousButton),
+                    const SizedBox(height: 10),
+                    SizedBox(width: double.infinity, child: forwardButton),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: previousButton),
+                  const SizedBox(width: 12),
+                  Expanded(child: forwardButton),
+                ],
+              );
+            },
           ),
           const SizedBox(height: 12),
           if (_isStageComplete(appState, currentStage))
@@ -969,25 +983,47 @@ class _ParticipantChoiceRow extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Row(
-          children: [
-            Expanded(child: Text(lowAnchor, style: theme.textTheme.bodySmall)),
-            const SizedBox(width: 8),
-            Text(
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 420;
+            final scoreText = Text(
               value == null ? '-/5' : '$value/5',
               style: theme.textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                highAnchor,
-                textAlign: TextAlign.end,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ],
+            );
+
+            if (compact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(lowAnchor, style: theme.textTheme.bodySmall),
+                  const SizedBox(height: 4),
+                  scoreText,
+                  const SizedBox(height: 4),
+                  Text(highAnchor, style: theme.textTheme.bodySmall),
+                ],
+              );
+            }
+
+            return Row(
+              children: [
+                Expanded(
+                  child: Text(lowAnchor, style: theme.textTheme.bodySmall),
+                ),
+                const SizedBox(width: 8),
+                scoreText,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    highAnchor,
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 8),
         Wrap(

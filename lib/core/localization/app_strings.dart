@@ -38,6 +38,9 @@ class AppStrings {
       'bookingResultVerdict': 'Result verdict',
       'recommendedSessionTitle': 'Recommended session from your result',
       'bookRecommendedSession': 'Book recommended session',
+      'saveAsPdf': 'Save as PDF',
+      'generatedAt': 'Generated at',
+      'pdfExportFailed': 'The PDF report could not be prepared.',
       'recommendedReasonIndividual':
           'The current result suggests that individual readiness needs deeper review before any fast commitment.',
       'recommendedReasonFamily':
@@ -255,6 +258,11 @@ class AppStrings {
       'bookingStatusSms': 'Opened in SMS',
       'bookingStatusCall': 'Opened phone call',
       'bookingStatusFailed': 'Saved locally only',
+      'bookingConfirmationTitle': 'Booking request ready',
+      'copyBookingMessage': 'Copy request text',
+      'bookingMessageCopied': 'Booking request text copied.',
+      'openBookingHistory': 'Open booking history',
+      'done': 'Done',
       'pickDate': 'Pick date',
       'appearance': 'Appearance',
       'language': 'Language',
@@ -386,6 +394,9 @@ class AppStrings {
       'bookingResultVerdict': 'الحكم العام للنتيجة',
       'recommendedSessionTitle': 'الجلسة الموصى بها من نتيجتك',
       'bookRecommendedSession': 'احجز الجلسة الموصى بها',
+      'saveAsPdf': 'حفظ كملف PDF',
+      'generatedAt': 'تاريخ التصدير',
+      'pdfExportFailed': 'تعذر تجهيز ملف PDF للنتيجة.',
       'recommendedReasonIndividual':
           'النتيجة الحالية تشير إلى أن الجاهزية الفردية تحتاج مراجعة أعمق قبل أي التزام سريع.',
       'recommendedReasonFamily':
@@ -598,6 +609,11 @@ class AppStrings {
       'bookingStatusSms': 'تم فتح الرسائل',
       'bookingStatusCall': 'تم فتح الاتصال',
       'bookingStatusFailed': 'محفوظ محليًا فقط',
+      'bookingConfirmationTitle': 'طلب الحجز جاهز',
+      'copyBookingMessage': 'انسخ نص الطلب',
+      'bookingMessageCopied': 'تم نسخ نص طلب الحجز.',
+      'openBookingHistory': 'افتح سجل الحجوزات',
+      'done': 'تم',
       'pickDate': 'اختر التاريخ',
       'appearance': 'المظهر',
       'language': 'اللغة',

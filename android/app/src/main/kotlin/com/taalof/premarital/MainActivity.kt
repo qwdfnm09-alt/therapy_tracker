@@ -1,4 +1,4 @@
-package com.example.therapy_tracker
+package com.taalof.premarital
 
 import io.flutter.embedding.android.FlutterActivity
 

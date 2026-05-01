@@ -93,7 +93,6 @@ class HomeScreen extends StatelessWidget {
                             style: theme.textTheme.headlineSmall?.copyWith(
                               color: theme.colorScheme.onPrimary,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: -0.5,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -172,18 +171,26 @@ class HomeScreen extends StatelessWidget {
           SectionCard(
             title: context.tr('quickAccess'),
             icon: Icons.dashboard_outlined,
-            child: GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.08,
-              ),
-              itemCount: featureItems.length,
-              itemBuilder: (context, index) {
-                return _FeatureCard(item: featureItems[index], index: index);
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final useSingleColumn = constraints.maxWidth < 430;
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: useSingleColumn ? 1 : 2,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: useSingleColumn ? 2.15 : 1.08,
+                  ),
+                  itemCount: featureItems.length,
+                  itemBuilder: (context, index) {
+                    return _FeatureCard(
+                      item: featureItems[index],
+                      index: index,
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -227,7 +234,7 @@ class HomeScreen extends StatelessWidget {
                       color: theme.colorScheme.secondaryContainer.withValues(
                         alpha: 0.3,
                       ),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: theme.colorScheme.secondary.withValues(
                           alpha: 0.1,
@@ -443,7 +450,6 @@ class _FeatureCard extends StatelessWidget {
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w900,
                     color: foreground,
-                    letterSpacing: -0.2,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -453,7 +459,7 @@ class _FeatureCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: foreground.withValues(alpha: 0.65),
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -529,7 +535,7 @@ class _StatusRow extends StatelessWidget {
                     ? theme.colorScheme.primary
                     : theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w900,
-                fontSize: 10,
+                fontSize: 11,
               ),
             ),
           ),
@@ -553,36 +559,55 @@ class _BookingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: theme.colorScheme.secondary.withValues(alpha: 0.7),
-        ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: 90,
-          child: Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 420;
+        final labelText = Text(
+          label,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+        );
+        final valueText = Text(
+          value,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: theme.colorScheme.onSecondaryContainer,
           ),
-        ),
-      ],
+        );
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: theme.colorScheme.secondary.withValues(alpha: 0.7),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: compact
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        labelText,
+                        const SizedBox(height: 4),
+                        valueText,
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 94, child: labelText),
+                        const SizedBox(width: 8),
+                        Expanded(child: valueText),
+                      ],
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

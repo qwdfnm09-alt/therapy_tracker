@@ -26,7 +26,13 @@ class AppPage extends StatelessWidget {
               ],
             ),
           ),
-          child: child,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 760),
+              child: child,
+            ),
+          ),
         ),
       ),
     );

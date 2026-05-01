@@ -7,6 +7,7 @@ import '../../../core/widgets/metric_ring.dart';
 import '../../../core/widgets/score_bar.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../domain/models/compatibility_result.dart';
+import '../../../domain/services/compatibility_pdf_export_service.dart';
 import '../../providers/app_state.dart';
 
 class CompatibilityResultScreen extends StatelessWidget {
@@ -303,6 +304,7 @@ class CompatibilityResultScreen extends StatelessWidget {
                       if (!context.mounted) return;
                       Navigator.pushNamed(context, AppRoutes.personalityTest);
                     },
+                    onSavePdf: () => _exportPdf(context, appState, result),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -388,6 +390,114 @@ class CompatibilityResultScreen extends StatelessWidget {
             ),
     );
   }
+}
+
+Future<void> _exportPdf(
+  BuildContext context,
+  AppState appState,
+  CompatibilityResult result,
+) async {
+  final service = CompatibilityPdfExportService();
+  final data = _buildPdfReportData(context, appState, result);
+
+  try {
+    await service.saveReport(data);
+  } catch (_) {
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.tr('pdfExportFailed'))));
+  }
+}
+
+CompatibilityPdfReportData _buildPdfReportData(
+  BuildContext context,
+  AppState appState,
+  CompatibilityResult result,
+) {
+  final userAName = appState.userA?.name.isNotEmpty == true
+      ? appState.userA!.name
+      : context.tr('userA');
+  final userBName = appState.userB?.name.isNotEmpty == true
+      ? appState.userB!.name
+      : context.tr('userB');
+
+  return CompatibilityPdfReportData(
+    isRtl: Directionality.of(context) == TextDirection.rtl,
+    appName: context.tr('appName'),
+    reportTitle: context.tr('result'),
+    generatedAt:
+        '${context.tr('generatedAt')}: ${_formatPdfDateTime(DateTime.now())}',
+    participantALabel: context.tr('userA'),
+    participantAName: userAName,
+    participantBLabel: context.tr('userB'),
+    participantBName: userBName,
+    compatibilityLabel: context.tr('compatibility'),
+    compatibilityScore: result.compatibilityPercentage,
+    readinessLabel: context.tr('readiness'),
+    readinessScore: result.marriageReadinessScore,
+    verdictTitle: context.tr('verdictTitle'),
+    verdictHeadline: _verdictHeadline(context, result.compatibilityPercentage),
+    verdictBody: _verdictBody(
+      context,
+      result.compatibilityPercentage,
+      result.marriageReadinessScore,
+    ),
+    nextStepTitle: context.tr('nextStepTitle'),
+    nextStepBody: _recommendedNextStep(context, result),
+    topicsTitle: context.tr('discussionTopicsTitle'),
+    discussionTopics: _discussionTopics(context, result),
+    categoryTitle: context.tr('categoryAnalysis'),
+    categoryScores: {
+      for (final entry in result.categoryScores.entries)
+        _categoryLabel(context, entry.key): entry.value,
+    },
+    archetypeTitle: context.tr('archetypeSummary'),
+    participantAArchetype: _localizeArchetype(
+      context,
+      result.partnerArchetypes['userA'] ?? '',
+    ),
+    participantBArchetype: _localizeArchetype(
+      context,
+      result.partnerArchetypes['userB'] ?? '',
+    ),
+    participantProfileTitle: context.tr('personalityProfile'),
+    participantAProfile: (result.partnerProfiles['userA'] ?? const [])
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    participantBProfile: (result.partnerProfiles['userB'] ?? const [])
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    dynamicsTitle: context.tr('relationshipDynamics'),
+    dynamics: result.relationshipDynamics
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    strengthsTitle: context.tr('strengths'),
+    strengths: result.strengthAreas
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    risksTitle: context.tr('risks'),
+    risks: result.riskAreas
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    notesTitle: context.tr('notes'),
+    notes: result.psychologicalNotes
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+    sessionsTitle: context.tr('sessions'),
+    sessions: result.suggestedSessions
+        .map((item) => _localizeResultItem(context, item))
+        .toList(),
+  );
+}
+
+String _formatPdfDateTime(DateTime value) {
+  final year = value.year.toString().padLeft(4, '0');
+  final month = value.month.toString().padLeft(2, '0');
+  final day = value.day.toString().padLeft(2, '0');
+  final hour = value.hour.toString().padLeft(2, '0');
+  final minute = value.minute.toString().padLeft(2, '0');
+  return '$year-$month-$day $hour:$minute';
 }
 
 class _AnimatedReveal extends StatelessWidget {
@@ -563,6 +673,7 @@ class _ActionPlanSection extends StatelessWidget {
     required this.topics,
     required this.onBook,
     required this.onReview,
+    required this.onSavePdf,
   });
 
   final String nextStepTitle;
@@ -571,6 +682,7 @@ class _ActionPlanSection extends StatelessWidget {
   final List<String> topics;
   final VoidCallback onBook;
   final VoidCallback onReview;
+  final VoidCallback onSavePdf;
 
   @override
   Widget build(BuildContext context) {
@@ -606,24 +718,47 @@ class _ActionPlanSection extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: onBook,
-                  icon: const Icon(Icons.calendar_month_outlined),
-                  label: Text(context.tr('booking')),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: onReview,
-                  icon: const Icon(Icons.restart_alt_rounded),
-                  label: Text(context.tr('retakeLater')),
-                ),
-              ),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stackActions = constraints.maxWidth < 460;
+              final bookButton = FilledButton.icon(
+                onPressed: onBook,
+                icon: const Icon(Icons.calendar_month_outlined),
+                label: Text(context.tr('booking')),
+              );
+              final reviewButton = OutlinedButton.icon(
+                onPressed: onReview,
+                icon: const Icon(Icons.restart_alt_rounded),
+                label: Text(context.tr('retakeLater')),
+              );
+
+              if (stackActions) {
+                return Column(
+                  children: [
+                    SizedBox(width: double.infinity, child: bookButton),
+                    const SizedBox(height: 10),
+                    SizedBox(width: double.infinity, child: reviewButton),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: bookButton),
+                  const SizedBox(width: 12),
+                  Expanded(child: reviewButton),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: onSavePdf,
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              label: Text(context.tr('saveAsPdf')),
+            ),
           ),
         ],
       ),
@@ -687,30 +822,44 @@ class _ResultHeroSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 18),
-          Row(
-            children: [
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: MetricRing(
-                    value: compatibility,
-                    label: context.tr('compatibility'),
-                    size: 132,
-                  ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final stackMetrics = constraints.maxWidth < 440;
+              final compatibilityRing = FittedBox(
+                fit: BoxFit.scaleDown,
+                child: MetricRing(
+                  value: compatibility,
+                  label: context.tr('compatibility'),
+                  size: 132,
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: MetricRing(
-                    value: readiness,
-                    label: context.tr('readiness'),
-                    size: 132,
-                  ),
+              );
+              final readinessRing = FittedBox(
+                fit: BoxFit.scaleDown,
+                child: MetricRing(
+                  value: readiness,
+                  label: context.tr('readiness'),
+                  size: 132,
                 ),
-              ),
-            ],
+              );
+
+              if (stackMetrics) {
+                return Column(
+                  children: [
+                    compatibilityRing,
+                    const SizedBox(height: 12),
+                    readinessRing,
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: compatibilityRing),
+                  const SizedBox(width: 10),
+                  Expanded(child: readinessRing),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -1034,21 +1183,34 @@ class _ArchetypeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+    final theme = Theme.of(context);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 430;
+        final labelText = Text(
+          label,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w800,
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(flex: 3, child: Text(value)),
-      ],
+        );
+        final valueText = Text(value);
+
+        if (compact) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [labelText, const SizedBox(height: 6), valueText],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 2, child: labelText),
+            const SizedBox(width: 12),
+            Expanded(flex: 3, child: valueText),
+          ],
+        );
+      },
     );
   }
 }

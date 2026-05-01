@@ -36,6 +36,20 @@ flutter analyze
 flutter test
 ```
 
+## Android Release Setup
+
+The Android release build is configured to use a real upload keystore from
+`android/key.properties`.
+
+1. Copy `android/key.properties.example` to `android/key.properties`
+2. Generate or place your upload keystore file outside version control
+3. Update `storeFile`, `storePassword`, `keyAlias`, and `keyPassword`
+4. Build with:
+
+```bash
+flutter build appbundle --release
+```
+
 ## Notes
 
 - The booking flow is local-only for now.

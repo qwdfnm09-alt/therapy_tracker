@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:premarital_match/app.dart';
 import 'package:premarital_match/data/local/local_storage_service.dart';
@@ -5,6 +6,8 @@ import 'package:premarital_match/domain/models/compatibility_result.dart';
 import 'package:premarital_match/domain/models/participant_profile.dart';
 import 'package:premarital_match/domain/models/question.dart';
 import 'package:premarital_match/presentation/providers/app_state.dart';
+import 'package:premarital_match/presentation/screens/forms/participant_form_screen.dart';
+import 'package:premarital_match/presentation/screens/personality/personality_test_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -349,5 +352,107 @@ void main() {
       final cleared = AppState(storage)..initialize();
       expect(cleared.personalityStageIndex, 0);
     },
+  );
+
+  testWidgets(
+    'personality test shows one question at a time and unlocks next question after both answers',
+    (WidgetTester tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+
+      await appState.saveProfile(
+        ParticipantSlot.userA,
+        const ParticipantProfile(
+          name: 'A',
+          age: 25,
+          job: 'Engineer',
+          education: 'College',
+          answers: {},
+        ),
+      );
+      await appState.saveProfile(
+        ParticipantSlot.userB,
+        const ParticipantProfile(
+          name: 'B',
+          age: 24,
+          job: 'Designer',
+          education: 'College',
+          answers: {},
+        ),
+      );
+
+      await tester.pumpWidget(
+        _buildTestApp(appState, const PersonalityTestScreen()),
+      );
+
+      expect(find.text('Question 1 of 2'), findsOneWidget);
+      expect(
+        find.text(
+          'After a demanding week, I recharge best by going out and staying around people.',
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.text('This question is still waiting for one or both answers.'),
+        findsWidgets,
+      );
+
+      await appState.updateAnswer(
+        ParticipantSlot.userA,
+        'personality_social_energy',
+        4,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('This question is still waiting for one or both answers.'),
+        findsWidgets,
+      );
+
+      await appState.updateAnswer(
+        ParticipantSlot.userB,
+        'personality_social_energy',
+        4,
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Both answers are set. You can keep moving.'),
+        findsWidgets,
+      );
+    },
+  );
+
+  testWidgets('participant form updates progress as fields are filled', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      _buildTestApp(
+        appState,
+        const ParticipantFormScreen(slot: ParticipantSlot.userA),
+      ),
+    );
+
+    expect(find.text('0 of 4 fields complete'), findsWidgets);
+
+    await tester.enterText(find.byType(TextFormField).first, 'Sara');
+    await tester.pumpAndSettle();
+    expect(find.text('1 of 4 fields complete'), findsWidgets);
+    expect(
+      find.text(
+        'Complete the remaining fields to unlock the next step smoothly.',
+      ),
+      findsOneWidget,
+    );
+  });
+}
+
+Widget _buildTestApp(AppState appState, Widget home) {
+  return ChangeNotifierProvider.value(
+    value: appState,
+    child: MaterialApp(home: home),
   );
 }
