@@ -5,9 +5,13 @@ import 'package:premarital_match/data/local/local_storage_service.dart';
 import 'package:premarital_match/domain/models/compatibility_result.dart';
 import 'package:premarital_match/domain/models/participant_profile.dart';
 import 'package:premarital_match/domain/models/question.dart';
+import 'package:premarital_match/domain/services/booking_submission_service.dart';
 import 'package:premarital_match/presentation/providers/app_state.dart';
+import 'package:premarital_match/presentation/screens/counseling/counseling_booking_screen.dart';
 import 'package:premarital_match/presentation/screens/forms/participant_form_screen.dart';
 import 'package:premarital_match/presentation/screens/personality/personality_test_screen.dart';
+import 'package:premarital_match/presentation/screens/settings/privacy_policy_screen.dart';
+import 'package:premarital_match/presentation/screens/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -448,6 +452,131 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('settings opens the privacy policy screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {
+            '/privacy-policy': (_) => const PrivacyPolicyScreen(),
+          },
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Privacy policy'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Privacy policy'), findsAtLeastNWidgets(1));
+    expect(find.text('Data handled by the app'), findsOneWidget);
+  });
+
+  testWidgets('booking submit saves the real send status', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+    final fakeService = _FakeBookingSubmissionService(
+      result: const BookingSubmissionResult(
+        success: true,
+        channel: 'whatsapp',
+        messageText: 'submitted text',
+      ),
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: CounselingBookingScreen(submissionService: fakeService),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    final textFields = tester.widgetList<TextFormField>(fields).toList();
+    final submitLabel = find.text('Confirm booking');
+    await tester.enterText(fields.at(0), '+201234567890');
+    textFields[1].controller!.text = '05/05/2026';
+    await tester.pump();
+    await tester.enterText(fields.at(2), 'Need a consultation');
+
+    await tester.scrollUntilVisible(
+      submitLabel,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(submitLabel);
+    await tester.pumpAndSettle();
+
+    expect(fakeService.submitCallCount, 1);
+    expect(appState.latestBooking?['sendStatus'], 'whatsapp');
+    expect(appState.bookingHistory.first['sendStatus'], 'whatsapp');
+    expect(find.text('Booking request ready'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('booking confirmation syncs status without duplicating history', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+    final fakeService = _FakeBookingSubmissionService(
+      result: const BookingSubmissionResult(
+        success: false,
+        channel: 'failed',
+        messageText: 'submitted text',
+      ),
+      openWhatsAppResult: true,
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: CounselingBookingScreen(submissionService: fakeService),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    final textFields = tester.widgetList<TextFormField>(fields).toList();
+    final submitLabel = find.text('Confirm booking');
+    await tester.enterText(fields.at(0), '+201234567890');
+    textFields[1].controller!.text = '05/05/2026';
+    await tester.pump();
+    await tester.enterText(fields.at(2), 'Need a consultation');
+
+    await tester.scrollUntilVisible(
+      submitLabel,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(submitLabel);
+    await tester.pumpAndSettle();
+
+    expect(appState.latestBooking?['sendStatus'], 'failed');
+    expect(appState.bookingHistory, hasLength(1));
+
+    await tester.tap(find.text('Open WhatsApp'));
+    await tester.pumpAndSettle();
+
+    expect(fakeService.openWhatsAppCallCount, 1);
+    expect(appState.latestBooking?['sendStatus'], 'whatsapp');
+    expect(appState.bookingHistory, hasLength(1));
+    expect(appState.bookingHistory.first['sendStatus'], 'whatsapp');
+  });
 }
 
 Widget _buildTestApp(AppState appState, Widget home) {
@@ -455,4 +584,49 @@ Widget _buildTestApp(AppState appState, Widget home) {
     value: appState,
     child: MaterialApp(home: home),
   );
+}
+
+class _FakeBookingSubmissionService extends BookingSubmissionService {
+  _FakeBookingSubmissionService({
+    required this.result,
+    this.openWhatsAppResult = false,
+  });
+
+  final BookingSubmissionResult result;
+  int submitCallCount = 0;
+  final bool openWhatsAppResult;
+  int openWhatsAppCallCount = 0;
+  int openSmsCallCount = 0;
+  int openCallCount = 0;
+
+  @override
+  Future<BookingSubmissionResult> submit({
+    required String sessionTypeLabel,
+    required String clientPhone,
+    required String preferredDate,
+    required String message,
+    String? recommendedReason,
+    String? resultVerdict,
+  }) async {
+    submitCallCount++;
+    return result;
+  }
+
+  @override
+  Future<bool> openWhatsApp(String text) async {
+    openWhatsAppCallCount++;
+    return openWhatsAppResult;
+  }
+
+  @override
+  Future<bool> openSms(String text) async {
+    openSmsCallCount++;
+    return false;
+  }
+
+  @override
+  Future<bool> openCall() async {
+    openCallCount++;
+    return false;
+  }
 }

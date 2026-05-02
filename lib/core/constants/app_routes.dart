@@ -9,4 +9,5 @@ class AppRoutes {
   static const counseling = '/counseling';
   static const bookingHistory = '/booking-history';
   static const settings = '/settings';
+  static const privacyPolicy = '/privacy-policy';
 }

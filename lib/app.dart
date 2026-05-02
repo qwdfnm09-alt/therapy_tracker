@@ -12,6 +12,7 @@ import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
+import 'presentation/screens/settings/privacy_policy_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/welcome/welcome_screen.dart';
 
@@ -49,6 +50,7 @@ class PreMaritalMatchApp extends StatelessWidget {
         AppRoutes.counseling: (_) => const CounselingBookingScreen(),
         AppRoutes.bookingHistory: (_) => const BookingHistoryScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
+        AppRoutes.privacyPolicy: (_) => const PrivacyPolicyScreen(),
       },
     );
   }

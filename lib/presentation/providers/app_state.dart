@@ -156,6 +156,26 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateLatestBookingStatus(String sendStatus) async {
+    final currentBooking = latestBooking;
+    if (currentBooking == null || currentBooking['sendStatus'] == sendStatus) {
+      return;
+    }
+
+    final updatedBooking = {
+      ...currentBooking,
+      'sendStatus': sendStatus,
+    };
+    latestBooking = updatedBooking;
+    bookingHistory = bookingHistory.isEmpty
+        ? [updatedBooking]
+        : [updatedBooking, ...bookingHistory.skip(1)];
+
+    await _storage.saveBooking(updatedBooking);
+    await _storage.saveBookingHistory(bookingHistory);
+    notifyListeners();
+  }
+
   Future<void> clearAssessment() async {
     userA = null;
     userB = null;

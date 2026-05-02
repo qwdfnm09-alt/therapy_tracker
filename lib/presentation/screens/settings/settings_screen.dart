@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/localization/app_strings.dart';
+import '../../../core/constants/app_routes.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../providers/app_state.dart';
@@ -12,6 +13,11 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
+    final isArabic = appState.languageCode == 'ar';
+    final privacyLabel = isArabic ? 'سياسة الخصوصية' : 'Privacy policy';
+    final privacyBody = isArabic
+        ? 'راجع ما الذي يُحفظ على الجهاز وكيفية حذف البيانات.'
+        : 'Review what is stored on device and how to clear saved data.';
 
     return AppPage(
       title: context.tr('settings'),
@@ -56,6 +62,18 @@ class SettingsScreen extends StatelessWidget {
               selected: {appState.languageCode},
               onSelectionChanged: (selection) =>
                   context.read<AppState>().setLanguage(selection.first),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.privacy_tip_outlined),
+              title: Text(privacyLabel),
+              subtitle: Text(privacyBody),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.privacyPolicy),
             ),
           ),
           const SizedBox(height: 16),

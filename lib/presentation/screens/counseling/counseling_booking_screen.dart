@@ -13,7 +13,12 @@ import '../../../domain/services/booking_submission_service.dart';
 import '../../providers/app_state.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
-  const CounselingBookingScreen({super.key});
+  const CounselingBookingScreen({
+    super.key,
+    this.submissionService,
+  });
+
+  final BookingSubmissionService? submissionService;
 
   @override
   State<CounselingBookingScreen> createState() =>
@@ -22,10 +27,10 @@ class CounselingBookingScreen extends StatefulWidget {
 
 class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _submissionService = BookingSubmissionService();
   final _phoneController = TextEditingController();
   final _dateController = TextEditingController();
   final _messageController = TextEditingController();
+  late final BookingSubmissionService _submissionService;
   String _sessionType = 'family';
   CompatibilityResult? _resultSnapshot;
   bool _isSubmitting = false;
@@ -34,6 +39,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   @override
   void initState() {
     super.initState();
+    _submissionService = widget.submissionService ?? BookingSubmissionService();
     _resultSnapshot = context.read<AppState>().result;
     _sessionType = _recommendedSessionType(_resultSnapshot);
   }
@@ -267,7 +273,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       'createdAt': DateTime.now().toIso8601String(),
     };
     try {
-      final messageText = _submissionService.buildMessage(
+      final submission = await _submissionService.submit(
         sessionTypeLabel: _sessionTypeLabel(_sessionType),
         clientPhone: booking['phone'] ?? '',
         preferredDate: booking['preferredDate'] ?? '',
@@ -276,18 +282,15 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
         resultVerdict: booking['resultVerdict'],
       );
       await appState
-          .saveBooking({...booking, 'sendStatus': 'failed'})
+          .saveBooking({...booking, 'sendStatus': submission.channel})
           .timeout(const Duration(seconds: 2), onTimeout: () {});
       if (!mounted) return;
       setState(() => _isSubmitting = false);
       await Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => _BookingConfirmationPage(
-            submission: BookingSubmissionResult(
-              success: false,
-              channel: 'failed',
-              messageText: messageText,
-            ),
+            submission: submission,
+            submissionService: _submissionService,
           ),
         ),
       );
@@ -365,12 +368,27 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   }
 }
 
-class _BookingConfirmationPage extends StatelessWidget {
-  _BookingConfirmationPage({required this.submission});
+class _BookingConfirmationPage extends StatefulWidget {
+  const _BookingConfirmationPage({
+    required this.submission,
+    required this.submissionService,
+  });
 
   final BookingSubmissionResult submission;
-  final BookingSubmissionService _submissionService =
-      BookingSubmissionService();
+  final BookingSubmissionService submissionService;
+
+  @override
+  State<_BookingConfirmationPage> createState() => _BookingConfirmationPageState();
+}
+
+class _BookingConfirmationPageState extends State<_BookingConfirmationPage> {
+  late String _channel;
+
+  @override
+  void initState() {
+    super.initState();
+    _channel = widget.submission.channel;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +410,7 @@ class _BookingConfirmationPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 _BookingRow(
                   label: context.tr('bookingStatus'),
-                  value: switch (submission.channel) {
+                  value: switch (_channel) {
                     'whatsapp' => context.tr('bookingStatusWhatsapp'),
                     'sms' => context.tr('bookingStatusSms'),
                     'call' => context.tr('bookingStatusCall'),
@@ -406,9 +424,9 @@ class _BookingConfirmationPage extends StatelessWidget {
                   children: [
                     OutlinedButton.icon(
                       onPressed: () => _openBookingAction(
-                        context,
-                        () => _submissionService.openWhatsApp(
-                          submission.messageText,
+                        nextChannel: 'whatsapp',
+                        action: () => _submissionService.openWhatsApp(
+                          widget.submission.messageText,
                         ),
                       ),
                       icon: const Icon(Icons.chat_outlined),
@@ -416,17 +434,17 @@ class _BookingConfirmationPage extends StatelessWidget {
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _openBookingAction(
-                        context,
-                        () =>
-                            _submissionService.openSms(submission.messageText),
+                        nextChannel: 'sms',
+                        action: () =>
+                            _submissionService.openSms(widget.submission.messageText),
                       ),
                       icon: const Icon(Icons.sms_outlined),
                       label: Text(context.tr('openSms')),
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _openBookingAction(
-                        context,
-                        _submissionService.openCall,
+                        nextChannel: 'call',
+                        action: _submissionService.openCall,
                       ),
                       icon: const Icon(Icons.call_outlined),
                       label: Text(context.tr('callClinicAction')),
@@ -439,7 +457,7 @@ class _BookingConfirmationPage extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: () async {
                       await Clipboard.setData(
-                        ClipboardData(text: submission.messageText),
+                        ClipboardData(text: widget.submission.messageText),
                       );
                       if (!context.mounted) return;
                       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
@@ -478,12 +496,21 @@ class _BookingConfirmationPage extends StatelessWidget {
     );
   }
 
+  BookingSubmissionService get _submissionService => widget.submissionService;
+
   Future<void> _openBookingAction(
-    BuildContext context,
-    Future<bool> Function() action,
+    {required String nextChannel,
+    required Future<bool> Function() action,
+    }
   ) async {
     final opened = await action();
-    if (!context.mounted || opened) return;
+    if (!mounted) return;
+    if (opened) {
+      await context.read<AppState>().updateLatestBookingStatus(nextChannel);
+      if (!mounted) return;
+      setState(() => _channel = nextChannel);
+      return;
+    }
     ScaffoldMessenger.maybeOf(
       context,
     )?.showSnackBar(SnackBar(content: Text(context.tr('bookingActionFailed'))));
