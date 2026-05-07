@@ -114,17 +114,31 @@ class BookingSubmissionService {
     final lines = <String>[
       'New counseling booking request',
       'Clinic phone: $clinicPhoneNumber',
+      '',
+      'Requested action: Please review this request and confirm the most suitable counseling follow-up.',
+      '',
+      'Booking details:',
       'Session type: $sessionTypeLabel',
       'Client phone: $clientPhone',
       'Preferred date: $preferredDate',
     ];
     if ((resultVerdict ?? '').trim().isNotEmpty) {
+      if (!lines.contains('Assessment context:')) {
+        lines.add('');
+        lines.add('Assessment context:');
+      }
       lines.add('Result verdict: ${resultVerdict!.trim()}');
     }
     if ((recommendedReason ?? '').trim().isNotEmpty) {
+      if (!lines.contains('Assessment context:')) {
+        lines.add('');
+        lines.add('Assessment context:');
+      }
       lines.add('Recommendation context: ${recommendedReason!.trim()}');
     }
     if (message.trim().isNotEmpty) {
+      lines.add('');
+      lines.add('Client note:');
       lines.add('Message: ${message.trim()}');
     }
     return lines.join('\n');

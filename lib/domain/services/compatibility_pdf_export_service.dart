@@ -22,6 +22,13 @@ class CompatibilityPdfReportData {
     required this.verdictTitle,
     required this.verdictHeadline,
     required this.verdictBody,
+    required this.conversationPrepTitle,
+    required this.decisionCheckpointTitle,
+    required this.decisionCheckpointBody,
+    required this.discussionChecklistTitle,
+    required this.discussionChecklistItems,
+    required this.conversationGroundRulesTitle,
+    required this.conversationGroundRules,
     required this.nextStepTitle,
     required this.nextStepBody,
     required this.topicsTitle,
@@ -61,6 +68,13 @@ class CompatibilityPdfReportData {
   final String verdictTitle;
   final String verdictHeadline;
   final String verdictBody;
+  final String conversationPrepTitle;
+  final String decisionCheckpointTitle;
+  final String decisionCheckpointBody;
+  final String discussionChecklistTitle;
+  final List<String> discussionChecklistItems;
+  final String conversationGroundRulesTitle;
+  final List<String> conversationGroundRules;
   final String nextStepTitle;
   final String nextStepBody;
   final String topicsTitle;
@@ -137,6 +151,27 @@ class CompatibilityPdfExportService {
               _paragraph(data.verdictHeadline, isBold: true),
               pw.SizedBox(height: 6),
               _paragraph(data.verdictBody),
+            ],
+          ),
+          pw.SizedBox(height: 14),
+          _buildSection(
+            title: data.conversationPrepTitle,
+            children: [
+              _subheading(data.decisionCheckpointTitle),
+              pw.SizedBox(height: 6),
+              _paragraph(data.decisionCheckpointBody),
+              if (data.discussionChecklistItems.isNotEmpty) ...[
+                pw.SizedBox(height: 10),
+                _subheading(data.discussionChecklistTitle),
+                pw.SizedBox(height: 6),
+                ...data.discussionChecklistItems.map(_bullet),
+              ],
+              if (data.conversationGroundRules.isNotEmpty) ...[
+                pw.SizedBox(height: 10),
+                _subheading(data.conversationGroundRulesTitle),
+                pw.SizedBox(height: 6),
+                ...data.conversationGroundRules.map(_bullet),
+              ],
             ],
           ),
           pw.SizedBox(height: 14),

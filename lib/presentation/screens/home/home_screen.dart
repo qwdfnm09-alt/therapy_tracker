@@ -39,6 +39,43 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, AppRoutes.counseling),
       ),
       _FeatureItem(
+        title: context.tr('educationalHub'),
+        subtitle: context.tr('featureEducationalHub'),
+        icon: Icons.menu_book_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.educationalHub),
+      ),
+      _FeatureItem(
+        title: context.tr('relationshipTools'),
+        subtitle: context.tr('featureRelationshipTools'),
+        icon: Icons.favorite_border_rounded,
+        enabled: true,
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.relationshipTools),
+      ),
+      _FeatureItem(
+        title: context.tr('gratitudeBank'),
+        subtitle: context.tr('featureGratitudeBank'),
+        icon: Icons.volunteer_activism_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.gratitudeBank),
+      ),
+      _FeatureItem(
+        title: context.tr('budgetPlanner'),
+        subtitle: context.tr('featureBudgetPlanner'),
+        icon: Icons.account_balance_wallet_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.budgetPlanner),
+      ),
+      _FeatureItem(
+        title: context.tr('remindersCenter'),
+        subtitle: context.tr('featureRemindersCenter'),
+        icon: Icons.notifications_none_rounded,
+        enabled: true,
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.remindersCenter),
+      ),
+      _FeatureItem(
         title: context.tr('settings'),
         subtitle: context.tr('featureSettings'),
         icon: Icons.settings_outlined,

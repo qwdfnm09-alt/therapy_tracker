@@ -22,7 +22,105 @@ class AppStrings {
       'featurePersonality': 'Open the compatibility questions for both users',
       'featureResults': 'Review the latest calculated compatibility report',
       'featureCounseling': 'Book a counseling or coaching request',
+      'featureEducationalHub':
+          'Read practical pre-marriage guidance, key questions, and warning signs',
+      'featureRelationshipTools':
+          'Use simple relationship tools for care, attention, and weekly practice',
+      'featureGratitudeBank':
+          'Save short appreciation notes locally and review them later',
+      'featureBudgetPlanner':
+          'Track simple income and expense items locally to reduce money ambiguity',
+      'featureRemindersCenter':
+          'Plan small recurring reminders locally for check-ins, gratitude, and budget follow-up',
       'featureSettings': 'Change language, theme, and clear saved data',
+      'educationalHub': 'Educational Hub',
+      'relationshipTools': 'Relationship tools',
+      'gratitudeBank': 'Gratitude Bank',
+      'budgetPlanner': 'Budget Planner',
+      'remindersCenter': 'Reminders Center',
+      'educationalHubIntroTitle': 'A careful reading layer around the score',
+      'educationalHubIntroBody':
+          'This section does not change your compatibility result. It helps both people translate the result into clearer conversations and better judgment before commitment.',
+      'educationalHubCollections': 'Collections',
+      'premaritalGuide': 'Premarital guide',
+      'goldenQuestions': 'Golden questions',
+      'goldenQuestionsSubtitle':
+          'Structured questions to surface hidden assumptions early',
+      'goldenQuestionsIntroTitle':
+          'Ask the difficult questions before pressure',
+      'goldenQuestionsIntroBody':
+          'These questions are useful because they reveal habits, assumptions, and future expectations. The goal is not to impress the other person but to make ambiguity smaller.',
+      'redFlags': 'Red flags',
+      'redFlagsSubtitle': 'Common warning signs that should not be minimized',
+      'redFlagsIntroTitle': 'Warning signs deserve direct naming',
+      'redFlagsIntroBody':
+          'A red flag does not mean every relationship must end immediately. It means the pattern should not be excused, romanticized, or left vague.',
+      'relationshipToolsIntroTitle': 'Small tools for steadier connection',
+      'relationshipToolsIntroBody':
+          'These tools are intentionally simple. They do not diagnose the relationship, but they help both people turn care into visible action.',
+      'loveLanguagesTitle': 'Love languages quick guide',
+      'loveLanguagesBody':
+          'Use this as a practical lens, not as a rigid label. The useful question is: what kind of care is actually felt by the other person?',
+      'weeklyChallengesTitle': 'Weekly connection challenges',
+      'weeklyChallengesBody':
+          'Choose one challenge at a time. Keep it specific and repeatable instead of turning it into a performance.',
+      'relationshipToolsUsageTitle': 'How to use these tools well',
+      'relationshipToolsUsagePoint1':
+          'Start with the smallest useful action instead of promising a full personality change.',
+      'relationshipToolsUsagePoint2':
+          'If one tool feels unnatural, discuss why before treating it as failure.',
+      'relationshipToolsUsagePoint3':
+          'Use repetition to build trust. Small consistent care is more useful than rare dramatic effort.',
+      'gratitudeBankIntroTitle': 'A simple memory of what went right',
+      'gratitudeBankIntroBody':
+          'This tool stores short notes of appreciation locally on the device. The goal is to preserve visible evidence of care instead of relying on memory alone during tension.',
+      'gratitudeBankAddTitle': 'Add a new note',
+      'gratitudeBankPrompt':
+          'Write one short thing you appreciated. Keep it concrete and specific.',
+      'gratitudeBankHint':
+          'Example: I appreciated how calmly you handled today’s pressure.',
+      'gratitudeBankTooShort': 'Write a slightly clearer appreciation note.',
+      'gratitudeBankSaveAction': 'Save note',
+      'gratitudeBankSavedTitle': 'Saved notes',
+      'gratitudeBankEmpty':
+          'No gratitude notes yet. Add the first one when something small and real deserves to be remembered.',
+      'budgetPlannerIntroTitle': 'A simple money clarity tool',
+      'budgetPlannerIntroBody':
+          'This tool is intentionally lightweight. It helps both sides make money conversations clearer by tracking a few visible entries locally.',
+      'budgetPlannerSummaryTitle': 'Current summary',
+      'budgetPlannerAddTitle': 'Add a budget entry',
+      'budgetPlannerEntriesTitle': 'Saved entries',
+      'budgetPlannerEmpty':
+          'No budget entries yet. Add the first income or expense item to start a clearer money view.',
+      'budgetTitle': 'Entry title',
+      'budgetAmount': 'Amount',
+      'budgetType': 'Type',
+      'budgetCategory': 'Category',
+      'budgetIncome': 'Income',
+      'budgetExpense': 'Expense',
+      'budgetBalance': 'Balance',
+      'budgetAmountInvalid': 'Enter a valid amount greater than zero',
+      'budgetSaveAction': 'Save entry',
+      'remindersCenterIntroTitle': 'A local reminder planner',
+      'remindersCenterIntroBody':
+          'Use this screen to plan small recurring reminders that support calmer routines and clearer follow-up.',
+      'remindersCenterLocalOnlyNote':
+          'This phase stores reminder plans locally only. It does not trigger device notifications yet.',
+      'remindersCenterAddTitle': 'Add a reminder plan',
+      'remindersCenterSavedTitle': 'Saved reminder plans',
+      'remindersCenterEmpty':
+          'No reminder plans yet. Add one simple plan instead of trying to track everything mentally.',
+      'reminderTitle': 'Reminder title',
+      'reminderCategory': 'Reminder category',
+      'reminderCategoryCheckIn': 'Relationship check-in',
+      'reminderCategoryGratitude': 'Gratitude reminder',
+      'reminderCategoryBudget': 'Budget follow-up',
+      'reminderCategoryCustom': 'Custom reminder',
+      'reminderScheduleLabel': 'Schedule label',
+      'reminderScheduleHint': 'Example: Every Friday at 8:00 PM',
+      'reminderNote': 'Optional note',
+      'reminderSaveAction': 'Save reminder plan',
+      'delete': 'Delete',
       'assessmentStatus': 'Assessment status',
       'latestBooking': 'Latest booking',
       'bookingHistory': 'Booking history',
@@ -134,6 +232,28 @@ class AppStrings {
       'advantage': 'Advantage',
       'nextStepTitle': 'Recommended next step',
       'discussionTopicsTitle': 'Topics to discuss before engagement',
+      'conversationPrepTitle': 'Conversation prep',
+      'decisionCheckpointTitle': 'Decision checkpoint',
+      'decisionCheckpointSlow':
+          'The current result should slow the decision down. Do not treat chemistry alone as enough before the main pressure points are reviewed.',
+      'decisionCheckpointDiscuss':
+          'The result is workable, but only if the unresolved topics are discussed directly and converted into explicit agreements.',
+      'decisionCheckpointStable':
+          'The result looks stable enough for a focused final discussion. The goal now is to confirm expectations clearly, not to search for hidden conflict.',
+      'discussionChecklistTitle': 'Checklist before a final decision',
+      'discussionChecklistCompatibility':
+          'Name the biggest difference in the result and agree on what daily behavior would make it manageable.',
+      'discussionChecklistReadiness':
+          'Clarify what still needs personal growth before either side treats the relationship as ready for full commitment.',
+      'discussionChecklistExpectations':
+          'Turn the most important expectations into direct language instead of assuming they are already understood.',
+      'conversationGroundRulesTitle': 'Ground rules for the next conversation',
+      'conversationGroundRule1':
+          'Discuss one pressure area at a time and ask for concrete examples, not ideal answers.',
+      'conversationGroundRule2':
+          'If the same topic produces defensiveness or avoidance, treat that as useful information rather than forcing a quick conclusion.',
+      'conversationGroundRule3':
+          'End the conversation with one explicit agreement, one open question, and one next step.',
       'retakeLater': 'Review answers again',
       'nextStepCounselorFirst':
           'A guided counseling session should come before any fast commitment decision.',
@@ -390,7 +510,101 @@ class AppStrings {
       'featurePersonality': 'افتح أسئلة التوافق للشخصين',
       'featureResults': 'راجع آخر تقرير توافق تم حسابه',
       'featureCounseling': 'أرسل طلب حجز استشارة أو جلسة تأهيل',
+      'featureEducationalHub':
+          'اقرأ محتوى عملي قبل الزواج وأسئلة مهمة وعلامات تحذير',
+      'featureRelationshipTools':
+          'استخدم أدوات بسيطة للعناية والاهتمام والممارسة الأسبوعية',
+      'featureGratitudeBank': 'احفظ ملاحظات امتنان قصيرة محليًا وراجعها لاحقًا',
+      'featureBudgetPlanner':
+          'تابع عناصر دخل ومصروفات بسيطة محليًا لتقليل غموض المال',
+      'featureRemindersCenter':
+          'خطط لتذكيرات صغيرة محليًا للمتابعة والامتنان ومراجعة المال',
       'featureSettings': 'غيّر اللغة والمظهر وامسح البيانات المحفوظة',
+      'educationalHub': 'المكتبة التوعوية',
+      'relationshipTools': 'أدوات العلاقة',
+      'gratitudeBank': 'حصالة الامتنان',
+      'budgetPlanner': 'مخطط الميزانية',
+      'remindersCenter': 'مركز التذكيرات',
+      'educationalHubIntroTitle': 'طبقة قراءة أهدأ حول النتيجة',
+      'educationalHubIntroBody':
+          'هذا القسم لا يغيّر نتيجة التوافق نفسها، لكنه يساعد الطرفين على تحويل النتيجة إلى نقاش أوضح وحكم أهدأ قبل الالتزام.',
+      'educationalHubCollections': 'المجموعات',
+      'premaritalGuide': 'دليل قبل الزواج',
+      'goldenQuestions': 'الأسئلة الذهبية',
+      'goldenQuestionsSubtitle': 'أسئلة منظمة تكشف الافتراضات الخفية مبكرًا',
+      'goldenQuestionsIntroTitle': 'اسأل الأسئلة الصعبة قبل ضغط الواقع',
+      'goldenQuestionsIntroBody':
+          'هذه الأسئلة مفيدة لأنها تكشف العادات والافتراضات وتوقعات المستقبل. الهدف ليس إبهار الطرف الآخر، بل تقليل الغموض قدر الإمكان.',
+      'redFlags': 'العلامات الحمراء',
+      'redFlagsSubtitle': 'علامات تحذير متكررة لا يصح التقليل منها',
+      'redFlagsIntroTitle': 'علامات التحذير تحتاج تسمية مباشرة',
+      'redFlagsIntroBody':
+          'العلامة الحمراء لا تعني بالضرورة أن كل علاقة يجب أن تنتهي فورًا، لكنها تعني أن النمط لا ينبغي تبريره أو تجميله أو تركه غامضًا.',
+      'relationshipToolsIntroTitle': 'أدوات صغيرة لاتصال أكثر ثباتًا',
+      'relationshipToolsIntroBody':
+          'هذه الأدوات بسيطة عن قصد. لا تشخّص العلاقة، لكنها تساعد الطرفين على تحويل الاهتمام إلى أفعال واضحة ومتكررة.',
+      'loveLanguagesTitle': 'دليل سريع للغات الحب',
+      'loveLanguagesBody':
+          'استخدم هذا القسم كعدسة عملية لا كتصنيف جامد. السؤال المفيد هنا هو: أي نوع من الاهتمام يشعر به الطرف الآخر فعلًا؟',
+      'weeklyChallengesTitle': 'تحديات أسبوعية للتقارب',
+      'weeklyChallengesBody':
+          'اختر تحديًا واحدًا في كل مرة. اجعله محددًا وقابلًا للتكرار بدل تحويله إلى أداء شكلي.',
+      'relationshipToolsUsageTitle': 'كيف تُستخدم هذه الأدوات بشكل جيد',
+      'relationshipToolsUsagePoint1':
+          'ابدأ بأصغر فعل مفيد بدل الوعد بتغيير الشخصية بالكامل.',
+      'relationshipToolsUsagePoint2':
+          'إذا بدت أداة ما غير طبيعية، فناقش سبب ذلك قبل اعتبارها فشلًا.',
+      'relationshipToolsUsagePoint3':
+          'التكرار يبني الثقة. الاهتمام الصغير المستمر أنفع من الجهد الكبير النادر.',
+      'gratitudeBankIntroTitle': 'ذاكرة بسيطة لما سار بشكل جيد',
+      'gratitudeBankIntroBody':
+          'هذه الأداة تحفظ ملاحظات امتنان قصيرة محليًا على الجهاز. الهدف هو الاحتفاظ بأثر واضح للاهتمام بدل الاعتماد على الذاكرة وحدها وقت التوتر.',
+      'gratitudeBankAddTitle': 'أضف ملاحظة جديدة',
+      'gratitudeBankPrompt':
+          'اكتب شيئًا قصيرًا تشعر بالامتنان له. اجعله محددًا وواضحًا.',
+      'gratitudeBankHint': 'مثال: قدّرت هدوءك في التعامل مع ضغط اليوم.',
+      'gratitudeBankTooShort': 'اكتب ملاحظة امتنان أوضح قليلًا.',
+      'gratitudeBankSaveAction': 'حفظ الملاحظة',
+      'gratitudeBankSavedTitle': 'الملاحظات المحفوظة',
+      'gratitudeBankEmpty':
+          'لا توجد ملاحظات امتنان بعد. أضف أول ملاحظة عندما يحدث شيء صغير لكنه يستحق التذكر.',
+      'budgetPlannerIntroTitle': 'أداة بسيطة لوضوح المال',
+      'budgetPlannerIntroBody':
+          'هذه الأداة خفيفة عن قصد. هدفها أن تجعل النقاش حول المال أوضح عبر تسجيل عدد محدود من البنود محليًا على الجهاز.',
+      'budgetPlannerSummaryTitle': 'الملخص الحالي',
+      'budgetPlannerAddTitle': 'أضف بندًا جديدًا',
+      'budgetPlannerEntriesTitle': 'البنود المحفوظة',
+      'budgetPlannerEmpty':
+          'لا توجد بنود ميزانية بعد. أضف أول بند دخل أو مصروف لبدء صورة أوضح عن المال.',
+      'budgetTitle': 'عنوان البند',
+      'budgetAmount': 'المبلغ',
+      'budgetType': 'النوع',
+      'budgetCategory': 'التصنيف',
+      'budgetIncome': 'دخل',
+      'budgetExpense': 'مصروف',
+      'budgetBalance': 'الرصيد',
+      'budgetAmountInvalid': 'أدخل مبلغًا صحيحًا أكبر من صفر',
+      'budgetSaveAction': 'حفظ البند',
+      'remindersCenterIntroTitle': 'مخطط محلي للتذكيرات',
+      'remindersCenterIntroBody':
+          'استخدم هذه الشاشة لتخطيط تذكيرات صغيرة متكررة تساعد على روتين أهدأ ومتابعة أوضح.',
+      'remindersCenterLocalOnlyNote':
+          'هذه المرحلة تحفظ خطط التذكير محليًا فقط، ولا ترسل إشعارات فعلية للنظام بعد.',
+      'remindersCenterAddTitle': 'أضف خطة تذكير',
+      'remindersCenterSavedTitle': 'خطط التذكير المحفوظة',
+      'remindersCenterEmpty':
+          'لا توجد خطط تذكير بعد. أضف خطة بسيطة بدل محاولة تذكر كل شيء ذهنيًا.',
+      'reminderTitle': 'عنوان التذكير',
+      'reminderCategory': 'تصنيف التذكير',
+      'reminderCategoryCheckIn': 'متابعة العلاقة',
+      'reminderCategoryGratitude': 'تذكير بالامتنان',
+      'reminderCategoryBudget': 'مراجعة الميزانية',
+      'reminderCategoryCustom': 'تذكير مخصص',
+      'reminderScheduleLabel': 'وصف الموعد',
+      'reminderScheduleHint': 'مثال: كل جمعة الساعة 8:00 مساءً',
+      'reminderNote': 'ملاحظة اختيارية',
+      'reminderSaveAction': 'حفظ خطة التذكير',
+      'delete': 'حذف',
       'assessmentStatus': 'حالة التقييم',
       'latestBooking': 'آخر طلب حجز',
       'bookingHistory': 'سجل الحجوزات',
@@ -502,6 +716,28 @@ class AppStrings {
       'advantage': 'نقطة تفوق',
       'nextStepTitle': 'الخطوة الموصى بها',
       'discussionTopicsTitle': 'موضوعات يجب مناقشتها قبل الارتباط',
+      'conversationPrepTitle': 'التحضير للنقاش',
+      'decisionCheckpointTitle': 'نقطة فحص القرار',
+      'decisionCheckpointSlow':
+          'النتيجة الحالية تستدعي تهدئة القرار. لا تتعامل مع الانجذاب وحده باعتباره كافيًا قبل مراجعة نقاط الضغط الأساسية.',
+      'decisionCheckpointDiscuss':
+          'النتيجة قابلة للبناء عليها، لكن بشرط أن تتحول الموضوعات غير المحسومة إلى نقاش مباشر واتفاقات صريحة.',
+      'decisionCheckpointStable':
+          'النتيجة تبدو مستقرة بما يكفي لنقاش نهائي مركز. المطلوب الآن هو تثبيت التوقعات بوضوح لا البحث عن خلافات مخفية.',
+      'discussionChecklistTitle': 'قائمة فحص قبل القرار النهائي',
+      'discussionChecklistCompatibility':
+          'حددوا أكبر فرق ظاهر في النتيجة واتفقوا على سلوك يومي يجعل هذا الفرق قابلًا للإدارة.',
+      'discussionChecklistReadiness':
+          'وضّحوا ما الذي ما زال يحتاج نموًا شخصيًا قبل أن يعتبر أي طرف العلاقة جاهزة لالتزام كامل.',
+      'discussionChecklistExpectations':
+          'حوّلوا أهم التوقعات إلى صياغة مباشرة بدل افتراض أنها مفهومة ضمنًا.',
+      'conversationGroundRulesTitle': 'قواعد للنقاش القادم',
+      'conversationGroundRule1':
+          'ناقشوا نقطة ضغط واحدة في كل مرة، واطلبوا أمثلة واقعية لا إجابات مثالية.',
+      'conversationGroundRule2':
+          'إذا كرر نفس الموضوع دفاعية أو مراوغة، فاعتبروا ذلك معلومة مهمة بدل استعجال الخلاصة.',
+      'conversationGroundRule3':
+          'اختموا النقاش باتفاق صريح واحد، وسؤال مفتوح واحد، وخطوة تالية واحدة.',
       'retakeLater': 'راجع الإجابات مرة أخرى',
       'nextStepCounselorFirst':
           'من الأفضل أن تسبق جلسة إرشاد متخصصة أي قرار ارتباط سريع.',

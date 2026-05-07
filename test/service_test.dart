@@ -23,6 +23,14 @@ void main() {
 
       expect(message, contains('New counseling booking request'));
       expect(message, contains('Clinic phone: $clinicPhoneNumber'));
+      expect(
+        message,
+        contains(
+          'Requested action: Please review this request and confirm the most suitable counseling follow-up.',
+        ),
+      );
+      expect(message, contains('Booking details:'));
+      expect(message, contains('Assessment context:'));
       expect(message, contains('Session type: Family consultation'));
       expect(message, contains('Client phone: +201234567890'));
       expect(message, contains('Preferred date: 05/05/2026'));
@@ -31,6 +39,7 @@ void main() {
         message,
         contains('Recommendation context: Family boundaries need discussion'),
       );
+      expect(message, contains('Client note:'));
       expect(message, contains('Message: Need a consultation'));
     });
 
@@ -40,7 +49,10 @@ void main() {
       final smsUri = service.buildSmsUri('Hello there');
       final callUri = service.buildCallUri();
 
-      expect(whatsappUri.toString(), contains('https://wa.me/$clinicWhatsappNumber'));
+      expect(
+        whatsappUri.toString(),
+        contains('https://wa.me/$clinicWhatsappNumber'),
+      );
       expect(whatsappUri.toString(), contains('Hello%20there'));
       expect(smsUri.scheme, 'sms');
       expect(smsUri.path, clinicPhoneNumber);
@@ -60,15 +72,18 @@ void main() {
       expect(bytes.length, greaterThan(1000));
     });
 
-    test('saveReport delegates bytes and generated filename to share', () async {
-      final service = _RecordingPdfExportService();
+    test(
+      'saveReport delegates bytes and generated filename to share',
+      () async {
+        final service = _RecordingPdfExportService();
 
-      final result = await service.saveReport(_sampleReportData());
+        final result = await service.saveReport(_sampleReportData());
 
-      expect(result, isTrue);
-      expect(service.savedFilenames, ['Taalof-report.pdf']);
-      expect(service.savedBytes.single, Uint8List.fromList([1, 2, 3]));
-    });
+        expect(result, isTrue);
+        expect(service.savedFilenames, ['Taalof-report.pdf']);
+        expect(service.savedBytes.single, Uint8List.fromList([1, 2, 3]));
+      },
+    );
   });
 }
 
@@ -89,15 +104,26 @@ CompatibilityPdfReportData _sampleReportData() {
     verdictTitle: 'Verdict',
     verdictHeadline: 'Strong base',
     verdictBody: 'The relationship shows a stable base for marriage.',
+    conversationPrepTitle: 'Conversation prep',
+    decisionCheckpointTitle: 'Decision checkpoint',
+    decisionCheckpointBody:
+        'Use the result to confirm expectations before making a final decision.',
+    discussionChecklistTitle: 'Checklist before a final decision',
+    discussionChecklistItems: [
+      'Name the biggest difference clearly.',
+      'Agree on the next practical step.',
+    ],
+    conversationGroundRulesTitle: 'Ground rules for the next conversation',
+    conversationGroundRules: [
+      'Discuss one topic at a time.',
+      'Use concrete examples.',
+    ],
     nextStepTitle: 'Next step',
     nextStepBody: 'Hold one guided conversation to confirm expectations.',
     topicsTitle: 'Discussion topics',
     discussionTopics: ['Family boundaries', 'Money planning'],
     categoryTitle: 'Category analysis',
-    categoryScores: {
-      'Communication': 84,
-      'Family boundaries': 77,
-    },
+    categoryScores: {'Communication': 84, 'Family boundaries': 77},
     archetypeTitle: 'Archetypes',
     participantAArchetype: 'planner+warmCommunicator',
     participantBArchetype: 'balanced+steadyResponder',

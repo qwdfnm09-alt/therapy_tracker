@@ -291,6 +291,25 @@ class CompatibilityResultScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 _AnimatedReveal(
+                  delayFraction: 0.66,
+                  child: _ConversationPrepSection(
+                    title: context.tr('conversationPrepTitle'),
+                    checkpointTitle: context.tr('decisionCheckpointTitle'),
+                    checkpointBody: _decisionCheckpoint(context, result),
+                    checklistTitle: context.tr('discussionChecklistTitle'),
+                    checklistItems: _discussionChecklist(context, result),
+                    groundRulesTitle: context.tr(
+                      'conversationGroundRulesTitle',
+                    ),
+                    groundRules: [
+                      context.tr('conversationGroundRule1'),
+                      context.tr('conversationGroundRule2'),
+                      context.tr('conversationGroundRule3'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _AnimatedReveal(
                   delayFraction: 0.7,
                   child: _ActionPlanSection(
                     nextStepTitle: context.tr('nextStepTitle'),
@@ -553,6 +572,17 @@ CompatibilityPdfReportData _buildPdfReportData(
       result.compatibilityPercentage,
       result.marriageReadinessScore,
     ),
+    conversationPrepTitle: context.tr('conversationPrepTitle'),
+    decisionCheckpointTitle: context.tr('decisionCheckpointTitle'),
+    decisionCheckpointBody: _decisionCheckpoint(context, result),
+    discussionChecklistTitle: context.tr('discussionChecklistTitle'),
+    discussionChecklistItems: _discussionChecklist(context, result),
+    conversationGroundRulesTitle: context.tr('conversationGroundRulesTitle'),
+    conversationGroundRules: [
+      context.tr('conversationGroundRule1'),
+      context.tr('conversationGroundRule2'),
+      context.tr('conversationGroundRule3'),
+    ],
     nextStepTitle: context.tr('nextStepTitle'),
     nextStepBody: _recommendedNextStep(context, result),
     topicsTitle: context.tr('discussionTopicsTitle'),
@@ -870,6 +900,143 @@ class _ActionPlanSection extends StatelessWidget {
               label: Text(context.tr('saveAsPdf')),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConversationPrepSection extends StatelessWidget {
+  const _ConversationPrepSection({
+    required this.title,
+    required this.checkpointTitle,
+    required this.checkpointBody,
+    required this.checklistTitle,
+    required this.checklistItems,
+    required this.groundRulesTitle,
+    required this.groundRules,
+  });
+
+  final String title;
+  final String checkpointTitle;
+  final String checkpointBody;
+  final String checklistTitle;
+  final List<String> checklistItems;
+  final String groundRulesTitle;
+  final List<String> groundRules;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return SectionCard(
+      title: title,
+      icon: Icons.forum_outlined,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ConversationPanel(
+            title: checkpointTitle,
+            icon: Icons.checklist_rtl_rounded,
+            child: Text(checkpointBody),
+          ),
+          const SizedBox(height: 12),
+          _ConversationPanel(
+            title: checklistTitle,
+            icon: Icons.rule_folder_outlined,
+            child: Column(
+              children: [
+                for (final item in checklistItems)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.done_outline_rounded,
+                          size: 18,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(item)),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          _ConversationPanel(
+            title: groundRulesTitle,
+            icon: Icons.balance_outlined,
+            child: Column(
+              children: [
+                for (final item in groundRules)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.arrow_right_alt_rounded,
+                          size: 20,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(item)),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConversationPanel extends StatelessWidget {
+  const _ConversationPanel({
+    required this.title,
+    required this.icon,
+    required this.child,
+  });
+
+  final String title;
+  final IconData icon;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: theme.colorScheme.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          child,
         ],
       ),
     );
@@ -1604,6 +1771,42 @@ String _recommendedNextStep(BuildContext context, CompatibilityResult result) {
     return context.tr('nextStepGuidedDiscussion');
   }
   return context.tr('nextStepAlignment');
+}
+
+String _decisionCheckpoint(BuildContext context, CompatibilityResult result) {
+  if (result.marriageReadinessScore < 60 ||
+      result.compatibilityPercentage < 60) {
+    return context.tr('decisionCheckpointSlow');
+  }
+  if (!result.riskAreas.contains('risk:none')) {
+    return context.tr('decisionCheckpointDiscuss');
+  }
+  return context.tr('decisionCheckpointStable');
+}
+
+List<String> _discussionChecklist(
+  BuildContext context,
+  CompatibilityResult result,
+) {
+  final items = <String>[];
+
+  for (final topic in _discussionTopics(context, result)) {
+    items.add(topic);
+  }
+
+  if (result.compatibilityPercentage < 65) {
+    items.add(context.tr('discussionChecklistCompatibility'));
+  }
+
+  if (result.marriageReadinessScore < 65) {
+    items.add(context.tr('discussionChecklistReadiness'));
+  }
+
+  if (items.length < 3) {
+    items.add(context.tr('discussionChecklistExpectations'));
+  }
+
+  return items.take(4).toList();
 }
 
 List<String> _discussionTopics(

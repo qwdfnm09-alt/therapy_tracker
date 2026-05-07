@@ -7,6 +7,9 @@ import 'core/theme/app_theme.dart';
 import 'presentation/providers/app_state.dart';
 import 'presentation/screens/counseling/booking_history_screen.dart';
 import 'presentation/screens/counseling/counseling_booking_screen.dart';
+import 'presentation/screens/content/educational_hub_screen.dart';
+import 'presentation/screens/content/golden_questions_screen.dart';
+import 'presentation/screens/content/red_flags_screen.dart';
 import 'presentation/screens/forms/participant_form_screen.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/personality/personality_intro_screen.dart';
@@ -14,6 +17,10 @@ import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
 import 'presentation/screens/settings/privacy_policy_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
+import 'presentation/screens/tools/budget_planner_screen.dart';
+import 'presentation/screens/tools/gratitude_bank_screen.dart';
+import 'presentation/screens/tools/reminders_center_screen.dart';
+import 'presentation/screens/tools/relationship_tools_screen.dart';
 import 'presentation/screens/welcome/welcome_screen.dart';
 
 class PreMaritalMatchApp extends StatelessWidget {
@@ -49,6 +56,13 @@ class PreMaritalMatchApp extends StatelessWidget {
         AppRoutes.results: (_) => const CompatibilityResultScreen(),
         AppRoutes.counseling: (_) => const CounselingBookingScreen(),
         AppRoutes.bookingHistory: (_) => const BookingHistoryScreen(),
+        AppRoutes.educationalHub: (_) => const EducationalHubScreen(),
+        AppRoutes.goldenQuestions: (_) => const GoldenQuestionsScreen(),
+        AppRoutes.redFlags: (_) => const RedFlagsScreen(),
+        AppRoutes.relationshipTools: (_) => const RelationshipToolsScreen(),
+        AppRoutes.gratitudeBank: (_) => const GratitudeBankScreen(),
+        AppRoutes.budgetPlanner: (_) => const BudgetPlannerScreen(),
+        AppRoutes.remindersCenter: (_) => const RemindersCenterScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
         AppRoutes.privacyPolicy: (_) => const PrivacyPolicyScreen(),
       },
