@@ -4,6 +4,18 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+class _PdfAssetsBundle {
+  const _PdfAssetsBundle({
+    required this.regularFont,
+    required this.boldFont,
+    required this.logo,
+  });
+
+  final pw.Font regularFont;
+  final pw.Font boldFont;
+  final pw.MemoryImage logo;
+}
+
 class CompatibilityPdfReportData {
   const CompatibilityPdfReportData({
     required this.isRtl,
@@ -99,6 +111,8 @@ class CompatibilityPdfReportData {
 }
 
 class CompatibilityPdfExportService {
+  static Future<_PdfAssetsBundle>? _cachedAssetsFuture;
+
   String fileNameFor(CompatibilityPdfReportData data) {
     return '${data.appName}-report.pdf';
   }
@@ -117,17 +131,8 @@ class CompatibilityPdfExportService {
   }
 
   Future<Uint8List> buildPdfBytes(CompatibilityPdfReportData data) async {
+    final assets = await _loadAssets();
     final document = pw.Document();
-    final regularFont = pw.Font.ttf(
-      await rootBundle.load('assets/fonts/arial.ttf'),
-    );
-    final boldFont = pw.Font.ttf(
-      await rootBundle.load('assets/fonts/arialbd.ttf'),
-    );
-    final logoBytes = (await rootBundle.load(
-      'assets/images/app_logo.png',
-    )).buffer.asUint8List();
-    final logo = pw.MemoryImage(logoBytes);
 
     document.addPage(
       pw.MultiPage(
@@ -137,10 +142,13 @@ class CompatibilityPdfExportService {
           textDirection: data.isRtl
               ? pw.TextDirection.rtl
               : pw.TextDirection.ltr,
-          theme: pw.ThemeData.withFont(base: regularFont, bold: boldFont),
+          theme: pw.ThemeData.withFont(
+            base: assets.regularFont,
+            bold: assets.boldFont,
+          ),
         ),
         build: (context) => [
-          _buildHeader(data, logo),
+          _buildHeader(data, assets.logo),
           pw.SizedBox(height: 18),
           _buildOverview(data),
           pw.SizedBox(height: 14),
@@ -257,6 +265,29 @@ class CompatibilityPdfExportService {
     );
 
     return document.save();
+  }
+
+  Future<_PdfAssetsBundle> _loadAssets() {
+    final cached = _cachedAssetsFuture;
+    if (cached != null) return cached;
+
+    final future = _buildAssetsBundle();
+    _cachedAssetsFuture = future;
+    return future;
+  }
+
+  Future<_PdfAssetsBundle> _buildAssetsBundle() async {
+    final regularFontData = await rootBundle.load('assets/fonts/arial.ttf');
+    final boldFontData = await rootBundle.load('assets/fonts/arialbd.ttf');
+    final logoBytes = (await rootBundle.load(
+      'assets/images/app_logo.png',
+    )).buffer.asUint8List();
+
+    return _PdfAssetsBundle(
+      regularFont: pw.Font.ttf(regularFontData),
+      boldFont: pw.Font.ttf(boldFontData),
+      logo: pw.MemoryImage(logoBytes),
+    );
   }
 
   pw.Widget _buildHeader(CompatibilityPdfReportData data, pw.MemoryImage logo) {

@@ -30,30 +30,10 @@ class ResourcesToolsHubScreen extends StatelessWidget {
           const _ToolsOverviewSection(),
           const SizedBox(height: 16),
           SectionCard(
-            title: context.tr('resourcesToolsHubContentSection'),
-            icon: Icons.menu_book_outlined,
-            child: _HubNavTile(
-              title: context.tr('educationalHub'),
-              subtitle: context.tr('featureEducationalHub'),
-              icon: Icons.menu_book_outlined,
-              onTap: () =>
-                  Navigator.pushNamed(context, AppRoutes.educationalHub),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SectionCard(
             title: context.tr('resourcesToolsHubToolsSection'),
             icon: Icons.handyman_outlined,
             child: Column(
               children: [
-                _HubNavTile(
-                  title: context.tr('relationshipTools'),
-                  subtitle: context.tr('featureRelationshipTools'),
-                  icon: Icons.favorite_border_rounded,
-                  onTap: () =>
-                      Navigator.pushNamed(context, AppRoutes.relationshipTools),
-                ),
-                const SizedBox(height: 12),
                 _HubNavTile(
                   title: context.tr('gratitudeBank'),
                   subtitle: context.tr('featureGratitudeBank'),
@@ -108,6 +88,7 @@ class _ToolsOverviewSection extends StatelessWidget {
           title: context.tr('toolsOverviewTitle'),
           icon: Icons.insights_outlined,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -118,13 +99,15 @@ class _ToolsOverviewSection extends StatelessWidget {
               LayoutBuilder(
                 builder: (context, constraints) {
                   final useSingleColumn = constraints.maxWidth < 430;
-                  return GridView.count(
+                  return GridView(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: useSingleColumn ? 1 : 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: useSingleColumn ? 3.2 : 1.45,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: useSingleColumn ? 1 : 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      mainAxisExtent: useSingleColumn ? 96 : 112,
+                    ),
                     children: [
                       _OverviewMetricCard(
                         label: context.tr('gratitudeBank'),
@@ -132,6 +115,10 @@ class _ToolsOverviewSection extends StatelessWidget {
                         helper: context.tr('toolsOverviewSavedItems'),
                         icon: Icons.volunteer_activism_outlined,
                         color: Colors.pink,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.gratitudeBank,
+                        ),
                       ),
                       _OverviewMetricCard(
                         label: context.tr('budgetBalance'),
@@ -139,6 +126,10 @@ class _ToolsOverviewSection extends StatelessWidget {
                         helper: context.tr('budgetPlanner'),
                         icon: Icons.account_balance_wallet_outlined,
                         color: Colors.teal,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.budgetPlanner,
+                        ),
                       ),
                       _OverviewMetricCard(
                         label: context.tr('remindersCenter'),
@@ -146,40 +137,58 @@ class _ToolsOverviewSection extends StatelessWidget {
                         helper: context.tr('toolsOverviewSavedPlans'),
                         icon: Icons.notifications_none_rounded,
                         color: Colors.indigo,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.remindersCenter,
+                        ),
                       ),
                     ],
                   );
                 },
               ),
               const SizedBox(height: 14),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.secondaryContainer.withValues(alpha: 0.35),
+              Material(
+                color: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(16),
+                child: InkWell(
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.gratitudeBank),
                   borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.tr('toolsOverviewLatestNote'),
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.tr('toolsOverviewLatestNote'),
+                                style: Theme.of(context).textTheme.labelLarge
+                                    ?.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          data.latestNotePreview.isEmpty
+                              ? context.tr('toolsOverviewNoData')
+                              : data.latestNotePreview,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(height: 1.35),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      data.latestNotePreview.isEmpty
-                          ? context.tr('toolsOverviewNoData')
-                          : data.latestNotePreview,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(height: 1.35),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -231,6 +240,7 @@ class _OverviewMetricCard extends StatelessWidget {
     required this.helper,
     required this.icon,
     required this.color,
+    required this.onTap,
   });
 
   final String label;
@@ -238,48 +248,62 @@ class _OverviewMetricCard extends StatelessWidget {
   final String helper;
   final IconData icon;
   final Color color;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withValues(alpha: 0.12)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 18, color: color),
-              const Spacer(),
+              Row(
+                children: [
+                  Icon(icon, size: 18, color: color),
+                  const Spacer(),
+                  Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
               Text(
-                value,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: color,
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                helper,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
           ),
-          const Spacer(),
-          Text(
-            label,
-            style: theme.textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            helper,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

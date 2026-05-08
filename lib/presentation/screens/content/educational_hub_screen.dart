@@ -18,6 +18,16 @@ class EducationalHubScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageCode = Localizations.localeOf(context).languageCode;
     final guideItems = repository.premaritalGuide();
+    final goldenSections = repository.goldenQuestionSections();
+    final redFlagSections = repository.redFlagSections();
+    final goldenQuestionCount = goldenSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
+    final redFlagCount = redFlagSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
 
     return AppPage(
       title: context.tr('educationalHub'),
@@ -28,6 +38,65 @@ class EducationalHubScreen extends StatelessWidget {
             title: context.tr('educationalHubIntroTitle'),
             icon: Icons.menu_book_outlined,
             child: Text(context.tr('educationalHubIntroBody')),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            title: context.tr('educationalHubOverviewTitle'),
+            icon: Icons.insights_outlined,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr('educationalHubOverviewBody'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 14),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useSingleColumn = constraints.maxWidth < 430;
+                    return GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: useSingleColumn ? 1 : 3,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: useSingleColumn ? 116 : 138,
+                      ),
+                      children: [
+                        _OverviewCard(
+                          label: context.tr('goldenQuestions'),
+                          value: goldenQuestionCount.toString(),
+                          helper: context.tr('goldenQuestionsSubtitle'),
+                          icon: Icons.forum_outlined,
+                          color: Colors.indigo,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.goldenQuestions,
+                          ),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('redFlags'),
+                          value: redFlagCount.toString(),
+                          helper: context.tr('redFlagsSubtitle'),
+                          icon: Icons.warning_amber_rounded,
+                          color: Colors.orange,
+                          onTap: () =>
+                              Navigator.pushNamed(context, AppRoutes.redFlags),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('premaritalGuide'),
+                          value: guideItems.length.toString(),
+                          helper: context.tr('educationalHubGuideHelper'),
+                          icon: Icons.lightbulb_outline_rounded,
+                          color: Colors.teal,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
           SectionCard(
@@ -69,6 +138,99 @@ class EducationalHubScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({
+    required this.label,
+    required this.value,
+    required this.helper,
+    required this.icon,
+    required this.color,
+    this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final String helper;
+  final IconData icon;
+  final Color color;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final card = Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: color),
+              const Spacer(),
+              Text(
+                value,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            label,
+            style: theme.textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            helper,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (onTap == null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: card,
+      );
+    }
+
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Stack(
+          children: [
+            Positioned.fill(child: card),
+            Positioned(
+              bottom: 14,
+              right: 14,
+              child: Icon(Icons.open_in_new_rounded, size: 15, color: color),
+            ),
+          ],
+        ),
       ),
     );
   }

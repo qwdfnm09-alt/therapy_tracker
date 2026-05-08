@@ -47,6 +47,48 @@ class AppStrings {
       'toolsOverviewSavedPlans': 'saved plans',
       'toolsOverviewLatestNote': 'Latest gratitude note',
       'toolsOverviewNoData': 'No saved local data yet.',
+      'educationalHubOverviewTitle': 'At a glance',
+      'educationalHubOverviewBody':
+          'Open the right collection faster by scanning the main educational groups first.',
+      'educationalHubGuideHelper':
+          'Short practical cards for calmer premarital discussions',
+      'relationshipToolsOverviewTitle': 'At a glance',
+      'relationshipToolsOverviewBody':
+          'Use these shortcuts to move faster to the section you want inside the relationship tools screen.',
+      'relationshipToolsOverviewUsage':
+          '3 short rules to keep the tools practical and realistic',
+      'gratitudeBankOverviewTitle': 'At a glance',
+      'gratitudeBankOverviewBody':
+          'Use the summary first, then jump directly to writing or reviewing saved appreciation notes.',
+      'gratitudeBankOverviewActionHelper':
+          'Jump directly to the writing section',
+      'gratitudeBankOverviewLatestTitle': 'Latest saved note',
+      'budgetPlannerOverviewTitle': 'At a glance',
+      'budgetPlannerOverviewBody':
+          'Use the quick overview first, then jump directly to the summary, writing section, or saved entries.',
+      'budgetPlannerOverviewSummaryHelper':
+          'Jump directly to the money summary section',
+      'budgetPlannerOverviewActionHelper': 'Jump directly to the entry form',
+      'budgetPlannerOverviewEntriesHelper':
+          'Jump directly to the saved entries section',
+      'budgetPlannerOverviewLatestTitle': 'Latest saved entry',
+      'remindersCenterOverviewTitle': 'At a glance',
+      'remindersCenterOverviewBody':
+          'Use the quick overview first, then jump directly to writing or reviewing saved reminder plans.',
+      'remindersCenterOverviewActionHelper':
+          'Jump directly to the reminder form',
+      'remindersCenterOverviewLatestTitle': 'Latest saved reminder',
+      'bookingHistoryOverviewTitle': 'At a glance',
+      'bookingHistoryOverviewBody':
+          'Use this summary first to review the booking history count and the latest request state.',
+      'bookingHistoryOverviewCountHelper':
+          'Total locally saved booking requests',
+      'bookingHistoryOverviewStatusHelper':
+          'Latest send result in the current history order',
+      'bookingHistoryOverviewLatestTitle': 'Latest booking summary',
+      'useLatestBooking': 'Use latest booking details',
+      'latestBookingApplied': 'Latest booking details applied to the form.',
+      'startNewBooking': 'Start new booking',
       'resourcesToolsHubIntroTitle':
           'One place for the added content and tools',
       'resourcesToolsHubIntroBody':
@@ -550,6 +592,44 @@ class AppStrings {
       'toolsOverviewSavedPlans': 'خطط محفوظة',
       'toolsOverviewLatestNote': 'أحدث ملاحظة امتنان',
       'toolsOverviewNoData': 'لا توجد بيانات محلية محفوظة بعد.',
+      'educationalHubOverviewTitle': 'نظرة سريعة',
+      'educationalHubOverviewBody':
+          'افتح المجموعة المناسبة أسرع عبر قراءة الملامح الرئيسية للمحتوى التوعوي أولًا.',
+      'educationalHubGuideHelper':
+          'بطاقات عملية قصيرة لنقاشات ما قبل الزواج بشكل أهدأ',
+      'relationshipToolsOverviewTitle': 'نظرة سريعة',
+      'relationshipToolsOverviewBody':
+          'استخدم هذه الاختصارات للوصول أسرع إلى القسم الذي تريده داخل شاشة أدوات العلاقة.',
+      'relationshipToolsOverviewUsage':
+          '3 قواعد قصيرة لتبقى الأدوات عملية وواقعية',
+      'gratitudeBankOverviewTitle': 'نظرة سريعة',
+      'gratitudeBankOverviewBody':
+          'ابدأ بالملخص ثم انتقل مباشرة إلى كتابة الملاحظة أو مراجعة الملاحظات المحفوظة.',
+      'gratitudeBankOverviewActionHelper': 'انتقل مباشرة إلى قسم الكتابة',
+      'gratitudeBankOverviewLatestTitle': 'آخر ملاحظة محفوظة',
+      'budgetPlannerOverviewTitle': 'نظرة سريعة',
+      'budgetPlannerOverviewBody':
+          'ابدأ بالقراءة السريعة ثم انتقل مباشرة إلى الملخص أو قسم الإضافة أو البنود المحفوظة.',
+      'budgetPlannerOverviewSummaryHelper': 'انتقل مباشرة إلى قسم ملخص المال',
+      'budgetPlannerOverviewActionHelper': 'انتقل مباشرة إلى نموذج الإدخال',
+      'budgetPlannerOverviewEntriesHelper':
+          'انتقل مباشرة إلى قسم البنود المحفوظة',
+      'budgetPlannerOverviewLatestTitle': 'آخر بند محفوظ',
+      'remindersCenterOverviewTitle': 'نظرة سريعة',
+      'remindersCenterOverviewBody':
+          'ابدأ بالقراءة السريعة ثم انتقل مباشرة إلى كتابة الخطة أو مراجعة خطط التذكير المحفوظة.',
+      'remindersCenterOverviewActionHelper': 'انتقل مباشرة إلى نموذج التذكير',
+      'remindersCenterOverviewLatestTitle': 'آخر خطة تذكير محفوظة',
+      'bookingHistoryOverviewTitle': 'نظرة سريعة',
+      'bookingHistoryOverviewBody':
+          'ابدأ بهذا الملخص لمراجعة عدد طلبات الحجز وحالة آخر طلب داخل السجل الحالي.',
+      'bookingHistoryOverviewCountHelper': 'إجمالي طلبات الحجز المحفوظة محليًا',
+      'bookingHistoryOverviewStatusHelper':
+          'آخر نتيجة إرسال حسب ترتيب السجل الحالي',
+      'bookingHistoryOverviewLatestTitle': 'ملخص آخر حجز',
+      'useLatestBooking': 'استخدم بيانات آخر حجز',
+      'latestBookingApplied': 'تم تطبيق بيانات آخر حجز على النموذج.',
+      'startNewBooking': 'ابدأ حجزًا جديدًا',
       'resourcesToolsHubIntroTitle':
           'مكان واحد للمحتوى والأدوات التي أُضيفت لاحقًا',
       'resourcesToolsHubIntroBody':

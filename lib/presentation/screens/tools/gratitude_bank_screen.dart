@@ -66,6 +66,8 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final addSectionKey = GlobalKey();
+    final savedSectionKey = GlobalKey();
 
     return AppPage(
       title: context.tr('gratitudeBank'),
@@ -79,6 +81,90 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            title: context.tr('gratitudeBankOverviewTitle'),
+            icon: Icons.insights_outlined,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr('gratitudeBankOverviewBody'),
+                  style: theme.textTheme.bodySmall,
+                ),
+                const SizedBox(height: 14),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useSingleColumn = constraints.maxWidth < 430;
+                    return GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: useSingleColumn ? 1 : 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: useSingleColumn ? 100 : 116,
+                      ),
+                      children: [
+                        _OverviewCard(
+                          label: context.tr('gratitudeBankSavedTitle'),
+                          value: _notes.length.toString(),
+                          helper: context.tr('toolsOverviewSavedItems'),
+                          icon: Icons.bookmark_border_rounded,
+                          color: Colors.pink,
+                          onTap: () =>
+                              _scrollToSection(savedSectionKey.currentContext),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('gratitudeBankAddTitle'),
+                          value: _notes.isEmpty ? '0' : '1',
+                          helper: context.tr(
+                            'gratitudeBankOverviewActionHelper',
+                          ),
+                          icon: Icons.edit_note_rounded,
+                          color: Colors.teal,
+                          onTap: () =>
+                              _scrollToSection(addSectionKey.currentContext),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondaryContainer.withValues(
+                      alpha: 0.3,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.tr('gratitudeBankOverviewLatestTitle'),
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _notes.isEmpty
+                            ? context.tr('toolsOverviewNoData')
+                            : _notes.first.text,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            key: addSectionKey,
             title: context.tr('gratitudeBankAddTitle'),
             icon: Icons.edit_note_rounded,
             child: Form(
@@ -130,6 +216,7 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            key: savedSectionKey,
             title: context.tr('gratitudeBankSavedTitle'),
             icon: Icons.bookmark_border_rounded,
             child: _isLoading
@@ -149,6 +236,96 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+void _scrollToSection(BuildContext? sectionContext) {
+  if (sectionContext == null) return;
+  Scrollable.ensureVisible(
+    sectionContext,
+    duration: const Duration(milliseconds: 280),
+    curve: Curves.easeOutCubic,
+    alignment: 0.08,
+  );
+}
+
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({
+    required this.label,
+    required this.value,
+    required this.helper,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final String helper;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, size: 18, color: color),
+                  const Spacer(),
+                  Text(
+                    value,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      helper,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.arrow_downward_rounded, size: 15, color: color),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

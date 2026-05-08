@@ -19,6 +19,8 @@ class RemindersCenterScreen extends StatefulWidget {
 
 class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _addSectionKey = GlobalKey();
+  final _savedSectionKey = GlobalKey();
   final _titleController = TextEditingController();
   final _scheduleController = TextEditingController();
   final _noteController = TextEditingController();
@@ -103,6 +105,93 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            title: context.tr('remindersCenterOverviewTitle'),
+            icon: Icons.insights_outlined,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr('remindersCenterOverviewBody'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 14),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useSingleColumn = constraints.maxWidth < 430;
+                    return GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: useSingleColumn ? 1 : 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: useSingleColumn ? 108 : 120,
+                      ),
+                      children: [
+                        _OverviewCard(
+                          label: context.tr('remindersCenterSavedTitle'),
+                          value: _entries.length.toString(),
+                          helper: context.tr('toolsOverviewSavedPlans'),
+                          icon: Icons.notifications_active_outlined,
+                          color: Colors.indigo,
+                          onTap: () =>
+                              _scrollToSection(_savedSectionKey.currentContext),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('remindersCenterAddTitle'),
+                          value: '+',
+                          helper: context.tr(
+                            'remindersCenterOverviewActionHelper',
+                          ),
+                          icon: Icons.add_alert_rounded,
+                          color: Colors.teal,
+                          onTap: () =>
+                              _scrollToSection(_addSectionKey.currentContext),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondaryContainer.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        context.tr('remindersCenterOverviewLatestTitle'),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        _entries.isEmpty
+                            ? context.tr('toolsOverviewNoData')
+                            : _buildLatestReminderPreview(
+                                context,
+                                _entries.first,
+                              ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(height: 1.35),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            key: _addSectionKey,
             title: context.tr('remindersCenterAddTitle'),
             icon: Icons.add_alert_rounded,
             child: Form(
@@ -198,6 +287,7 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            key: _savedSectionKey,
             title: context.tr('remindersCenterSavedTitle'),
             icon: Icons.notifications_active_outlined,
             child: _isLoading
@@ -218,6 +308,112 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
                   ),
           ),
         ],
+      ),
+    );
+  }
+
+  String _buildLatestReminderPreview(
+    BuildContext context,
+    ReminderEntry entry,
+  ) {
+    return '${_categoryLabel(context, entry.category)} • ${entry.scheduleLabel}';
+  }
+
+  String _categoryLabel(BuildContext context, String category) {
+    return switch (category) {
+      'checkIn' => context.tr('reminderCategoryCheckIn'),
+      'gratitude' => context.tr('reminderCategoryGratitude'),
+      'budget' => context.tr('reminderCategoryBudget'),
+      _ => context.tr('reminderCategoryCustom'),
+    };
+  }
+}
+
+void _scrollToSection(BuildContext? sectionContext) {
+  if (sectionContext == null) return;
+  Scrollable.ensureVisible(
+    sectionContext,
+    duration: const Duration(milliseconds: 280),
+    curve: Curves.easeOutCubic,
+    alignment: 0.08,
+  );
+}
+
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({
+    required this.label,
+    required this.value,
+    required this.helper,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final String helper;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, size: 18, color: color),
+                  const Spacer(),
+                  Text(
+                    value,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      helper,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.arrow_downward_rounded, size: 15, color: color),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

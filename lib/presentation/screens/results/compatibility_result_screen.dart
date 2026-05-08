@@ -438,6 +438,13 @@ class _PdfOptionsScreen extends StatefulWidget {
 
 class _PdfOptionsScreenState extends State<_PdfOptionsScreen> {
   String? _statusMessage;
+  late final Future<Uint8List> _pdfFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _pdfFuture = widget.service.buildPdfBytes(widget.data);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -446,7 +453,7 @@ class _PdfOptionsScreenState extends State<_PdfOptionsScreen> {
     return AppPage(
       title: context.tr('pdfReadyTitle'),
       child: FutureBuilder<Uint8List>(
-        future: widget.service.buildPdfBytes(widget.data),
+        future: _pdfFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return Center(

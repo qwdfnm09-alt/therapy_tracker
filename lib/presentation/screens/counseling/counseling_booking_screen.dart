@@ -12,10 +12,7 @@ import '../../../domain/services/booking_submission_service.dart';
 import '../../providers/app_state.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
-  const CounselingBookingScreen({
-    super.key,
-    this.submissionService,
-  });
+  const CounselingBookingScreen({super.key, this.submissionService});
 
   final BookingSubmissionService? submissionService;
 
@@ -124,13 +121,24 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
                     const SizedBox(height: 16),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: OutlinedButton.icon(
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.bookingHistory,
-                        ),
-                        icon: const Icon(Icons.history_rounded),
-                        label: Text(context.tr('viewBookingHistory')),
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: () => _applyLatestBooking(latestBooking),
+                            icon: const Icon(Icons.restore_rounded),
+                            label: Text(context.tr('useLatestBooking')),
+                          ),
+                          OutlinedButton.icon(
+                            onPressed: () => Navigator.pushNamed(
+                              context,
+                              AppRoutes.bookingHistory,
+                            ),
+                            icon: const Icon(Icons.history_rounded),
+                            label: Text(context.tr('viewBookingHistory')),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -306,6 +314,22 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
     }
   }
 
+  void _applyLatestBooking(Map<String, String> booking) {
+    final sessionType = booking['sessionType'];
+    _phoneController.text = booking['phone'] ?? '';
+    _dateController.text = booking['preferredDate'] ?? '';
+    _messageController.text = booking['message'] ?? '';
+    setState(() {
+      _sessionType = switch (sessionType) {
+        'family' || 'individual' || 'coaching' => sessionType!,
+        _ => 'family',
+      };
+    });
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+      SnackBar(content: Text(context.tr('latestBookingApplied'))),
+    );
+  }
+
   String _sessionTypeLabel(String? value) {
     return switch (value) {
       'family' => context.tr('sessionTypeFamily'),
@@ -377,7 +401,8 @@ class _BookingConfirmationPage extends StatefulWidget {
   final BookingSubmissionService submissionService;
 
   @override
-  State<_BookingConfirmationPage> createState() => _BookingConfirmationPageState();
+  State<_BookingConfirmationPage> createState() =>
+      _BookingConfirmationPageState();
 }
 
 class _BookingConfirmationPageState extends State<_BookingConfirmationPage> {
@@ -434,8 +459,9 @@ class _BookingConfirmationPageState extends State<_BookingConfirmationPage> {
                     OutlinedButton.icon(
                       onPressed: () => _openBookingAction(
                         nextChannel: 'sms',
-                        action: () =>
-                            _submissionService.openSms(widget.submission.messageText),
+                        action: () => _submissionService.openSms(
+                          widget.submission.messageText,
+                        ),
                       ),
                       icon: const Icon(Icons.sms_outlined),
                       label: Text(context.tr('openSms')),
@@ -497,11 +523,10 @@ class _BookingConfirmationPageState extends State<_BookingConfirmationPage> {
 
   BookingSubmissionService get _submissionService => widget.submissionService;
 
-  Future<void> _openBookingAction(
-    {required String nextChannel,
+  Future<void> _openBookingAction({
+    required String nextChannel,
     required Future<bool> Function() action,
-    }
-  ) async {
+  }) async {
     final opened = await action();
     if (!mounted) return;
     if (opened) {

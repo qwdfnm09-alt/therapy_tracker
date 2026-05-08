@@ -39,6 +39,21 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, AppRoutes.counseling),
       ),
       _FeatureItem(
+        title: context.tr('educationalHub'),
+        subtitle: context.tr('featureEducationalHub'),
+        icon: Icons.menu_book_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.educationalHub),
+      ),
+      _FeatureItem(
+        title: context.tr('relationshipTools'),
+        subtitle: context.tr('featureRelationshipTools'),
+        icon: Icons.favorite_border_rounded,
+        enabled: true,
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.relationshipTools),
+      ),
+      _FeatureItem(
         title: context.tr('resourcesToolsHub'),
         subtitle: context.tr('featureResourcesToolsHub'),
         icon: Icons.widgets_outlined,

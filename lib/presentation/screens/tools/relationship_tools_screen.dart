@@ -18,6 +18,9 @@ class RelationshipToolsScreen extends StatelessWidget {
     final languageCode = Localizations.localeOf(context).languageCode;
     final loveLanguages = repository.loveLanguages();
     final weeklyChallenges = repository.weeklyChallenges();
+    final loveLanguagesKey = GlobalKey();
+    final weeklyChallengesKey = GlobalKey();
+    final usageKey = GlobalKey();
 
     return AppPage(
       title: context.tr('relationshipTools'),
@@ -31,6 +34,67 @@ class RelationshipToolsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            title: context.tr('relationshipToolsOverviewTitle'),
+            icon: Icons.insights_outlined,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr('relationshipToolsOverviewBody'),
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 14),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final useSingleColumn = constraints.maxWidth < 430;
+                    return GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: useSingleColumn ? 1 : 3,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: useSingleColumn ? 126 : 146,
+                      ),
+                      children: [
+                        _OverviewCard(
+                          label: context.tr('loveLanguagesTitle'),
+                          value: loveLanguages.length.toString(),
+                          helper: context.tr('loveLanguagesBody'),
+                          icon: Icons.favorite_outline_rounded,
+                          color: Colors.pink,
+                          onTap: () =>
+                              _scrollToSection(loveLanguagesKey.currentContext),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('weeklyChallengesTitle'),
+                          value: weeklyChallenges.length.toString(),
+                          helper: context.tr('weeklyChallengesBody'),
+                          icon: Icons.flag_outlined,
+                          color: Colors.teal,
+                          onTap: () => _scrollToSection(
+                            weeklyChallengesKey.currentContext,
+                          ),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('relationshipToolsUsageTitle'),
+                          value: '3',
+                          helper: context.tr('relationshipToolsOverviewUsage'),
+                          icon: Icons.rule_rounded,
+                          color: Colors.indigo,
+                          onTap: () =>
+                              _scrollToSection(usageKey.currentContext),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            key: loveLanguagesKey,
             title: context.tr('loveLanguagesTitle'),
             icon: Icons.favorite_outline_rounded,
             child: Column(
@@ -54,6 +118,7 @@ class RelationshipToolsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            key: weeklyChallengesKey,
             title: context.tr('weeklyChallengesTitle'),
             icon: Icons.flag_outlined,
             child: Column(
@@ -78,6 +143,7 @@ class RelationshipToolsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            key: usageKey,
             title: context.tr('relationshipToolsUsageTitle'),
             icon: Icons.rule_rounded,
             child: Column(
@@ -90,6 +156,96 @@ class RelationshipToolsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+void _scrollToSection(BuildContext? sectionContext) {
+  if (sectionContext == null) return;
+  Scrollable.ensureVisible(
+    sectionContext,
+    duration: const Duration(milliseconds: 280),
+    curve: Curves.easeOutCubic,
+    alignment: 0.08,
+  );
+}
+
+class _OverviewCard extends StatelessWidget {
+  const _OverviewCard({
+    required this.label,
+    required this.value,
+    required this.helper,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final String label;
+  final String value;
+  final String helper;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: color.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, size: 18, color: color),
+                  const Spacer(),
+                  Text(
+                    value,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      helper,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.arrow_downward_rounded, size: 15, color: color),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
