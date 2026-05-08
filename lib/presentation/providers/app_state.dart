@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../data/local/local_storage_service.dart';
 import '../../domain/models/compatibility_result.dart';
 import '../../domain/models/participant_profile.dart';

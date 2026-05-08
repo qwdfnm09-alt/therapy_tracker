@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../domain/models/compatibility_result.dart';
 import '../../domain/models/participant_profile.dart';
 

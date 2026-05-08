@@ -9,6 +9,7 @@ class AppRoutes {
   static const counseling = '/counseling';
   static const bookingHistory = '/booking-history';
   static const educationalHub = '/educational-hub';
+  static const resourcesToolsHub = '/resources-tools-hub';
   static const goldenQuestions = '/golden-questions';
   static const redFlags = '/red-flags';
   static const relationshipTools = '/relationship-tools';

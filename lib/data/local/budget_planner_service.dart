@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../domain/models/budget_entry.dart';
 
 class BudgetPlannerService {

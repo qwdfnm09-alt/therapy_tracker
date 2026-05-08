@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/clinic_contact.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';

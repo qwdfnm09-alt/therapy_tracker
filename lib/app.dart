@@ -12,6 +12,7 @@ import 'presentation/screens/content/golden_questions_screen.dart';
 import 'presentation/screens/content/red_flags_screen.dart';
 import 'presentation/screens/forms/participant_form_screen.dart';
 import 'presentation/screens/home/home_screen.dart';
+import 'presentation/screens/home/resources_tools_hub_screen.dart';
 import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
@@ -57,6 +58,7 @@ class PreMaritalMatchApp extends StatelessWidget {
         AppRoutes.counseling: (_) => const CounselingBookingScreen(),
         AppRoutes.bookingHistory: (_) => const BookingHistoryScreen(),
         AppRoutes.educationalHub: (_) => const EducationalHubScreen(),
+        AppRoutes.resourcesToolsHub: (_) => const ResourcesToolsHubScreen(),
         AppRoutes.goldenQuestions: (_) => const GoldenQuestionsScreen(),
         AppRoutes.redFlags: (_) => const RedFlagsScreen(),
         AppRoutes.relationshipTools: (_) => const RelationshipToolsScreen(),

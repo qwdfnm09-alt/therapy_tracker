@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../core/constants/app_routes.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';

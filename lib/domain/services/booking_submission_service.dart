@@ -1,5 +1,4 @@
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../core/constants/clinic_contact.dart';
 
 class BookingSubmissionResult {

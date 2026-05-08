@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-
 import '../../presentation/providers/app_state.dart';
 
 class AppStrings {
@@ -22,6 +21,8 @@ class AppStrings {
       'featurePersonality': 'Open the compatibility questions for both users',
       'featureResults': 'Review the latest calculated compatibility report',
       'featureCounseling': 'Book a counseling or coaching request',
+      'featureResourcesToolsHub':
+          'Open the educational content and practical family tools from one organized place',
       'featureEducationalHub':
           'Read practical pre-marriage guidance, key questions, and warning signs',
       'featureRelationshipTools':
@@ -34,10 +35,24 @@ class AppStrings {
           'Plan small recurring reminders locally for check-ins, gratitude, and budget follow-up',
       'featureSettings': 'Change language, theme, and clear saved data',
       'educationalHub': 'Educational Hub',
+      'resourcesToolsHub': 'Resources & Tools',
       'relationshipTools': 'Relationship tools',
       'gratitudeBank': 'Gratitude Bank',
       'budgetPlanner': 'Budget Planner',
       'remindersCenter': 'Reminders Center',
+      'toolsOverviewTitle': 'Saved overview',
+      'toolsOverviewBody':
+          'A quick read of the local items already saved in the practical tools.',
+      'toolsOverviewSavedItems': 'saved items',
+      'toolsOverviewSavedPlans': 'saved plans',
+      'toolsOverviewLatestNote': 'Latest gratitude note',
+      'toolsOverviewNoData': 'No saved local data yet.',
+      'resourcesToolsHubIntroTitle':
+          'One place for the added content and tools',
+      'resourcesToolsHubIntroBody':
+          'This screen keeps Home focused on the main journey while giving the newer content and support tools a clearer structure.',
+      'resourcesToolsHubContentSection': 'Reading and conversation support',
+      'resourcesToolsHubToolsSection': 'Practical follow-up tools',
       'educationalHubIntroTitle': 'A careful reading layer around the score',
       'educationalHubIntroBody':
           'This section does not change your compatibility result. It helps both people translate the result into clearer conversations and better judgment before commitment.',
@@ -510,6 +525,8 @@ class AppStrings {
       'featurePersonality': 'افتح أسئلة التوافق للشخصين',
       'featureResults': 'راجع آخر تقرير توافق تم حسابه',
       'featureCounseling': 'أرسل طلب حجز استشارة أو جلسة تأهيل',
+      'featureResourcesToolsHub':
+          'افتح المحتوى التوعوي والأدوات العملية من مكان منظم واحد',
       'featureEducationalHub':
           'اقرأ محتوى عملي قبل الزواج وأسئلة مهمة وعلامات تحذير',
       'featureRelationshipTools':
@@ -521,10 +538,24 @@ class AppStrings {
           'خطط لتذكيرات صغيرة محليًا للمتابعة والامتنان ومراجعة المال',
       'featureSettings': 'غيّر اللغة والمظهر وامسح البيانات المحفوظة',
       'educationalHub': 'المكتبة التوعوية',
+      'resourcesToolsHub': 'المحتوى والأدوات',
       'relationshipTools': 'أدوات العلاقة',
       'gratitudeBank': 'حصالة الامتنان',
       'budgetPlanner': 'مخطط الميزانية',
       'remindersCenter': 'مركز التذكيرات',
+      'toolsOverviewTitle': 'ملخص محفوظ',
+      'toolsOverviewBody':
+          'قراءة سريعة للعناصر المحلية المحفوظة بالفعل داخل الأدوات العملية.',
+      'toolsOverviewSavedItems': 'عناصر محفوظة',
+      'toolsOverviewSavedPlans': 'خطط محفوظة',
+      'toolsOverviewLatestNote': 'أحدث ملاحظة امتنان',
+      'toolsOverviewNoData': 'لا توجد بيانات محلية محفوظة بعد.',
+      'resourcesToolsHubIntroTitle':
+          'مكان واحد للمحتوى والأدوات التي أُضيفت لاحقًا',
+      'resourcesToolsHubIntroBody':
+          'هذه الشاشة تُبقي الصفحة الرئيسية مركزة على المسار الأساسي، وتجمع المحتوى والأدوات المساندة بشكل أوضح وأسهل.',
+      'resourcesToolsHubContentSection': 'محتوى للقراءة ودعم النقاش',
+      'resourcesToolsHubToolsSection': 'أدوات عملية للمتابعة',
       'educationalHubIntroTitle': 'طبقة قراءة أهدأ حول النتيجة',
       'educationalHubIntroBody':
           'هذا القسم لا يغيّر نتيجة التوافق نفسها، لكنه يساعد الطرفين على تحويل النتيجة إلى نقاش أوضح وحكم أهدأ قبل الالتزام.',
