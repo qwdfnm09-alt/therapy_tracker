@@ -5,7 +5,7 @@ import '../../presentation/providers/app_state.dart';
 class AppStrings {
   static const _values = <String, Map<String, String>>{
     'en': {
-      'appName': 'Taalof',
+      'appName': 'ميثاق 360',
       'tagline': 'Marriage compatibility and family counseling',
       'startAssessment': 'Start assessment',
       'startUsage': 'Start Usage',
@@ -13,7 +13,7 @@ class AppStrings {
       'settings': 'Settings',
       'welcomeTitle': 'Build a clearer marriage decision',
       'welcomeBody':
-          'Evaluate personality, emotions, lifestyle, expectations, and family boundaries before marriage.',
+          'Evaluate personality, emotions, lifestyle, expectations, and family boundaries before marriage and after.',
       'homeTitle': 'Choose the feature you want to open',
       'homeBody':
           'Start the assessment flow, open the test, review the latest result, or go directly to counseling and settings.',
@@ -551,7 +551,7 @@ class AppStrings {
       'localOnly': 'Local prototype. Firebase can be connected later.',
     },
     'ar': {
-      'appName': 'Taalof',
+      'appName': 'ميثاق 360',
       'tagline': 'توافق الزواج والاستشارات الأسرية',
       'startAssessment': 'ابدأ التقييم',
       'startUsage': 'ابدأ الاستخدام',
@@ -559,7 +559,7 @@ class AppStrings {
       'settings': 'الإعدادات',
       'welcomeTitle': 'اتخذ قرار زواج أوضح',
       'welcomeBody':
-          'قيّم الشخصية والمشاعر ونمط الحياة والتوقعات والحدود الأسرية قبل الزواج.',
+          'قيّم الشخصية والمشاعر ونمط الحياة والتوقعات والحدود الأسرية قبل وبعد الزواج.',
       'homeTitle': 'اختر الميزة التي تريد فتحها',
       'homeBody':
           'ابدأ التقييم، وافتح الاختبار، وراجع آخر نتيجة، أو ادخل مباشرة إلى الحجز والإعدادات.',

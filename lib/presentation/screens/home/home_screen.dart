@@ -32,13 +32,6 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, AppRoutes.results),
       ),
       _FeatureItem(
-        title: context.tr('booking'),
-        subtitle: context.tr('featureCounseling'),
-        icon: Icons.calendar_month_outlined,
-        enabled: true,
-        onPressed: () => Navigator.pushNamed(context, AppRoutes.counseling),
-      ),
-      _FeatureItem(
         title: context.tr('educationalHub'),
         subtitle: context.tr('featureEducationalHub'),
         icon: Icons.menu_book_outlined,
@@ -60,6 +53,13 @@ class HomeScreen extends StatelessWidget {
         enabled: true,
         onPressed: () =>
             Navigator.pushNamed(context, AppRoutes.resourcesToolsHub),
+      ),
+      _FeatureItem(
+        title: context.tr('booking'),
+        subtitle: context.tr('featureCounseling'),
+        icon: Icons.calendar_month_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.counseling),
       ),
       _FeatureItem(
         title: context.tr('settings'),
@@ -90,13 +90,13 @@ class HomeScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  theme.colorScheme.primary,
-                  theme.colorScheme.primaryContainer.withBlue(200),
+                  Color(0xFF8787ED),
+                  Color(0xFF7984DD),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(50),
               boxShadow: [
                 BoxShadow(
                   color: theme.colorScheme.primary.withValues(alpha: 0.25),
@@ -115,7 +115,7 @@ class HomeScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            context.tr('homeTitle'),
+                            context.tr('welcomeTitle'),
                             style: theme.textTheme.headlineSmall?.copyWith(
                               color: theme.colorScheme.onPrimary,
                               fontWeight: FontWeight.w900,
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            context.tr('homeBody'),
+                            context.tr('welcomeBody'),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onPrimary.withValues(
                                 alpha: 0.85,
@@ -205,7 +205,7 @@ class HomeScreen extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: useSingleColumn ? 1 : 2,
-                    mainAxisSpacing: 12,
+                    mainAxisSpacing: 18,
                     crossAxisSpacing: 12,
                     childAspectRatio: useSingleColumn ? 2.15 : 1.08,
                   ),

@@ -13,7 +13,7 @@ class SectionCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(30),
         side: BorderSide(
           color: theme.colorScheme.outlineVariant.withValues(alpha: 0.45),
         ),
@@ -40,7 +40,7 @@ class SectionCard extends StatelessWidget {
                       ),
                       child: Icon(
                         icon,
-                        size: 18,
+                        size: 20,
                         color: theme.colorScheme.primary,
                       ),
                     ),

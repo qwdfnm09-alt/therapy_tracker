@@ -109,8 +109,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     },
                     style: FilledButton.styleFrom(
                       backgroundColor: Color.lerp(
-                        theme.colorScheme.primary,
-                        Colors.black,
+                        Color(0xFF303065),
+                        Color(0xFF2C2C5C),
                         0.4,
                       ),
                       foregroundColor: theme.colorScheme.onPrimary,
@@ -119,7 +119,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                       ),
 
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 50,
+                        horizontal: 60,
                         vertical: 15,
                       ),
                       textStyle: const TextStyle(
@@ -134,7 +134,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               ),
 
               // 🟢 مسافة تحت
-              const Spacer(flex: 1),
+              const SizedBox(height: 40),
             ],
           ),
         ],

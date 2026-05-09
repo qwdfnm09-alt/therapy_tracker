@@ -33,7 +33,7 @@ class PreMaritalMatchApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Taalof',
+      title: 'ميثاق',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: appState.themeMode,
