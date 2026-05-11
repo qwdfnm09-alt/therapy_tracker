@@ -3,6 +3,7 @@ import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../data/local/gratitude_bank_service.dart';
+import '../../../domain/models/gratitude_bank_summary.dart';
 import '../../../domain/models/gratitude_note.dart';
 
 class GratitudeBankScreen extends StatefulWidget {
@@ -68,6 +69,7 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
     final theme = Theme.of(context);
     final addSectionKey = GlobalKey();
     final savedSectionKey = GlobalKey();
+    final summary = widget.service.buildSummary(_notes);
 
     return AppPage(
       title: context.tr('gratitudeBank'),
@@ -164,6 +166,12 @@ class _GratitudeBankScreenState extends State<GratitudeBankScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            title: context.tr('gratitudeBankSummaryTitle'),
+            icon: Icons.calendar_month_outlined,
+            child: _GratitudeSummaryCard(summary: summary),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
             key: addSectionKey,
             title: context.tr('gratitudeBankAddTitle'),
             icon: Icons.edit_note_rounded,
@@ -249,6 +257,117 @@ void _scrollToSection(BuildContext? sectionContext) {
     curve: Curves.easeOutCubic,
     alignment: 0.08,
   );
+}
+
+class _GratitudeSummaryCard extends StatelessWidget {
+  const _GratitudeSummaryCard({required this.summary});
+
+  final GratitudeBankSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.tr('gratitudeBankSummaryBody'),
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final useSingleColumn = constraints.maxWidth < 430;
+            return GridView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: useSingleColumn ? 1 : 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                mainAxisExtent: useSingleColumn ? 86 : 104,
+              ),
+              children: [
+                _SummaryMetricCard(
+                  label: context.tr('gratitudeBankSummaryTotalLabel'),
+                  value: summary.totalNotes.toString(),
+                  color: Colors.pink,
+                ),
+                _SummaryMetricCard(
+                  label: context.tr('gratitudeBankSummaryMonthLabel'),
+                  value: summary.notesThisMonth.toString(),
+                  color: Colors.teal,
+                ),
+                _SummaryMetricCard(
+                  label: context.tr('gratitudeBankSummaryLatestLabel'),
+                  value: summary.latestCreatedAtIso == null
+                      ? context.tr('gratitudeBankSummaryNoDate')
+                      : _formatDate(summary.latestCreatedAtIso!),
+                  color: Colors.indigo,
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  String _formatDate(String raw) {
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return raw;
+    final day = parsed.day.toString().padLeft(2, '0');
+    final month = parsed.month.toString().padLeft(2, '0');
+    return '$day/$month/${parsed.year}';
+  }
+}
+
+class _SummaryMetricCard extends StatelessWidget {
+  const _SummaryMetricCard({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w900,
+              color: color,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _OverviewCard extends StatelessWidget {

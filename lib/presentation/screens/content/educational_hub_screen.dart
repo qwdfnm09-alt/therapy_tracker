@@ -20,11 +20,31 @@ class EducationalHubScreen extends StatelessWidget {
     final guideItems = repository.premaritalGuide();
     final goldenSections = repository.goldenQuestionSections();
     final redFlagSections = repository.redFlagSections();
+    final rightsSections = repository.rightsAndDutiesSections();
+    final inLawsSections = repository.inLawsGuideSections();
+    final readinessSections = repository.marriageReadinessSections();
+    final heritageSections = repository.heritageAwarenessSections();
     final goldenQuestionCount = goldenSections.fold<int>(
       0,
       (sum, section) => sum + section.items.length,
     );
     final redFlagCount = redFlagSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
+    final rightsCount = rightsSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
+    final inLawsCount = inLawsSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
+    final readinessCount = readinessSections.fold<int>(
+      0,
+      (sum, section) => sum + section.items.length,
+    );
+    final heritageCount = heritageSections.fold<int>(
       0,
       (sum, section) => sum + section.items.length,
     );
@@ -61,7 +81,7 @@ class EducationalHubScreen extends StatelessWidget {
                         crossAxisCount: useSingleColumn ? 1 : 3,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        mainAxisExtent: useSingleColumn ? 116 : 138,
+                        mainAxisExtent: useSingleColumn ? 116 : 152,
                       ),
                       children: [
                         _OverviewCard(
@@ -91,6 +111,50 @@ class EducationalHubScreen extends StatelessWidget {
                           icon: Icons.lightbulb_outline_rounded,
                           color: Colors.teal,
                         ),
+                        _OverviewCard(
+                          label: context.tr('rightsAndDuties'),
+                          value: rightsCount.toString(),
+                          helper: context.tr('rightsAndDutiesSubtitle'),
+                          icon: Icons.gavel_rounded,
+                          color: Colors.blueGrey,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.rightsAndDuties,
+                          ),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('inLawsGuide'),
+                          value: inLawsCount.toString(),
+                          helper: context.tr('inLawsGuideSubtitle'),
+                          icon: Icons.people_outline_rounded,
+                          color: Colors.deepPurple,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.inLawsGuide,
+                          ),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('marriageReadinessCard'),
+                          value: readinessCount.toString(),
+                          helper: context.tr('marriageReadinessSubtitle'),
+                          icon: Icons.verified_user_outlined,
+                          color: Colors.green,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.marriageReadiness,
+                          ),
+                        ),
+                        _OverviewCard(
+                          label: context.tr('heritageAwareness'),
+                          value: heritageCount.toString(),
+                          helper: context.tr('heritageAwarenessSubtitle'),
+                          icon: Icons.auto_stories_outlined,
+                          color: Colors.brown,
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.heritageAwareness,
+                          ),
+                        ),
                       ],
                     );
                   },
@@ -117,6 +181,46 @@ class EducationalHubScreen extends StatelessWidget {
                   subtitle: context.tr('redFlagsSubtitle'),
                   icon: Icons.warning_amber_rounded,
                   onTap: () => Navigator.pushNamed(context, AppRoutes.redFlags),
+                ),
+                const SizedBox(height: 12),
+                _HubNavTile(
+                  title: context.tr('rightsAndDuties'),
+                  subtitle: context.tr('rightsAndDutiesSubtitle'),
+                  icon: Icons.gavel_rounded,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.rightsAndDuties,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _HubNavTile(
+                  title: context.tr('inLawsGuide'),
+                  subtitle: context.tr('inLawsGuideSubtitle'),
+                  icon: Icons.people_outline_rounded,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.inLawsGuide,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _HubNavTile(
+                  title: context.tr('marriageReadinessCard'),
+                  subtitle: context.tr('marriageReadinessSubtitle'),
+                  icon: Icons.verified_user_outlined,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.marriageReadiness,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _HubNavTile(
+                  title: context.tr('heritageAwareness'),
+                  subtitle: context.tr('heritageAwarenessSubtitle'),
+                  icon: Icons.auto_stories_outlined,
+                  onTap: () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.heritageAwareness,
+                  ),
                 ),
               ],
             ),

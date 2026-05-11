@@ -12,10 +12,16 @@ class AppRoutes {
   static const resourcesToolsHub = '/resources-tools-hub';
   static const goldenQuestions = '/golden-questions';
   static const redFlags = '/red-flags';
+  static const rightsAndDuties = '/rights-and-duties';
+  static const inLawsGuide = '/in-laws-guide';
+  static const marriageReadiness = '/marriage-readiness';
+  static const heritageAwareness = '/heritage-awareness';
   static const relationshipTools = '/relationship-tools';
   static const gratitudeBank = '/gratitude-bank';
   static const budgetPlanner = '/budget-planner';
   static const remindersCenter = '/reminders-center';
+  static const scenarioLab = '/scenario-lab';
   static const settings = '/settings';
+  static const connectedFeatures = '/connected-features';
   static const privacyPolicy = '/privacy-policy';
 }

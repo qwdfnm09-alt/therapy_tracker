@@ -9,7 +9,11 @@ import 'presentation/screens/counseling/booking_history_screen.dart';
 import 'presentation/screens/counseling/counseling_booking_screen.dart';
 import 'presentation/screens/content/educational_hub_screen.dart';
 import 'presentation/screens/content/golden_questions_screen.dart';
+import 'presentation/screens/content/heritage_awareness_screen.dart';
+import 'presentation/screens/content/in_laws_guide_screen.dart';
+import 'presentation/screens/content/marriage_readiness_screen.dart';
 import 'presentation/screens/content/red_flags_screen.dart';
+import 'presentation/screens/content/rights_and_duties_screen.dart';
 import 'presentation/screens/forms/participant_form_screen.dart';
 import 'presentation/screens/home/home_screen.dart';
 import 'presentation/screens/home/resources_tools_hub_screen.dart';
@@ -17,11 +21,13 @@ import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
 import 'presentation/screens/settings/privacy_policy_screen.dart';
+import 'presentation/screens/settings/connected_features_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/tools/budget_planner_screen.dart';
 import 'presentation/screens/tools/gratitude_bank_screen.dart';
 import 'presentation/screens/tools/reminders_center_screen.dart';
 import 'presentation/screens/tools/relationship_tools_screen.dart';
+import 'presentation/screens/tools/scenario_lab_screen.dart';
 import 'presentation/screens/welcome/welcome_screen.dart';
 
 class PreMaritalMatchApp extends StatelessWidget {
@@ -61,11 +67,17 @@ class PreMaritalMatchApp extends StatelessWidget {
         AppRoutes.resourcesToolsHub: (_) => const ResourcesToolsHubScreen(),
         AppRoutes.goldenQuestions: (_) => const GoldenQuestionsScreen(),
         AppRoutes.redFlags: (_) => const RedFlagsScreen(),
+        AppRoutes.rightsAndDuties: (_) => const RightsAndDutiesScreen(),
+        AppRoutes.inLawsGuide: (_) => const InLawsGuideScreen(),
+        AppRoutes.marriageReadiness: (_) => const MarriageReadinessScreen(),
+        AppRoutes.heritageAwareness: (_) => const HeritageAwarenessScreen(),
         AppRoutes.relationshipTools: (_) => const RelationshipToolsScreen(),
         AppRoutes.gratitudeBank: (_) => const GratitudeBankScreen(),
         AppRoutes.budgetPlanner: (_) => const BudgetPlannerScreen(),
         AppRoutes.remindersCenter: (_) => const RemindersCenterScreen(),
+        AppRoutes.scenarioLab: (_) => const ScenarioLabScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
+        AppRoutes.connectedFeatures: (_) => const ConnectedFeaturesScreen(),
         AppRoutes.privacyPolicy: (_) => const PrivacyPolicyScreen(),
       },
     );

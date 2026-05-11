@@ -299,4 +299,384 @@ class StaticContentRepository {
       ),
     ];
   }
+
+  List<ContentSection> rightsAndDutiesSections() {
+    return const [
+      ContentSection(
+        titleEn: 'Before marriage clarity',
+        titleAr: 'الوضوح قبل الزواج',
+        descriptionEn:
+            'These points help both sides define expectations early instead of discovering them under pressure later.',
+        descriptionAr:
+            'هذه النقاط تساعد الطرفين على تعريف التوقعات مبكرًا بدل اكتشافها تحت الضغط لاحقًا.',
+        items: [
+          ContentItem(
+            titleEn: 'Financial expectations should be explicit',
+            titleAr: 'التوقعات المالية يجب أن تكون صريحة',
+            bodyEn:
+                'Discuss housing, core expenses, debt boundaries, work priorities, and what each side considers a basic obligation before commitment.',
+            bodyAr:
+                'ينبغي مناقشة السكن، والمصروفات الأساسية، وحدود الديون، وأولوية العمل، وما يراه كل طرف التزامًا أساسيًا قبل الارتباط.',
+            tagEn: 'Core clarity',
+            tagAr: 'وضوح أساسي',
+          ),
+          ContentItem(
+            titleEn: 'Private boundaries need agreement',
+            titleAr: 'الحدود الخاصة تحتاج اتفاقًا',
+            bodyEn:
+                'Privacy, communication with family, and how disagreements leave the couple circle should be discussed clearly, not left to assumption.',
+            bodyAr:
+                'الخصوصية، والتواصل مع العائلة، وكيفية خروج الخلافات خارج دائرة الزوجين، كلها أمور تحتاج نقاشًا واضحًا لا افتراضات ضمنية.',
+            tagEn: 'Boundaries',
+            tagAr: 'حدود',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'Inside the marriage relationship',
+        titleAr: 'داخل العلاقة الزوجية',
+        descriptionEn:
+            'A stable relationship depends on fairness, responsibility, and respectful conflict repair, not only good intentions.',
+        descriptionAr:
+            'استقرار العلاقة يعتمد على العدل والمسؤولية وإصلاح الخلاف باحترام، وليس على النوايا الحسنة فقط.',
+        items: [
+          ContentItem(
+            titleEn: 'Respect is a daily duty',
+            titleAr: 'الاحترام واجب يومي',
+            bodyEn:
+                'No one should normalize contempt, humiliation, or using anger as a license to harm the other person verbally or emotionally.',
+            bodyAr:
+                'لا يصح تطبيع الاحتقار أو الإهانة أو اعتبار الغضب تصريحًا لإيذاء الطرف الآخر لفظيًا أو نفسيًا.',
+            tagEn: 'Protection',
+            tagAr: 'حماية',
+          ),
+          ContentItem(
+            titleEn: 'Responsibilities should be visible',
+            titleAr: 'المسؤوليات يجب أن تكون واضحة',
+            bodyEn:
+                'Daily roles, home effort, child-related expectations, and repair after mistakes should be visible and discussable instead of vague.',
+            bodyAr:
+                'الأدوار اليومية، والجهد داخل البيت، وتوقعات الأطفال، والإصلاح بعد الخطأ، يجب أن تكون واضحة وقابلة للنقاش بدل الغموض.',
+            tagEn: 'Fairness',
+            tagAr: 'عدل',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'When outside support is needed',
+        titleAr: 'عند الحاجة إلى دعم خارجي',
+        descriptionEn:
+            'Legal or counseling guidance is most useful before conflict becomes chronic or damaging.',
+        descriptionAr:
+            'الاستشارة القانونية أو الأسرية تكون أكثر فائدة قبل أن يتحول الخلاف إلى نمط مزمن أو مؤذٍ.',
+        items: [
+          ContentItem(
+            titleEn: 'Serious repeated harm should not be minimized',
+            titleAr: 'الأذى الجاد المتكرر لا يصح التقليل منه',
+            bodyEn:
+                'If repeated intimidation, insult, coercion, or financial manipulation appears, the right next step is structured support, not denial.',
+            bodyAr:
+                'إذا ظهر ترهيب متكرر أو إهانة أو إكراه أو تلاعب مالي، فالخطوة الصحيحة هي طلب دعم منظم لا الإنكار أو التهوين.',
+            tagEn: 'Escalate early',
+            tagAr: 'تصعيد مبكر',
+          ),
+          ContentItem(
+            titleEn: 'Use qualified advice for legal details',
+            titleAr: 'ارجع لمتخصص مؤهل في التفاصيل القانونية',
+            bodyEn:
+                'This section is a practical awareness layer, not a substitute for a qualified lawyer or licensed counselor when a real case needs exact legal advice.',
+            bodyAr:
+                'هذا القسم طبقة توعوية عملية، وليس بديلًا عن محامٍ مؤهل أو مستشار مرخص عندما تحتاج الحالة الفعلية إلى رأي قانوني دقيق.',
+            tagEn: 'Scope',
+            tagAr: 'نطاق',
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<ContentSection> inLawsGuideSections() {
+    return const [
+      ContentSection(
+        titleEn: 'First-contact expectations',
+        titleAr: 'توقعات البداية',
+        descriptionEn:
+            'Tension with family often starts from vague boundaries, not from one dramatic event.',
+        descriptionAr:
+            'التوتر مع الأهل يبدأ غالبًا من غموض الحدود، لا من موقف واحد كبير فقط.',
+        items: [
+          ContentItem(
+            titleEn: 'Define what belongs to the couple first',
+            titleAr: 'حددا ما يخص الزوجين أولًا',
+            bodyEn:
+                'Private decisions, small disagreements, and day-to-day arrangements should not automatically move to family opinion before the couple discusses them clearly.',
+            bodyAr:
+                'القرارات الخاصة، والخلافات الصغيرة، والترتيبات اليومية، لا ينبغي أن تنتقل تلقائيًا إلى رأي الأهل قبل أن يناقشها الزوجان بوضوح.',
+            tagEn: 'Boundaries',
+            tagAr: 'حدود',
+          ),
+          ContentItem(
+            titleEn: 'Agree on how information leaves the home',
+            titleAr: 'اتفقا كيف تخرج المعلومات من البيت',
+            bodyEn:
+                'It is safer to agree early on what can be shared, with whom, and under what circumstances, instead of deciding in the middle of tension.',
+            bodyAr:
+                'الأكثر أمانًا هو الاتفاق مبكرًا على ما الذي يمكن مشاركته، ومع من، وفي أي ظرف، بدل اتخاذ القرار وسط التوتر.',
+            tagEn: 'Privacy',
+            tagAr: 'خصوصية',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'Managing interference calmly',
+        titleAr: 'إدارة التدخل بهدوء',
+        descriptionEn:
+            'The useful goal is not confrontation for its own sake, but reducing repeated friction without disrespect.',
+        descriptionAr:
+            'الهدف المفيد ليس الصدام لذاته، بل تقليل الاحتكاك المتكرر بدون إساءة أو كسر احترام.',
+        items: [
+          ContentItem(
+            titleEn: 'Respond as a united pair when possible',
+            titleAr: 'ردا كفريق واحد متى أمكن',
+            bodyEn:
+                'If one side always leaves the other alone in front of family pressure, resentment grows quickly. A calm shared position is usually stronger than separate reactions.',
+            bodyAr:
+                'إذا ترك أحد الطرفين الآخر وحده دائمًا أمام ضغط الأهل، يتراكم الاستياء بسرعة. الموقف الهادئ المشترك أقوى غالبًا من ردود الأفعال المنفصلة.',
+            tagEn: 'Alignment',
+            tagAr: 'اصطفاف',
+          ),
+          ContentItem(
+            titleEn: 'Name the behavior, not the person',
+            titleAr: 'سمّيا السلوك لا الشخص',
+            bodyEn:
+                'It is usually safer to say a specific behavior is harmful than to turn the conversation into a total judgment on a parent or relative.',
+            bodyAr:
+                'غالبًا يكون الأكثر أمانًا وصف سلوك محدد بأنه مؤذٍ، بدل تحويل الحديث إلى حكم كامل على الأب أو الأم أو القريب.',
+            tagEn: 'De-escalation',
+            tagAr: 'تهدئة',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'When stronger action is needed',
+        titleAr: 'متى نحتاج موقفًا أقوى',
+        descriptionEn:
+            'Some patterns need firmer limits or outside support before they damage the marriage structure itself.',
+        descriptionAr:
+            'بعض الأنماط تحتاج حدودًا أوضح أو دعمًا خارجيًا قبل أن تضر ببنية الزواج نفسها.',
+        items: [
+          ContentItem(
+            titleEn: 'Repeated humiliation should not be normalized',
+            titleAr: 'الإهانة المتكررة لا تُطبَّع',
+            bodyEn:
+                'Mocking, undermining, or deliberate shaming from relatives should not be absorbed silently as a normal family style.',
+            bodyAr:
+                'السخرية أو التقليل أو الإحراج المتعمد من الأقارب لا ينبغي امتصاصه بصمت باعتباره أسلوبًا عائليًا عاديًا.',
+            tagEn: 'High risk',
+            tagAr: 'خطورة عالية',
+          ),
+          ContentItem(
+            titleEn: 'Use counseling before the pattern hardens',
+            titleAr: 'الجأوا للاستشارة قبل أن يتصلب النمط',
+            bodyEn:
+                'If family pressure keeps deciding private choices, an early counseling conversation is usually more useful than waiting for repeated resentment.',
+            bodyAr:
+                'إذا ظل ضغط الأهل يقرر الخيارات الخاصة، فجلسة استشارية مبكرة تكون غالبًا أنفع من انتظار تكرار الاستياء وتراكمه.',
+            tagEn: 'Early support',
+            tagAr: 'دعم مبكر',
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<ContentSection> marriageReadinessSections() {
+    return const [
+      ContentSection(
+        titleEn: 'Self-awareness first',
+        titleAr: 'الوعي بالذات أولًا',
+        descriptionEn:
+            'Marriage readiness starts before choosing a partner. It begins with naming your own patterns and limits honestly.',
+        descriptionAr:
+            'جاهزية الزواج تبدأ قبل اختيار الشريك. البداية تكون بتسمية أنماطك وحدودك أنت بصدق.',
+        items: [
+          ContentItem(
+            titleEn: 'Know your non-negotiables clearly',
+            titleAr: 'اعرف خطوطك غير القابلة للتنازل بوضوح',
+            bodyEn:
+                'Define what cannot stay vague: religion, work rhythm, children, privacy, family boundaries, and financial obligations.',
+            bodyAr:
+                'حدد ما لا يصح أن يظل غامضًا: الدين، وإيقاع العمل، والأطفال، والخصوصية، وحدود العائلة، والالتزامات المالية.',
+            tagEn: 'Step 1',
+            tagAr: 'الخطوة 1',
+          ),
+          ContentItem(
+            titleEn: 'Distinguish desire from capacity',
+            titleAr: 'فرّق بين الرغبة والقدرة',
+            bodyEn:
+                'Wanting marriage is not the same as being ready for its daily responsibility, repair, compromise, and pressure.',
+            bodyAr:
+                'الرغبة في الزواج ليست هي الجاهزية لمسؤوليته اليومية، والإصلاح، والتنازل، والضغط المتكرر.',
+            tagEn: 'Step 2',
+            tagAr: 'الخطوة 2',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'Practical readiness',
+        titleAr: 'الجاهزية العملية',
+        descriptionEn:
+            'A stable decision needs more than feelings. It needs visible habits that can carry a household over time.',
+        descriptionAr:
+            'القرار المستقر يحتاج أكثر من المشاعر. يحتاج عادات واضحة قادرة على حمل بيت مع الوقت.',
+        items: [
+          ContentItem(
+            titleEn: 'Check responsibility under pressure',
+            titleAr: 'اختبر المسؤولية تحت الضغط',
+            bodyEn:
+                'Ask how you usually behave when commitments become inconvenient. Reliability matters more than ideal self-description.',
+            bodyAr:
+                'اسأل نفسك كيف تتصرف عادة عندما تصبح الالتزامات مرهقة أو غير مريحة. الاعتمادية أهم من الوصف المثالي للنفس.',
+            tagEn: 'Reality check',
+            tagAr: 'اختبار واقعي',
+          ),
+          ContentItem(
+            titleEn: 'Look at conflict habits honestly',
+            titleAr: 'انظر بصدق إلى عادات الخلاف',
+            bodyEn:
+                'If anger, withdrawal, or blame dominates your conflict style, readiness needs work before commitment becomes heavier.',
+            bodyAr:
+                'إذا كان الغضب أو الانسحاب أو اللوم يسيطر على أسلوب الخلاف، فهذه الجاهزية تحتاج عملًا قبل أن يصبح الالتزام أثقل.',
+            tagEn: 'Regulation',
+            tagAr: 'تنظيم',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'Decision checkpoint',
+        titleAr: 'نقطة مراجعة القرار',
+        descriptionEn:
+            'The useful question is not only “Do we like each other?” but also “Can we carry the structure of marriage responsibly?”',
+        descriptionAr:
+            'السؤال المفيد ليس فقط: هل نحب بعضنا؟ بل أيضًا: هل نستطيع حمل بنية الزواج بمسؤولية؟',
+        items: [
+          ContentItem(
+            titleEn: 'Slow down when basics are still unclear',
+            titleAr: 'اهدأ عندما تكون الأساسيات ما زالت غير واضحة',
+            bodyEn:
+                'If expectations around money, family, timing, or repair are still blurry, slowing down is usually wiser than rushing toward commitment.',
+            bodyAr:
+                'إذا ظلت التوقعات حول المال أو العائلة أو التوقيت أو الإصلاح ضبابية، فالإبطاء يكون غالبًا أحكم من الاستعجال نحو الالتزام.',
+            tagEn: 'Decision rule',
+            tagAr: 'قاعدة قرار',
+          ),
+          ContentItem(
+            titleEn: 'Use counseling early when needed',
+            titleAr: 'استخدم الاستشارة مبكرًا عند الحاجة',
+            bodyEn:
+                'Readiness is not proven by avoiding help. In many cases, early structured support prevents larger confusion later.',
+            bodyAr:
+                'الجاهزية لا تُثبت بتجنب المساعدة. في حالات كثيرة، الدعم المنظم المبكر يمنع ارتباكًا أكبر لاحقًا.',
+            tagEn: 'Support',
+            tagAr: 'دعم',
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<ContentSection> heritageAwarenessSections() {
+    return const [
+      ContentSection(
+        titleEn: 'Useful wisdom vs harmful inheritance',
+        titleAr: 'الحكمة النافعة مقابل الإرث المؤذي',
+        descriptionEn:
+            'Not every inherited phrase deserves to run the marriage. Some sayings protect the family, and some quietly damage it.',
+        descriptionAr:
+            'ليست كل عبارة موروثة تصلح لقيادة الزواج. بعض الأقوال تحمي الأسرة، وبعضها يضرها بصمت.',
+        items: [
+          ContentItem(
+            titleEn: 'Keep the value, not the harshness',
+            titleAr: 'احتفظ بالقيمة لا بالقسوة',
+            bodyEn:
+                'Tradition can support loyalty, patience, and family care. It should not be used to justify humiliation, forced silence, or one-sided control.',
+            bodyAr:
+                'يمكن للتراث أن يدعم الوفاء والصبر ورعاية الأسرة، لكنه لا ينبغي أن يُستخدم لتبرير الإهانة أو الصمت القسري أو السيطرة من طرف واحد.',
+            tagEn: 'Filter',
+            tagAr: 'فلترة',
+          ),
+          ContentItem(
+            titleEn: 'Question what is treated as obvious',
+            titleAr: 'راجع ما يُعامل كأنه بديهي',
+            bodyEn:
+                'When a social rule cannot be explained without fear, shame, or domination, it deserves review instead of blind repetition.',
+            bodyAr:
+                'عندما لا يمكن شرح قاعدة اجتماعية إلا بالخوف أو العار أو الهيمنة، فهي تستحق المراجعة لا التكرار الأعمى.',
+            tagEn: 'Review',
+            tagAr: 'مراجعة',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'Modern reading with family sensitivity',
+        titleAr: 'قراءة عصرية مع حساسية أسرية',
+        descriptionEn:
+            'The goal is not to insult the past, but to read it in a way that protects the present family structure better.',
+        descriptionAr:
+            'الهدف ليس إهانة الماضي، بل قراءته بطريقة تحمي بنية الأسرة الحالية بشكل أفضل.',
+        items: [
+          ContentItem(
+            titleEn: 'Use stories to open discussion gently',
+            titleAr: 'استخدم القصص لفتح النقاش بهدوء',
+            bodyEn:
+                'Family stories and proverbs can become useful openings for discussing respect, fairness, and repair without turning the talk into accusation.',
+            bodyAr:
+                'القصص العائلية والأمثال يمكن أن تصبح مدخلًا مفيدًا لمناقشة الاحترام والعدل والإصلاح بدون تحويل الكلام إلى اتهام مباشر.',
+            tagEn: 'Dialogue',
+            tagAr: 'حوار',
+          ),
+          ContentItem(
+            titleEn: 'Prefer principles that build stability',
+            titleAr: 'قدّم المبادئ التي تبني الاستقرار',
+            bodyEn:
+                'Give more weight to inherited ideas that strengthen trust, mercy, responsibility, and clear roles than to those that glorify ego or stubbornness.',
+            bodyAr:
+                'أعط وزنًا أكبر للأفكار الموروثة التي تقوي الثقة والرحمة والمسؤولية ووضوح الأدوار، لا لتلك التي تمجد الأنا أو العناد.',
+            tagEn: 'Selection',
+            tagAr: 'اختيار',
+          ),
+        ],
+      ),
+      ContentSection(
+        titleEn: 'What this means in practice',
+        titleAr: 'ماذا يعني هذا عمليًا',
+        descriptionEn:
+            'Cultural awareness becomes useful only when it changes how couples speak, decide, and repair.',
+        descriptionAr:
+            'الوعي الثقافي لا يصبح مفيدًا إلا عندما يغيّر طريقة الكلام والقرار والإصلاح بين الزوجين.',
+        items: [
+          ContentItem(
+            titleEn: 'Do not hide harm behind respect language',
+            titleAr: 'لا تخفِ الأذى خلف لغة الاحترام',
+            bodyEn:
+                'Respect for family does not require accepting chronic injustice inside the marriage. The distinction must stay clear.',
+            bodyAr:
+                'احترام العائلة لا يعني قبول ظلم مزمن داخل الزواج. يجب أن يبقى هذا الفرق واضحًا.',
+            tagEn: 'Boundary',
+            tagAr: 'حد',
+          ),
+          ContentItem(
+            titleEn: 'Translate values into behavior',
+            titleAr: 'حوّل القيم إلى سلوك',
+            bodyEn:
+                'Mercy, loyalty, and responsibility should appear in speech and action, not stay as slogans repeated only when convenient.',
+            bodyAr:
+                'الرحمة والوفاء والمسؤولية يجب أن تظهر في الكلام والسلوك، لا أن تبقى شعارات تُكرر وقت الحاجة فقط.',
+            tagEn: 'Practice',
+            tagAr: 'ممارسة',
+          ),
+        ],
+      ),
+    ];
+  }
 }

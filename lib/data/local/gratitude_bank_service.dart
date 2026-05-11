@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../domain/models/gratitude_bank_summary.dart';
 import '../../domain/models/gratitude_note.dart';
 
 class GratitudeBankService {
@@ -42,5 +43,23 @@ class GratitudeBankService {
     final updated = current.where((note) => note.id != id).toList();
     await saveNotes(updated);
     return updated;
+  }
+
+  GratitudeBankSummary buildSummary(
+    List<GratitudeNote> notes, {
+    DateTime? now,
+  }) {
+    final reference = now ?? DateTime.now();
+    final notesThisMonth = notes.where((note) {
+      final parsed = DateTime.tryParse(note.createdAtIso);
+      if (parsed == null) return false;
+      return parsed.year == reference.year && parsed.month == reference.month;
+    }).length;
+
+    return GratitudeBankSummary(
+      totalNotes: notes.length,
+      notesThisMonth: notesThisMonth,
+      latestCreatedAtIso: notes.isEmpty ? null : notes.first.createdAtIso,
+    );
   }
 }

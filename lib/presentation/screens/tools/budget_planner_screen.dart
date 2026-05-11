@@ -4,6 +4,7 @@ import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../data/local/budget_planner_service.dart';
 import '../../../domain/models/budget_entry.dart';
+import '../../../domain/models/budget_planner_summary.dart';
 
 class BudgetPlannerScreen extends StatefulWidget {
   const BudgetPlannerScreen({
@@ -86,13 +87,10 @@ class _BudgetPlannerScreenState extends State<BudgetPlannerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final incomeTotal = _entries
-        .where((entry) => entry.type == 'income')
-        .fold<double>(0, (sum, entry) => sum + entry.amount);
-    final expenseTotal = _entries
-        .where((entry) => entry.type == 'expense')
-        .fold<double>(0, (sum, entry) => sum + entry.amount);
-    final balance = incomeTotal - expenseTotal;
+    final summary = widget.service.buildSummary(_entries);
+    final incomeTotal = summary.incomeTotal;
+    final expenseTotal = summary.expenseTotal;
+    final balance = summary.balance;
 
     return AppPage(
       title: context.tr('budgetPlanner'),
@@ -126,7 +124,7 @@ class _BudgetPlannerScreenState extends State<BudgetPlannerScreen> {
                         crossAxisCount: useSingleColumn ? 1 : 3,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
-                        mainAxisExtent: useSingleColumn ? 108 : 124,
+                        mainAxisExtent: useSingleColumn ? 116 : 132,
                       ),
                       children: [
                         _OverviewCard(
@@ -207,47 +205,58 @@ class _BudgetPlannerScreenState extends State<BudgetPlannerScreen> {
             key: _summarySectionKey,
             title: context.tr('budgetPlannerSummaryTitle'),
             icon: Icons.pie_chart_outline_rounded,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final stacked = constraints.maxWidth < 460;
-                final cards = [
-                  _SummaryCard(
-                    title: context.tr('budgetIncome'),
-                    value: _formatMoney(incomeTotal),
-                    color: Colors.teal,
-                  ),
-                  _SummaryCard(
-                    title: context.tr('budgetExpense'),
-                    value: _formatMoney(expenseTotal),
-                    color: Colors.redAccent,
-                  ),
-                  _SummaryCard(
-                    title: context.tr('budgetBalance'),
-                    value: _formatMoney(balance),
-                    color: balance >= 0 ? Colors.indigo : Colors.orange,
-                  ),
-                ];
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _BudgetPlannerSmartSummaryCard(
+                  summary: summary,
+                  formatMoney: _formatMoney,
+                ),
+                const SizedBox(height: 14),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final stacked = constraints.maxWidth < 460;
+                    final cards = [
+                      _SummaryCard(
+                        title: context.tr('budgetIncome'),
+                        value: _formatMoney(incomeTotal),
+                        color: Colors.teal,
+                      ),
+                      _SummaryCard(
+                        title: context.tr('budgetExpense'),
+                        value: _formatMoney(expenseTotal),
+                        color: Colors.redAccent,
+                      ),
+                      _SummaryCard(
+                        title: context.tr('budgetBalance'),
+                        value: _formatMoney(balance),
+                        color: balance >= 0 ? Colors.indigo : Colors.orange,
+                      ),
+                    ];
 
-                if (stacked) {
-                  return Column(
-                    children: [
-                      for (var i = 0; i < cards.length; i++) ...[
-                        cards[i],
-                        if (i != cards.length - 1) const SizedBox(height: 12),
+                    if (stacked) {
+                      return Column(
+                        children: [
+                          for (var i = 0; i < cards.length; i++) ...[
+                            cards[i],
+                            if (i != cards.length - 1)
+                              const SizedBox(height: 12),
+                          ],
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          Expanded(child: cards[i]),
+                          if (i != cards.length - 1) const SizedBox(width: 12),
+                        ],
                       ],
-                    ],
-                  );
-                }
-
-                return Row(
-                  children: [
-                    for (var i = 0; i < cards.length; i++) ...[
-                      Expanded(child: cards[i]),
-                      if (i != cards.length - 1) const SizedBox(width: 12),
-                    ],
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
@@ -388,6 +397,74 @@ class _BudgetPlannerScreenState extends State<BudgetPlannerScreen> {
   }
 }
 
+class _BudgetPlannerSmartSummaryCard extends StatelessWidget {
+  const _BudgetPlannerSmartSummaryCard({
+    required this.summary,
+    required this.formatMoney,
+  });
+
+  final BudgetPlannerSummary summary;
+  final String Function(double value) formatMoney;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.tr('budgetPlannerSmartSummaryTitle'),
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          context.tr('budgetPlannerSmartSummaryBody'),
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final useSingleColumn = constraints.maxWidth < 430;
+            return GridView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: useSingleColumn ? 1 : 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                mainAxisExtent: useSingleColumn ? 88 : 106,
+              ),
+              children: [
+                _SummaryCard(
+                  title: context.tr('budgetPlannerSmartSummaryMonthLabel'),
+                  value: summary.entriesThisMonth.toString(),
+                  color: Colors.indigo,
+                ),
+                _SummaryCard(
+                  title: context.tr(
+                    'budgetPlannerSmartSummaryTopCategoryLabel',
+                  ),
+                  value:
+                      summary.topExpenseCategory ??
+                      context.tr('budgetPlannerSmartSummaryNoCategory'),
+                  color: Colors.orange,
+                ),
+                _SummaryCard(
+                  title: context.tr('budgetPlannerSmartSummaryTopAmountLabel'),
+                  value: formatMoney(summary.topExpenseAmount),
+                  color: Colors.pink,
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
 void _scrollToSection(BuildContext? sectionContext) {
   if (sectionContext == null) return;
   Scrollable.ensureVisible(
@@ -449,6 +526,8 @@ class _OverviewCard extends StatelessWidget {
               const Spacer(),
               Text(
                 label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
@@ -491,6 +570,7 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -501,11 +581,13 @@ class _SummaryCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title),
+          Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 6),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w900,
               color: color,
             ),

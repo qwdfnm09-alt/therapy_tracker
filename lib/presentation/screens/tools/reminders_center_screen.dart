@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../data/local/reminders_center_service.dart';
 import '../../../domain/models/reminder_entry.dart';
+import '../../../domain/models/reminders_center_summary.dart';
+import '../../../domain/services/reminder_notifications_service.dart';
 
 class RemindersCenterScreen extends StatefulWidget {
   const RemindersCenterScreen({
     super.key,
     this.service = const RemindersCenterService(),
+    this.notificationService = const ReminderNotificationsService(),
   });
 
   final RemindersCenterService service;
+  final ReminderNotificationsService notificationService;
 
   @override
   State<RemindersCenterScreen> createState() => _RemindersCenterScreenState();
@@ -27,12 +32,16 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
 
   List<ReminderEntry> _entries = const [];
   String _category = 'checkIn';
+  String _scheduleType = 'weekly';
+  int _weekday = DateTime.friday;
+  TimeOfDay _selectedTime = const TimeOfDay(hour: 20, minute: 0);
   bool _isLoading = true;
   bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
+    _scheduleController.text = _buildScheduleLabel();
     _loadEntries();
   }
 
@@ -56,33 +65,100 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
   Future<void> _saveEntry() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final scheduledMessage = context.tr('reminderNotificationScheduled');
+    final localOnlyMessage = context.tr('reminderNotificationSavedLocalOnly');
+    final messenger = ScaffoldMessenger.of(context);
+
     setState(() => _isSaving = true);
-    final updated = await widget.service.addEntry(
-      title: _titleController.text,
-      scheduleLabel: _scheduleController.text,
+
+    final draftEntry = ReminderEntry(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      title: _titleController.text.trim(),
+      scheduleLabel: _scheduleController.text.trim(),
       category: _category,
-      note: _noteController.text,
+      note: _noteController.text.trim(),
+      createdAtIso: DateTime.now().toIso8601String(),
+      scheduleType: _scheduleType,
+      scheduledHour: _selectedTime.hour,
+      scheduledMinute: _selectedTime.minute,
+      scheduledWeekday: _scheduleType == 'weekly' ? _weekday : null,
+      notificationId: _generateNotificationId(),
     );
+
+    ReminderEntry entryToSave = draftEntry;
+    String feedbackMessage = scheduledMessage;
+
+    try {
+      final permissionGranted = await widget.notificationService
+          .requestPermissions();
+      if (permissionGranted) {
+        await widget.notificationService.scheduleReminder(draftEntry);
+      } else {
+        entryToSave = draftEntry.copyWith(
+          clearScheduleType: true,
+          clearScheduledHour: true,
+          clearScheduledMinute: true,
+          clearScheduledWeekday: true,
+          clearNotificationId: true,
+        );
+        feedbackMessage = localOnlyMessage;
+      }
+    } catch (_) {
+      entryToSave = draftEntry.copyWith(
+        clearScheduleType: true,
+        clearScheduledHour: true,
+        clearScheduledMinute: true,
+        clearScheduledWeekday: true,
+        clearNotificationId: true,
+      );
+      feedbackMessage = localOnlyMessage;
+    }
+
+    final updated = await widget.service.saveEntry(entryToSave);
     if (!mounted) return;
 
     _titleController.clear();
-    _scheduleController.clear();
     _noteController.clear();
     setState(() {
       _entries = updated;
       _category = 'checkIn';
+      _scheduleType = 'weekly';
+      _weekday = DateTime.friday;
+      _selectedTime = const TimeOfDay(hour: 20, minute: 0);
+      _scheduleController.text = _buildScheduleLabel();
       _isSaving = false;
     });
+
+    messenger.showSnackBar(SnackBar(content: Text(feedbackMessage)));
   }
 
   Future<void> _deleteEntry(String id) async {
+    final entry = _entries.firstWhere((item) => item.id == id);
+    if (entry.notificationId != null) {
+      await widget.notificationService.cancelReminder(entry.notificationId!);
+    }
+
     final updated = await widget.service.deleteEntry(id);
     if (!mounted) return;
     setState(() => _entries = updated);
   }
 
+  Future<void> _pickReminderTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime,
+    );
+    if (picked == null || !mounted) return;
+
+    setState(() {
+      _selectedTime = picked;
+      _scheduleController.text = _buildScheduleLabel(context: context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final summary = widget.service.buildSummary(_entries);
     return AppPage(
       title: context.tr('remindersCenter'),
       child: ListView(
@@ -97,7 +173,7 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
                 Text(context.tr('remindersCenterIntroBody')),
                 const SizedBox(height: 10),
                 Text(
-                  context.tr('remindersCenterLocalOnlyNote'),
+                  context.tr('remindersCenterNotificationNote'),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -191,6 +267,12 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
           ),
           const SizedBox(height: 16),
           SectionCard(
+            title: context.tr('remindersCenterSmartSummaryTitle'),
+            icon: Icons.tune_rounded,
+            child: _RemindersSummaryCard(summary: summary),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
             key: _addSectionKey,
             title: context.tr('remindersCenterAddTitle'),
             icon: Icons.add_alert_rounded,
@@ -242,8 +324,79 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
                     },
                   ),
                   const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: _scheduleType,
+                    decoration: InputDecoration(
+                      labelText: context.tr('reminderScheduleType'),
+                      border: const OutlineInputBorder(),
+                    ),
+                    items: [
+                      DropdownMenuItem(
+                        value: 'daily',
+                        child: Text(context.tr('reminderScheduleDaily')),
+                      ),
+                      DropdownMenuItem(
+                        value: 'weekly',
+                        child: Text(context.tr('reminderScheduleWeekly')),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        _scheduleType = value;
+                        _scheduleController.text = _buildScheduleLabel(
+                          context: context,
+                        );
+                      });
+                    },
+                  ),
+                  if (_scheduleType == 'weekly') ...[
+                    const SizedBox(height: 12),
+                    DropdownButtonFormField<int>(
+                      initialValue: _weekday,
+                      decoration: InputDecoration(
+                        labelText: context.tr('reminderWeekday'),
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: [
+                        for (final weekday in _weekdays)
+                          DropdownMenuItem(
+                            value: weekday,
+                            child: Text(_weekdayLabel(context, weekday)),
+                          ),
+                      ],
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _weekday = value;
+                          _scheduleController.text = _buildScheduleLabel(
+                            context: context,
+                          );
+                        });
+                      },
+                    ),
+                  ],
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: OutlinedButton.icon(
+                      onPressed: _pickReminderTime,
+                      icon: const Icon(Icons.schedule_rounded),
+                      label: Text(context.tr('reminderPickTime')),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      '${context.tr('reminderSelectedTime')}: ${_formatTime(_selectedTime)}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   TextFormField(
                     controller: _scheduleController,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: context.tr('reminderScheduleLabel'),
                       hintText: context.tr('reminderScheduleHint'),
@@ -327,6 +480,122 @@ class _RemindersCenterScreenState extends State<RemindersCenterScreen> {
       _ => context.tr('reminderCategoryCustom'),
     };
   }
+
+  String _weekdayLabel(BuildContext context, int weekday) {
+    return switch (weekday) {
+      DateTime.monday => context.tr('monday'),
+      DateTime.tuesday => context.tr('tuesday'),
+      DateTime.wednesday => context.tr('wednesday'),
+      DateTime.thursday => context.tr('thursday'),
+      DateTime.friday => context.tr('friday'),
+      DateTime.saturday => context.tr('saturday'),
+      _ => context.tr('sunday'),
+    };
+  }
+
+  String _buildScheduleLabel({BuildContext? context}) {
+    final timeLabel = _formatTime(_selectedTime);
+    final dailyLabel = context?.tr('reminderScheduleDaily') ?? 'Daily';
+    if (_scheduleType == 'daily') {
+      return '$dailyLabel • $timeLabel';
+    }
+
+    final weekdayLabel = context == null
+        ? _weekdayEnglishLabel(_weekday)
+        : _weekdayLabel(context, _weekday);
+    return '$weekdayLabel • $timeLabel';
+  }
+
+  String _weekdayEnglishLabel(int weekday) {
+    return switch (weekday) {
+      DateTime.monday => 'Monday',
+      DateTime.tuesday => 'Tuesday',
+      DateTime.wednesday => 'Wednesday',
+      DateTime.thursday => 'Thursday',
+      DateTime.friday => 'Friday',
+      DateTime.saturday => 'Saturday',
+      _ => 'Sunday',
+    };
+  }
+
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  int _generateNotificationId() {
+    return DateTime.now().millisecondsSinceEpoch.remainder(1 << 31);
+  }
+}
+
+class _RemindersSummaryCard extends StatelessWidget {
+  const _RemindersSummaryCard({required this.summary});
+
+  final RemindersCenterSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.tr('remindersCenterSmartSummaryBody'),
+          style: theme.textTheme.bodySmall,
+        ),
+        const SizedBox(height: 14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final useSingleColumn = constraints.maxWidth < 430;
+            return GridView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: useSingleColumn ? 1 : 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                mainAxisExtent: useSingleColumn ? 88 : 106,
+              ),
+              children: [
+                _SummaryMetricCard(
+                  label: context.tr('remindersCenterSmartSummaryMonthLabel'),
+                  value: summary.entriesThisMonth.toString(),
+                  color: Colors.indigo,
+                ),
+                _SummaryMetricCard(
+                  label: context.tr(
+                    'remindersCenterSmartSummaryCategoriesLabel',
+                  ),
+                  value: summary.usedCategoriesCount.toString(),
+                  color: Colors.teal,
+                ),
+                _SummaryMetricCard(
+                  label: context.tr(
+                    'remindersCenterSmartSummaryTopCategoryLabel',
+                  ),
+                  value: summary.topCategory == null
+                      ? context.tr('remindersCenterSmartSummaryNoCategory')
+                      : _categoryLabel(context, summary.topCategory!),
+                  color: Colors.pink,
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  String _categoryLabel(BuildContext context, String category) {
+    return switch (category) {
+      'checkIn' => context.tr('reminderCategoryCheckIn'),
+      'gratitude' => context.tr('reminderCategoryGratitude'),
+      'budget' => context.tr('reminderCategoryBudget'),
+      _ => context.tr('reminderCategoryCustom'),
+    };
+  }
 }
 
 void _scrollToSection(BuildContext? sectionContext) {
@@ -337,6 +606,54 @@ void _scrollToSection(BuildContext? sectionContext) {
     curve: Curves.easeOutCubic,
     alignment: 0.08,
   );
+}
+
+class _SummaryMetricCard extends StatelessWidget {
+  const _SummaryMetricCard({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: color.withValues(alpha: 0.12)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w900,
+              color: color,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _OverviewCard extends StatelessWidget {
@@ -509,3 +826,13 @@ class _ReminderEntryCard extends StatelessWidget {
     return '$day/$month/${parsed.year}';
   }
 }
+
+const List<int> _weekdays = [
+  DateTime.monday,
+  DateTime.tuesday,
+  DateTime.wednesday,
+  DateTime.thursday,
+  DateTime.friday,
+  DateTime.saturday,
+  DateTime.sunday,
+];

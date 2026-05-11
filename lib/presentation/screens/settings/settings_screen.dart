@@ -67,6 +67,18 @@ class SettingsScreen extends StatelessWidget {
           SectionCard(
             child: ListTile(
               contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.cloud_outlined),
+              title: Text(context.tr('connectedFeatures')),
+              subtitle: Text(context.tr('connectedFeaturesTileBody')),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.connectedFeatures),
+            ),
+          ),
+          const SizedBox(height: 16),
+          SectionCard(
+            child: ListTile(
+              contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.privacy_tip_outlined),
               title: Text(privacyLabel),
               subtitle: Text(privacyBody),

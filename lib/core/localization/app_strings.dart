@@ -33,10 +33,13 @@ class AppStrings {
           'Track simple income and expense items locally to reduce money ambiguity',
       'featureRemindersCenter':
           'Plan small recurring reminders locally for check-ins, gratitude, and budget follow-up',
+      'featureScenarioLab':
+          'Compare how both people respond to realistic pressure scenarios without affecting the main compatibility score',
       'featureSettings': 'Change language, theme, and clear saved data',
       'educationalHub': 'Educational Hub',
       'resourcesToolsHub': 'Resources & Tools',
       'relationshipTools': 'Relationship tools',
+      'scenarioLab': 'Scenario Lab',
       'gratitudeBank': 'Gratitude Bank',
       'budgetPlanner': 'Budget Planner',
       'remindersCenter': 'Reminders Center',
@@ -63,6 +66,13 @@ class AppStrings {
       'gratitudeBankOverviewActionHelper':
           'Jump directly to the writing section',
       'gratitudeBankOverviewLatestTitle': 'Latest saved note',
+      'gratitudeBankSummaryTitle': 'Monthly summary',
+      'gratitudeBankSummaryBody':
+          'A small reading of consistency so appreciation does not stay abstract.',
+      'gratitudeBankSummaryTotalLabel': 'Total saved notes',
+      'gratitudeBankSummaryMonthLabel': 'Notes this month',
+      'gratitudeBankSummaryLatestLabel': 'Latest saved date',
+      'gratitudeBankSummaryNoDate': 'No saved date yet',
       'budgetPlannerOverviewTitle': 'At a glance',
       'budgetPlannerOverviewBody':
           'Use the quick overview first, then jump directly to the summary, writing section, or saved entries.',
@@ -72,12 +82,26 @@ class AppStrings {
       'budgetPlannerOverviewEntriesHelper':
           'Jump directly to the saved entries section',
       'budgetPlannerOverviewLatestTitle': 'Latest saved entry',
+      'budgetPlannerSmartSummaryTitle': 'Smarter summary',
+      'budgetPlannerSmartSummaryBody':
+          'Use these signals to spot where money pressure is clustering instead of reading totals alone.',
+      'budgetPlannerSmartSummaryMonthLabel': 'Entries this month',
+      'budgetPlannerSmartSummaryTopCategoryLabel': 'Top expense category',
+      'budgetPlannerSmartSummaryTopAmountLabel': 'Top category amount',
+      'budgetPlannerSmartSummaryNoCategory': 'No expense category yet',
       'remindersCenterOverviewTitle': 'At a glance',
       'remindersCenterOverviewBody':
           'Use the quick overview first, then jump directly to writing or reviewing saved reminder plans.',
       'remindersCenterOverviewActionHelper':
           'Jump directly to the reminder form',
       'remindersCenterOverviewLatestTitle': 'Latest saved reminder',
+      'remindersCenterSmartSummaryTitle': 'Smarter summary',
+      'remindersCenterSmartSummaryBody':
+          'Use these signals to see whether your reminder plans are focused or scattered before turning them into real notifications.',
+      'remindersCenterSmartSummaryMonthLabel': 'Plans this month',
+      'remindersCenterSmartSummaryCategoriesLabel': 'Used categories',
+      'remindersCenterSmartSummaryTopCategoryLabel': 'Most repeated category',
+      'remindersCenterSmartSummaryNoCategory': 'No category used yet',
       'bookingHistoryOverviewTitle': 'At a glance',
       'bookingHistoryOverviewBody':
           'Use this summary first to review the booking history count and the latest request state.',
@@ -112,15 +136,56 @@ class AppStrings {
       'redFlagsIntroTitle': 'Warning signs deserve direct naming',
       'redFlagsIntroBody':
           'A red flag does not mean every relationship must end immediately. It means the pattern should not be excused, romanticized, or left vague.',
+      'rightsAndDuties': 'Rights and responsibilities',
+      'rightsAndDutiesSubtitle':
+          'A practical awareness layer around fairness, boundaries, and support',
+      'rightsAndDutiesIntroTitle':
+          'Use clarity early before conflict turns chronic',
+      'rightsAndDutiesIntroBody':
+          'This section is not legal representation. It helps both sides turn vague expectations into clear discussion points around respect, fairness, privacy, and when outside support is necessary.',
+      'inLawsGuide': 'In-laws guide',
+      'inLawsGuideSubtitle':
+          'Practical guidance for boundaries and family interference',
+      'inLawsGuideIntroTitle':
+          'Handle family pressure before it shapes the marriage',
+      'inLawsGuideIntroBody':
+          'This guide focuses on repeated family friction patterns: what should stay inside the couple, how to respond calmly to interference, and when stronger boundaries or counseling are necessary.',
+      'marriageReadinessCard': 'Marriage readiness card',
+      'marriageReadinessSubtitle':
+          'A practical checklist before fast commitment',
+      'marriageReadinessIntroTitle':
+          'Readiness should be checked before promises grow heavier',
+      'marriageReadinessIntroBody':
+          'This section helps turn marriage readiness into concrete review points around self-awareness, pressure habits, responsibility, and decision pacing.',
+      'heritageAwareness': 'Heritage and family awareness',
+      'heritageAwarenessSubtitle': 'Read inherited ideas with a practical lens',
+      'heritageAwarenessIntroTitle':
+          'Use culture to support the family, not to excuse harm',
+      'heritageAwarenessIntroBody':
+          'This section revisits inherited sayings and family stories with a practical lens: keep what strengthens mercy and responsibility, and challenge what normalizes harm or domination.',
       'relationshipToolsIntroTitle': 'Small tools for steadier connection',
       'relationshipToolsIntroBody':
           'These tools are intentionally simple. They do not diagnose the relationship, but they help both people turn care into visible action.',
       'loveLanguagesTitle': 'Love languages quick guide',
       'loveLanguagesBody':
           'Use this as a practical lens, not as a rigid label. The useful question is: what kind of care is actually felt by the other person?',
+      'loveLanguagesQuizTitle': 'Love languages mini quiz',
+      'loveLanguagesQuizBody':
+          'Answer these short situations first, then use the saved result as a discussion starter instead of a final label.',
+      'loveLanguagesQuizLatestTitle': 'Latest saved result',
+      'loveLanguagesQuizPrimaryLabel': 'Primary language',
+      'loveLanguagesQuizSaveAction': 'Save quiz result',
+      'loveLanguagesQuizIncomplete':
+          'Answer all quiz questions before saving the result.',
+      'loveLanguagesQuizSaved': 'Love language result saved locally.',
       'weeklyChallengesTitle': 'Weekly connection challenges',
       'weeklyChallengesBody':
           'Choose one challenge at a time. Keep it specific and repeatable instead of turning it into a performance.',
+      'weeklyChallengesChecklistTitle': 'Weekly checklist',
+      'weeklyChallengesChecklistBody':
+          'Mark the challenge when you actually practice it. The goal is follow-through, not collecting perfect intentions.',
+      'weeklyChallengesProgressTitle': 'Completed this cycle',
+      'weeklyChallengesProgressCount': '{current} of {total} challenges marked',
       'relationshipToolsUsageTitle': 'How to use these tools well',
       'relationshipToolsUsagePoint1':
           'Start with the smallest useful action instead of promising a full personality change.',
@@ -128,6 +193,28 @@ class AppStrings {
           'If one tool feels unnatural, discuss why before treating it as failure.',
       'relationshipToolsUsagePoint3':
           'Use repetition to build trust. Small consistent care is more useful than rare dramatic effort.',
+      'scenarioLabIntroTitle': 'Stress-test the fit with realistic scenarios',
+      'scenarioLabIntroBody':
+          'This lab is separate from the main compatibility score. It gives both people a safer place to compare instincts under pressure before those moments happen in real life.',
+      'scenarioLabSummaryTitle': 'Compatibility radar',
+      'scenarioLabSummaryBody':
+          'This quick radar reads scenario alignment only. Use it to spot where instincts already match and where a clear agreement is still needed.',
+      'scenarioLabAnsweredLabel': 'Answered scenarios',
+      'scenarioLabAlignedLabel': 'Strong alignment',
+      'scenarioLabCloseLabel': 'Close but not identical',
+      'scenarioLabGapLabel': 'Visible gap',
+      'scenarioLabRecommendationsTitle': 'Discussion recommendations',
+      'scenarioLabRecommendationsBody':
+          'Use these points as the next conversation list. Start with visible gaps first, then define what a workable agreement looks like in the close scenarios.',
+      'scenarioLabRecommendationGapLabel': 'Discuss first',
+      'scenarioLabRecommendationCloseLabel': 'Clarify expectations',
+      'scenarioLabRecommendationGapHint':
+          'The difference here is clear enough to need one direct agreement before pressure grows.',
+      'scenarioLabRecommendationCloseHint':
+          'The direction is close, but the preferred method still needs a specific agreement.',
+      'scenarioLabUserALabel': 'Person A choice',
+      'scenarioLabUserBLabel': 'Person B choice',
+      'scenarioLabFocusLabel': 'Focus',
       'gratitudeBankIntroTitle': 'A simple memory of what went right',
       'gratitudeBankIntroBody':
           'This tool stores short notes of appreciation locally on the device. The goal is to preserve visible evidence of care instead of relying on memory alone during tension.',
@@ -163,6 +250,8 @@ class AppStrings {
           'Use this screen to plan small recurring reminders that support calmer routines and clearer follow-up.',
       'remindersCenterLocalOnlyNote':
           'This phase stores reminder plans locally only. It does not trigger device notifications yet.',
+      'remindersCenterNotificationNote':
+          'New reminder plans can now schedule actual device notifications using a structured daily or weekly schedule.',
       'remindersCenterAddTitle': 'Add a reminder plan',
       'remindersCenterSavedTitle': 'Saved reminder plans',
       'remindersCenterEmpty':
@@ -175,6 +264,23 @@ class AppStrings {
       'reminderCategoryCustom': 'Custom reminder',
       'reminderScheduleLabel': 'Schedule label',
       'reminderScheduleHint': 'Example: Every Friday at 8:00 PM',
+      'reminderScheduleType': 'Schedule type',
+      'reminderScheduleDaily': 'Daily',
+      'reminderScheduleWeekly': 'Weekly',
+      'reminderWeekday': 'Weekday',
+      'reminderPickTime': 'Pick reminder time',
+      'reminderSelectedTime': 'Selected time',
+      'reminderNotificationScheduled':
+          'Reminder saved and scheduled as a device notification.',
+      'reminderNotificationSavedLocalOnly':
+          'Reminder saved locally, but notification permission was not granted.',
+      'monday': 'Monday',
+      'tuesday': 'Tuesday',
+      'wednesday': 'Wednesday',
+      'thursday': 'Thursday',
+      'friday': 'Friday',
+      'saturday': 'Saturday',
+      'sunday': 'Sunday',
       'reminderNote': 'Optional note',
       'reminderSaveAction': 'Save reminder plan',
       'delete': 'Delete',
@@ -578,10 +684,13 @@ class AppStrings {
           'تابع عناصر دخل ومصروفات بسيطة محليًا لتقليل غموض المال',
       'featureRemindersCenter':
           'خطط لتذكيرات صغيرة محليًا للمتابعة والامتنان ومراجعة المال',
+      'featureScenarioLab':
+          'قارن كيف يستجيب الطرفان لسيناريوهات ضغط واقعية بدون التأثير على نتيجة التوافق الأساسية',
       'featureSettings': 'غيّر اللغة والمظهر وامسح البيانات المحفوظة',
       'educationalHub': 'المكتبة التوعوية',
       'resourcesToolsHub': 'المحتوى والأدوات',
       'relationshipTools': 'أدوات العلاقة',
+      'scenarioLab': 'مختبر السيناريوهات',
       'gratitudeBank': 'حصالة الامتنان',
       'budgetPlanner': 'مخطط الميزانية',
       'remindersCenter': 'مركز التذكيرات',
@@ -607,6 +716,13 @@ class AppStrings {
           'ابدأ بالملخص ثم انتقل مباشرة إلى كتابة الملاحظة أو مراجعة الملاحظات المحفوظة.',
       'gratitudeBankOverviewActionHelper': 'انتقل مباشرة إلى قسم الكتابة',
       'gratitudeBankOverviewLatestTitle': 'آخر ملاحظة محفوظة',
+      'gratitudeBankSummaryTitle': 'ملخص شهري',
+      'gratitudeBankSummaryBody':
+          'قراءة صغيرة للاستمرارية حتى لا يبقى الامتنان فكرة عامة فقط.',
+      'gratitudeBankSummaryTotalLabel': 'إجمالي الملاحظات المحفوظة',
+      'gratitudeBankSummaryMonthLabel': 'ملاحظات هذا الشهر',
+      'gratitudeBankSummaryLatestLabel': 'أحدث تاريخ حفظ',
+      'gratitudeBankSummaryNoDate': 'لا يوجد تاريخ حفظ بعد',
       'budgetPlannerOverviewTitle': 'نظرة سريعة',
       'budgetPlannerOverviewBody':
           'ابدأ بالقراءة السريعة ثم انتقل مباشرة إلى الملخص أو قسم الإضافة أو البنود المحفوظة.',
@@ -615,11 +731,25 @@ class AppStrings {
       'budgetPlannerOverviewEntriesHelper':
           'انتقل مباشرة إلى قسم البنود المحفوظة',
       'budgetPlannerOverviewLatestTitle': 'آخر بند محفوظ',
+      'budgetPlannerSmartSummaryTitle': 'ملخص أذكى',
+      'budgetPlannerSmartSummaryBody':
+          'استخدم هذه الإشارات لمعرفة أين يتركز ضغط المال بدل قراءة الإجماليات فقط.',
+      'budgetPlannerSmartSummaryMonthLabel': 'بنود هذا الشهر',
+      'budgetPlannerSmartSummaryTopCategoryLabel': 'أكثر فئة مصروفات',
+      'budgetPlannerSmartSummaryTopAmountLabel': 'قيمة الفئة الأعلى',
+      'budgetPlannerSmartSummaryNoCategory': 'لا توجد فئة مصروفات بعد',
       'remindersCenterOverviewTitle': 'نظرة سريعة',
       'remindersCenterOverviewBody':
           'ابدأ بالقراءة السريعة ثم انتقل مباشرة إلى كتابة الخطة أو مراجعة خطط التذكير المحفوظة.',
       'remindersCenterOverviewActionHelper': 'انتقل مباشرة إلى نموذج التذكير',
       'remindersCenterOverviewLatestTitle': 'آخر خطة تذكير محفوظة',
+      'remindersCenterSmartSummaryTitle': 'ملخص أذكى',
+      'remindersCenterSmartSummaryBody':
+          'استخدم هذه الإشارات لترى هل خطط التذكير مركزة أم مشتتة قبل تحويلها إلى إشعارات حقيقية.',
+      'remindersCenterSmartSummaryMonthLabel': 'خطط هذا الشهر',
+      'remindersCenterSmartSummaryCategoriesLabel': 'التصنيفات المستخدمة',
+      'remindersCenterSmartSummaryTopCategoryLabel': 'أكثر تصنيف متكرر',
+      'remindersCenterSmartSummaryNoCategory': 'لا يوجد تصنيف مستخدم بعد',
       'bookingHistoryOverviewTitle': 'نظرة سريعة',
       'bookingHistoryOverviewBody':
           'ابدأ بهذا الملخص لمراجعة عدد طلبات الحجز وحالة آخر طلب داخل السجل الحالي.',
@@ -651,15 +781,54 @@ class AppStrings {
       'redFlagsIntroTitle': 'علامات التحذير تحتاج تسمية مباشرة',
       'redFlagsIntroBody':
           'العلامة الحمراء لا تعني بالضرورة أن كل علاقة يجب أن تنتهي فورًا، لكنها تعني أن النمط لا ينبغي تبريره أو تجميله أو تركه غامضًا.',
+      'rightsAndDuties': 'الحقوق والمسؤوليات',
+      'rightsAndDutiesSubtitle':
+          'طبقة توعية عملية حول العدل والحدود ووقت طلب الدعم',
+      'rightsAndDutiesIntroTitle':
+          'استخدم الوضوح مبكرًا قبل أن يتحول الخلاف إلى نمط مزمن',
+      'rightsAndDutiesIntroBody':
+          'هذا القسم ليس تمثيلًا قانونيًا، لكنه يساعد الطرفين على تحويل التوقعات الغامضة إلى نقاط نقاش واضحة حول الاحترام والعدل والخصوصية ومتى تكون الحاجة إلى دعم خارجي ضرورية.',
+      'inLawsGuide': 'دليل التعامل مع الأهل',
+      'inLawsGuideSubtitle': 'إرشاد عملي للحدود والتدخلات الأسرية المتكررة',
+      'inLawsGuideIntroTitle':
+          'تعاملوا مع ضغط الأهل قبل أن يشكل الزواج بدلًا من دعمه',
+      'inLawsGuideIntroBody':
+          'يركز هذا الدليل على أنماط الاحتكاك الأسري المتكرر: ما الذي ينبغي أن يبقى داخل دائرة الزوجين، وكيفية الرد الهادئ على التدخل، ومتى تصبح الحاجة إلى حدود أوضح أو استشارة أسرية ضرورية.',
+      'marriageReadinessCard': 'بطاقة جاهزية الزواج',
+      'marriageReadinessSubtitle': 'مراجعة عملية قبل أي التزام سريع',
+      'marriageReadinessIntroTitle':
+          'ينبغي فحص الجاهزية قبل أن تصبح الوعود أثقل',
+      'marriageReadinessIntroBody':
+          'يساعد هذا القسم على تحويل جاهزية الزواج إلى نقاط مراجعة عملية حول الوعي بالذات، وعادات الضغط، والمسؤولية، وإيقاع اتخاذ القرار.',
+      'heritageAwareness': 'التراث والوعي الأسري',
+      'heritageAwarenessSubtitle': 'اقرأ الموروث بعدسة عملية',
+      'heritageAwarenessIntroTitle':
+          'استخدم الثقافة لدعم الأسرة لا لتبرير الأذى',
+      'heritageAwarenessIntroBody':
+          'يعيد هذا القسم قراءة الأقوال الموروثة والقصص العائلية بعدسة عملية: نحتفظ بما يقوي الرحمة والمسؤولية، ونراجع ما يطبع الأذى أو الهيمنة.',
       'relationshipToolsIntroTitle': 'أدوات صغيرة لاتصال أكثر ثباتًا',
       'relationshipToolsIntroBody':
           'هذه الأدوات بسيطة عن قصد. لا تشخّص العلاقة، لكنها تساعد الطرفين على تحويل الاهتمام إلى أفعال واضحة ومتكررة.',
       'loveLanguagesTitle': 'دليل سريع للغات الحب',
       'loveLanguagesBody':
           'استخدم هذا القسم كعدسة عملية لا كتصنيف جامد. السؤال المفيد هنا هو: أي نوع من الاهتمام يشعر به الطرف الآخر فعلًا؟',
+      'loveLanguagesQuizTitle': 'اختبار مصغر للغات الحب',
+      'loveLanguagesQuizBody':
+          'أجب عن هذه المواقف القصيرة أولًا، ثم استخدم النتيجة المحفوظة كبداية للنقاش لا كحكم نهائي.',
+      'loveLanguagesQuizLatestTitle': 'أحدث نتيجة محفوظة',
+      'loveLanguagesQuizPrimaryLabel': 'اللغة الأبرز',
+      'loveLanguagesQuizSaveAction': 'حفظ نتيجة الاختبار',
+      'loveLanguagesQuizIncomplete':
+          'أجب عن كل أسئلة الاختبار قبل حفظ النتيجة.',
+      'loveLanguagesQuizSaved': 'تم حفظ نتيجة لغة الحب محليًا.',
       'weeklyChallengesTitle': 'تحديات أسبوعية للتقارب',
       'weeklyChallengesBody':
           'اختر تحديًا واحدًا في كل مرة. اجعله محددًا وقابلًا للتكرار بدل تحويله إلى أداء شكلي.',
+      'weeklyChallengesChecklistTitle': 'قائمة المتابعة الأسبوعية',
+      'weeklyChallengesChecklistBody':
+          'ضع علامة عند تنفيذ التحدي فعلًا. الهدف هو الاستمرار العملي لا جمع نوايا مثالية.',
+      'weeklyChallengesProgressTitle': 'المنجز في هذه الدورة',
+      'weeklyChallengesProgressCount': 'تم تحديد {current} من {total} تحديات',
       'relationshipToolsUsageTitle': 'كيف تُستخدم هذه الأدوات بشكل جيد',
       'relationshipToolsUsagePoint1':
           'ابدأ بأصغر فعل مفيد بدل الوعد بتغيير الشخصية بالكامل.',
@@ -667,6 +836,28 @@ class AppStrings {
           'إذا بدت أداة ما غير طبيعية، فناقش سبب ذلك قبل اعتبارها فشلًا.',
       'relationshipToolsUsagePoint3':
           'التكرار يبني الثقة. الاهتمام الصغير المستمر أنفع من الجهد الكبير النادر.',
+      'scenarioLabIntroTitle': 'اختبروا التوافق عبر مواقف واقعية',
+      'scenarioLabIntroBody':
+          'هذا المختبر منفصل عن نتيجة التوافق الأساسية. هو مساحة أكثر أمانًا لمقارنة ردود الفعل تحت الضغط قبل أن تحدث هذه المواقف فعليًا.',
+      'scenarioLabSummaryTitle': 'رادار التوافق',
+      'scenarioLabSummaryBody':
+          'هذا الرادار السريع يقرأ التوافق داخل السيناريوهات فقط. استخدموه لمعرفة أين تتشابه الغرائز وأين ما زال الاتفاق الصريح مطلوبًا.',
+      'scenarioLabAnsweredLabel': 'السيناريوهات المجابة',
+      'scenarioLabAlignedLabel': 'توافق قوي',
+      'scenarioLabCloseLabel': 'تقارب غير متطابق',
+      'scenarioLabGapLabel': 'فجوة ظاهرة',
+      'scenarioLabRecommendationsTitle': 'توصيات للنقاش',
+      'scenarioLabRecommendationsBody':
+          'استخدموا هذه النقاط كقائمة للنقاش القادم. ابدؤوا بالفجوات الواضحة أولًا، ثم حددوا شكل الاتفاق العملي في السيناريوهات المتقاربة.',
+      'scenarioLabRecommendationGapLabel': 'يناقش أولًا',
+      'scenarioLabRecommendationCloseLabel': 'يحتاج توضيحًا',
+      'scenarioLabRecommendationGapHint':
+          'الفرق هنا واضح بما يكفي ليحتاج اتفاقًا مباشرًا قبل أن تزيد الضغوط.',
+      'scenarioLabRecommendationCloseHint':
+          'الاتجاه متقارب، لكن الطريقة المفضلة ما زالت تحتاج اتفاقًا محددًا.',
+      'scenarioLabUserALabel': 'اختيار الشخص الأول',
+      'scenarioLabUserBLabel': 'اختيار الشخص الثاني',
+      'scenarioLabFocusLabel': 'محور القراءة',
       'gratitudeBankIntroTitle': 'ذاكرة بسيطة لما سار بشكل جيد',
       'gratitudeBankIntroBody':
           'هذه الأداة تحفظ ملاحظات امتنان قصيرة محليًا على الجهاز. الهدف هو الاحتفاظ بأثر واضح للاهتمام بدل الاعتماد على الذاكرة وحدها وقت التوتر.',
@@ -701,6 +892,8 @@ class AppStrings {
           'استخدم هذه الشاشة لتخطيط تذكيرات صغيرة متكررة تساعد على روتين أهدأ ومتابعة أوضح.',
       'remindersCenterLocalOnlyNote':
           'هذه المرحلة تحفظ خطط التذكير محليًا فقط، ولا ترسل إشعارات فعلية للنظام بعد.',
+      'remindersCenterNotificationNote':
+          'يمكن الآن لخطط التذكير الجديدة أن تفعّل إشعارات حقيقية على الجهاز عبر جدول يومي أو أسبوعي منظم.',
       'remindersCenterAddTitle': 'أضف خطة تذكير',
       'remindersCenterSavedTitle': 'خطط التذكير المحفوظة',
       'remindersCenterEmpty':
@@ -713,6 +906,23 @@ class AppStrings {
       'reminderCategoryCustom': 'تذكير مخصص',
       'reminderScheduleLabel': 'وصف الموعد',
       'reminderScheduleHint': 'مثال: كل جمعة الساعة 8:00 مساءً',
+      'reminderScheduleType': 'نوع الجدول',
+      'reminderScheduleDaily': 'يومي',
+      'reminderScheduleWeekly': 'أسبوعي',
+      'reminderWeekday': 'اليوم',
+      'reminderPickTime': 'اختر وقت التذكير',
+      'reminderSelectedTime': 'الوقت المختار',
+      'reminderNotificationScheduled':
+          'تم حفظ التذكير وجدولته كإشعار حقيقي على الجهاز.',
+      'reminderNotificationSavedLocalOnly':
+          'تم حفظ التذكير محليًا، لكن لم يتم منح إذن الإشعارات.',
+      'monday': 'الاثنين',
+      'tuesday': 'الثلاثاء',
+      'wednesday': 'الأربعاء',
+      'thursday': 'الخميس',
+      'friday': 'الجمعة',
+      'saturday': 'السبت',
+      'sunday': 'الأحد',
       'reminderNote': 'ملاحظة اختيارية',
       'reminderSaveAction': 'حفظ خطة التذكير',
       'delete': 'حذف',

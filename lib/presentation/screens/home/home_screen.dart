@@ -47,6 +47,13 @@ class HomeScreen extends StatelessWidget {
             Navigator.pushNamed(context, AppRoutes.relationshipTools),
       ),
       _FeatureItem(
+        title: context.tr('scenarioLab'),
+        subtitle: context.tr('featureScenarioLab'),
+        icon: Icons.radar_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.scenarioLab),
+      ),
+      _FeatureItem(
         title: context.tr('resourcesToolsHub'),
         subtitle: context.tr('featureResourcesToolsHub'),
         icon: Icons.widgets_outlined,
@@ -89,10 +96,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF8787ED),
-                  Color(0xFF7984DD),
-                ],
+                colors: [Color(0xFF8787ED), Color(0xFF7984DD)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
