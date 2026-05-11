@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:premarital_match/app.dart';
+import 'package:premarital_match/core/config/backend_mode.dart';
+import 'package:premarital_match/core/config/connected_feature_dependency_container.dart';
+import 'package:premarital_match/core/constants/app_routes.dart';
 import 'package:premarital_match/data/local/budget_planner_service.dart';
+import 'package:premarital_match/data/local/connected_feature_stub_repositories.dart';
+import 'package:premarital_match/data/local/connected_features_service.dart';
 import 'package:premarital_match/data/local/gratitude_bank_service.dart';
 import 'package:premarital_match/data/local/love_language_quiz_service.dart';
 import 'package:premarital_match/data/local/local_storage_service.dart';
@@ -20,6 +25,7 @@ import 'package:premarital_match/domain/models/reminder_entry.dart';
 import 'package:premarital_match/domain/models/weekly_challenge_progress.dart';
 import 'package:premarital_match/domain/services/booking_submission_service.dart';
 import 'package:premarital_match/domain/services/scenario_lab_scoring_service.dart';
+import 'package:premarital_match/domain/use_cases/connected_feature_status_use_cases.dart';
 import 'package:premarital_match/presentation/providers/app_state.dart';
 import 'package:premarital_match/presentation/screens/content/heritage_awareness_screen.dart';
 import 'package:premarital_match/presentation/screens/content/in_laws_guide_screen.dart';
@@ -27,6 +33,7 @@ import 'package:premarital_match/presentation/screens/content/marriage_readiness
 import 'package:premarital_match/presentation/screens/counseling/counseling_booking_screen.dart';
 import 'package:premarital_match/presentation/screens/forms/participant_form_screen.dart';
 import 'package:premarital_match/presentation/screens/personality/personality_test_screen.dart';
+import 'package:premarital_match/presentation/screens/settings/connected_features_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/settings_screen.dart';
 import 'package:premarital_match/presentation/screens/tools/budget_planner_screen.dart';
@@ -810,6 +817,109 @@ void main() {
     expect(find.text('Repeated family interference'), findsOneWidget);
   });
 
+  testWidgets('connected features screen renders planned cloud features', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const ConnectedFeaturesScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Cloud architecture status'), findsOneWidget);
+    expect(find.text('Mode: Local-only runtime'), findsOneWidget);
+    expect(find.text('Expert chat and video'), findsOneWidget);
+    expect(find.text('Gated by current app mode'), findsWidgets);
+  });
+
+  test('connected features stay gated in local-only mode', () {
+    const service = ConnectedFeaturesService();
+    final items = service.items();
+    final overview = service.buildOverview(items);
+
+    expect(overview.mode, BackendMode.localOnly);
+    expect(overview.enabledCount, 0);
+    expect(overview.gatedCount, items.length);
+    expect(
+      service.runtimeStatusFor(items.first),
+      ConnectedFeatureRuntimeStatus.gated,
+    );
+  });
+
+  test(
+    'local connected feature stubs stay disabled in local-only mode',
+    () async {
+      const registry = LocalConnectedFeatureRepositoryRegistry();
+
+      final expertStatus = await registry.expertSupport.getContractStatus();
+      final aiStatus = await registry.aiMediator.getContractStatus();
+      final anonymousStatus = await registry.anonymousProblemBox
+          .getContractStatus();
+      final emergencyStatus = await registry.emergencyButton
+          .getContractStatus();
+      final rewardsStatus = await registry.rewardsPartners.getContractStatus();
+
+      expect(expertStatus.mode, BackendMode.localOnly);
+      expect(expertStatus.enabled, isFalse);
+      expect(expertStatus.providerKey, 'local_stub');
+      expect(expertStatus.featureId, 'expert_support');
+
+      expect(aiStatus.enabled, isFalse);
+      expect(aiStatus.featureId, 'ai_mediator');
+
+      expect(anonymousStatus.enabled, isFalse);
+      expect(anonymousStatus.featureId, 'anonymous_problem_box');
+
+      expect(emergencyStatus.enabled, isFalse);
+      expect(emergencyStatus.featureId, 'emergency_button');
+
+      expect(rewardsStatus.enabled, isFalse);
+      expect(rewardsStatus.featureId, 'rewards_partners');
+    },
+  );
+
+  test('connected feature dependency container resolves local stubs', () async {
+    final container = ConnectedFeatureDependencyContainer.forCurrentMode();
+
+    expect(container.mode, BackendMode.localOnly);
+
+    final expertStatus = await container.expertSupport.getContractStatus();
+    final emergencyStatus = await container.emergencyButton.getContractStatus();
+
+    expect(expertStatus.providerKey, 'local_stub');
+    expect(expertStatus.enabled, isFalse);
+    expect(expertStatus.featureId, 'expert_support');
+
+    expect(emergencyStatus.providerKey, 'local_stub');
+    expect(emergencyStatus.enabled, isFalse);
+    expect(emergencyStatus.featureId, 'emergency_button');
+  });
+
+  test('connected feature use cases read local-only contract status', () async {
+    final container = ConnectedFeatureDependencyContainer.forCurrentMode();
+    final expertUseCase = GetExpertSupportStatusUseCase(
+      container.expertSupport,
+    );
+    final aiUseCase = GetAiMediatorStatusUseCase(container.aiMediator);
+
+    final expertStatus = await expertUseCase.execute();
+    final aiStatus = await aiUseCase.execute();
+
+    expect(expertStatus.mode, BackendMode.localOnly);
+    expect(expertStatus.enabled, isFalse);
+    expect(expertStatus.featureId, 'expert_support');
+
+    expect(aiStatus.mode, BackendMode.localOnly);
+    expect(aiStatus.enabled, isFalse);
+    expect(aiStatus.featureId, 'ai_mediator');
+  });
+
   testWidgets('settings opens the privacy policy screen', (
     WidgetTester tester,
   ) async {
@@ -832,6 +942,32 @@ void main() {
 
     expect(find.text('Privacy policy'), findsAtLeastNWidgets(1));
     expect(find.text('Data handled by the app'), findsOneWidget);
+  });
+
+  testWidgets('settings opens the connected features screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {
+            AppRoutes.connectedFeatures: (_) => const ConnectedFeaturesScreen(),
+          },
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Connected features'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Connected features'), findsAtLeastNWidgets(1));
+    expect(find.text('Cloud architecture status'), findsOneWidget);
   });
 
   testWidgets('booking submit saves the real send status', (

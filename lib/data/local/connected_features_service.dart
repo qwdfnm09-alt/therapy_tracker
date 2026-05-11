@@ -1,7 +1,11 @@
+import '../../core/config/backend_mode.dart';
+import '../../core/config/connected_feature_gates.dart';
 import '../../domain/models/connected_feature_item.dart';
 
 class ConnectedFeaturesService {
-  const ConnectedFeaturesService();
+  const ConnectedFeaturesService({this.gates = const ConnectedFeatureGates()});
+
+  final ConnectedFeatureGates gates;
 
   List<ConnectedFeatureItem> items() {
     return const [
@@ -83,4 +87,36 @@ class ConnectedFeaturesService {
       ),
     ];
   }
+
+  ConnectedFeaturesOverview buildOverview(List<ConnectedFeatureItem> items) {
+    final enabledCount = items.where((item) => gates.isEnabled(item.id)).length;
+    return ConnectedFeaturesOverview(
+      mode: gates.mode,
+      totalCount: items.length,
+      enabledCount: enabledCount,
+      gatedCount: items.length - enabledCount,
+    );
+  }
+
+  ConnectedFeatureRuntimeStatus runtimeStatusFor(ConnectedFeatureItem item) {
+    return gates.isEnabled(item.id)
+        ? ConnectedFeatureRuntimeStatus.enabled
+        : ConnectedFeatureRuntimeStatus.gated;
+  }
+}
+
+enum ConnectedFeatureRuntimeStatus { gated, enabled }
+
+class ConnectedFeaturesOverview {
+  const ConnectedFeaturesOverview({
+    required this.mode,
+    required this.totalCount,
+    required this.enabledCount,
+    required this.gatedCount,
+  });
+
+  final BackendMode mode;
+  final int totalCount;
+  final int enabledCount;
+  final int gatedCount;
 }

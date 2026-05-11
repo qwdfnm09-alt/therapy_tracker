@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/config/backend_mode.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/section_card.dart';
@@ -21,6 +22,7 @@ class ConnectedFeaturesScreen extends StatelessWidget {
     final isArabic = context.watch<AppState>().languageCode == 'ar';
     final languageCode = isArabic ? 'ar' : 'en';
     final items = service.items();
+    final overview = service.buildOverview(items);
 
     return AppPage(
       title: context.tr('connectedFeatures'),
@@ -42,27 +44,59 @@ class ConnectedFeaturesScreen extends StatelessWidget {
                     context.tr('connectedFeaturesLocalOnlyNote'),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _StatusPill(
+                        label:
+                            '${context.tr('connectedFeaturesModeLabel')}: ${_modeLabel(context, overview.mode)}',
+                        color: Colors.indigo,
+                      ),
+                      _StatusPill(
+                        label:
+                            '${context.tr('connectedFeaturesEnabledCountLabel')}: ${overview.enabledCount}',
+                        color: Colors.teal,
+                      ),
+                      _StatusPill(
+                        label:
+                            '${context.tr('connectedFeaturesGatedCountLabel')}: ${overview.gatedCount}',
+                        color: Colors.orange,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             );
           }
 
           final item = items[index - 1];
+          final status = service.runtimeStatusFor(item);
           return SectionCard(
             title: item.title(languageCode),
             icon: Icons.hub_outlined,
-            child: _ConnectedFeatureCard(item: item),
+            child: _ConnectedFeatureCard(item: item, status: status),
           );
         },
       ),
     );
   }
+
+  String _modeLabel(BuildContext context, BackendMode mode) {
+    return switch (mode) {
+      BackendMode.localOnly => context.tr('backendModeLocalOnly'),
+      BackendMode.connectedPreview => context.tr('backendModeConnectedPreview'),
+      BackendMode.connectedLive => context.tr('backendModeConnectedLive'),
+    };
+  }
 }
 
 class _ConnectedFeatureCard extends StatelessWidget {
-  const _ConnectedFeatureCard({required this.item});
+  const _ConnectedFeatureCard({required this.item, required this.status});
 
   final ConnectedFeatureItem item;
+  final ConnectedFeatureRuntimeStatus status;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +119,12 @@ class _ConnectedFeatureCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        _StatusPill(label: _availabilityLabel(context, item.availability)),
+        _StatusPill(
+          label: _runtimeStatusLabel(context, status, item.availability),
+          color: status == ConnectedFeatureRuntimeStatus.enabled
+              ? Colors.teal
+              : Colors.orange,
+        ),
         const SizedBox(height: 14),
         Text(
           context.tr('connectedFeaturesRequirementsLabel'),
@@ -106,13 +145,18 @@ class _ConnectedFeatureCard extends StatelessWidget {
     );
   }
 
-  String _availabilityLabel(
+  String _runtimeStatusLabel(
     BuildContext context,
+    ConnectedFeatureRuntimeStatus status,
     ConnectedFeatureAvailability availability,
   ) {
+    if (status == ConnectedFeatureRuntimeStatus.enabled) {
+      return context.tr('connectedFeaturesStatusEnabled');
+    }
+
     return switch (availability) {
       ConnectedFeatureAvailability.planned => context.tr(
-        'connectedFeaturesStatusPlanned',
+        'connectedFeaturesStatusGated',
       ),
     };
   }
@@ -148,23 +192,24 @@ class _ConnectedFeatureCard extends StatelessWidget {
 }
 
 class _StatusPill extends StatelessWidget {
-  const _StatusPill({required this.label});
+  const _StatusPill({required this.label, required this.color});
 
   final String label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.16)),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
       ),
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: Colors.orange.shade900,
+          color: color,
           fontWeight: FontWeight.w800,
         ),
       ),
@@ -189,9 +234,9 @@ class _RequirementPill extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w700),
       ),
     );
   }
