@@ -1,7 +1,7 @@
 class FirebaseEnvironment {
   const FirebaseEnvironment._();
 
-  // Connected preview is enabled for Android only in the current phase.
+  // Connected Firebase runtime is enabled for Android only in the current phase.
   static const enabled = true;
 
   // App Check stays off until Firebase is fully wired on device.

@@ -69,6 +69,35 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, AppRoutes.counseling),
       ),
       _FeatureItem(
+        title: context.tr('problemBox'),
+        subtitle: context.tr('featureProblemBox'),
+        icon: Icons.mark_unread_chat_alt_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.problemBox),
+      ),
+      _FeatureItem(
+        title: context.tr('emergencySupport'),
+        subtitle: context.tr('featureEmergencySupport'),
+        icon: Icons.sos_outlined,
+        enabled: true,
+        onPressed: () =>
+            Navigator.pushNamed(context, AppRoutes.emergencySupport),
+      ),
+      _FeatureItem(
+        title: context.tr('guidedMediator'),
+        subtitle: context.tr('featureGuidedMediator'),
+        icon: Icons.forum_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.guidedMediator),
+      ),
+      _FeatureItem(
+        title: context.tr('partnerOffers'),
+        subtitle: context.tr('partnerOffersTileBody'),
+        icon: Icons.local_offer_outlined,
+        enabled: true,
+        onPressed: () => Navigator.pushNamed(context, AppRoutes.partnerOffers),
+      ),
+      _FeatureItem(
         title: context.tr('settings'),
         subtitle: context.tr('featureSettings'),
         icon: Icons.settings_outlined,

@@ -78,53 +78,6 @@ class SettingsScreen extends StatelessWidget {
           SectionCard(
             child: ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.mark_unread_chat_alt_outlined),
-              title: Text(context.tr('problemBox')),
-              subtitle: Text(context.tr('problemBoxTileBody')),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => Navigator.pushNamed(context, AppRoutes.problemBox),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SectionCard(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.sos_outlined),
-              title: Text(context.tr('emergencySupport')),
-              subtitle: Text(context.tr('emergencySupportTileBody')),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () =>
-                  Navigator.pushNamed(context, AppRoutes.emergencySupport),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SectionCard(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.local_offer_outlined),
-              title: Text(context.tr('partnerOffers')),
-              subtitle: Text(context.tr('partnerOffersTileBody')),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () =>
-                  Navigator.pushNamed(context, AppRoutes.partnerOffers),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SectionCard(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.cloud_outlined),
-              title: Text(context.tr('connectedFeatures')),
-              subtitle: Text(context.tr('connectedFeaturesTileBody')),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () =>
-                  Navigator.pushNamed(context, AppRoutes.connectedFeatures),
-            ),
-          ),
-          const SizedBox(height: 16),
-          SectionCard(
-            child: ListTile(
-              contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.privacy_tip_outlined),
               title: Text(privacyLabel),
               subtitle: Text(privacyBody),

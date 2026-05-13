@@ -51,7 +51,7 @@ import 'package:premarital_match/presentation/screens/settings/account_screen.da
 import 'package:premarital_match/presentation/screens/settings/connected_features_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/settings_screen.dart';
-import 'package:premarital_match/presentation/screens/home/resources_tools_hub_screen.dart';
+import 'package:premarital_match/presentation/screens/home/home_screen.dart';
 import 'package:premarital_match/presentation/screens/support/anonymous_problem_box_screen.dart';
 import 'package:premarital_match/presentation/screens/support/emergency_support_screen.dart';
 import 'package:premarital_match/presentation/screens/support/partner_offers_screen.dart';
@@ -923,7 +923,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Cloud architecture status'), findsOneWidget);
-    expect(find.text('Mode: Connected preview runtime'), findsOneWidget);
+    expect(find.text('Mode: Connected live runtime'), findsOneWidget);
     expect(find.text('Expert chat and video'), findsOneWidget);
     expect(find.text('Gated by current app mode'), findsWidgets);
   });
@@ -935,7 +935,7 @@ void main() {
       final items = service.items();
       final overview = service.buildOverview(items);
 
-      expect(overview.mode, BackendMode.connectedPreview);
+      expect(overview.mode, BackendMode.connectedLive);
       expect(overview.enabledCount, 0);
       expect(overview.gatedCount, items.length);
       expect(
@@ -958,7 +958,7 @@ void main() {
           .getContractStatus();
       final rewardsStatus = await registry.rewardsPartners.getContractStatus();
 
-      expect(expertStatus.mode, BackendMode.connectedPreview);
+      expect(expertStatus.mode, BackendMode.connectedLive);
       expect(expertStatus.enabled, isFalse);
       expect(expertStatus.providerKey, 'local_stub');
       expect(expertStatus.featureId, 'expert_support');
@@ -982,7 +982,7 @@ void main() {
     () async {
       final container = ConnectedFeatureDependencyContainer.forCurrentMode();
 
-      expect(container.mode, BackendMode.connectedPreview);
+      expect(container.mode, BackendMode.connectedLive);
       expect(
         container.expertSupportRequests,
         isA<LocalExpertSupportRequestRepository>(),
@@ -1084,11 +1084,11 @@ void main() {
       final expertStatus = await expertUseCase.execute();
       final aiStatus = await aiUseCase.execute();
 
-      expect(expertStatus.mode, BackendMode.connectedPreview);
+      expect(expertStatus.mode, BackendMode.connectedLive);
       expect(expertStatus.enabled, isFalse);
       expect(expertStatus.featureId, 'expert_support');
 
-      expect(aiStatus.mode, BackendMode.connectedPreview);
+      expect(aiStatus.mode, BackendMode.connectedLive);
       expect(aiStatus.enabled, isFalse);
       expect(aiStatus.featureId, 'ai_mediator');
     },
@@ -1294,6 +1294,102 @@ void main() {
     );
   });
 
+  testWidgets('home screen shows the problem box entry', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Anonymous problem box'), findsOneWidget);
+    expect(
+      find.text(
+        'Send a private relationship concern through the connected submission path and optionally forward it to WhatsApp',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('home screen shows the emergency support entry', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Emergency support'), findsOneWidget);
+    expect(
+      find.text(
+        'Open immediate support actions and review first-response guidance directly from Home',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('home screen shows the guided mediator entry', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Guided mediator'), findsOneWidget);
+    expect(
+      find.text(
+        'Use a local guided conflict script to slow escalation and end with one practical agreement',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('home screen shows the partner offers entry', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Partner offers'), findsOneWidget);
+    expect(
+      find.text(
+        'Review local partner offers and copy any available codes without affecting your current saved data.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('emergency support screen renders core actions', (
     WidgetTester tester,
   ) async {
@@ -1400,127 +1496,6 @@ void main() {
 
     expect(find.text('Sign in'), findsAtLeastNWidgets(1));
     expect(find.text('Connected sign-in status'), findsOneWidget);
-  });
-
-  testWidgets('settings opens the problem box screen', (
-    WidgetTester tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: appState,
-        child: MaterialApp(
-          home: const SettingsScreen(),
-          routes: {
-            AppRoutes.problemBox: (_) => const AnonymousProblemBoxScreen(),
-          },
-        ),
-      ),
-    );
-
-    await _openSettingsTile(tester, 'Anonymous problem box');
-
-    expect(find.text('Anonymous problem box'), findsAtLeastNWidgets(1));
-    expect(find.text('Private write-only concern box'), findsOneWidget);
-  });
-
-  testWidgets('settings opens the emergency support screen', (
-    WidgetTester tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: appState,
-        child: MaterialApp(
-          home: const SettingsScreen(),
-          routes: {
-            AppRoutes.emergencySupport: (_) => const EmergencySupportScreen(),
-          },
-        ),
-      ),
-    );
-
-    await _openSettingsTile(tester, 'Emergency support');
-
-    expect(find.text('Emergency support'), findsAtLeastNWidgets(1));
-    expect(find.text('Immediate support routing'), findsOneWidget);
-  });
-
-  testWidgets('settings opens the partner offers screen', (
-    WidgetTester tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: appState,
-        child: MaterialApp(
-          home: const SettingsScreen(),
-          routes: {AppRoutes.partnerOffers: (_) => const PartnerOffersScreen()},
-        ),
-      ),
-    );
-
-    await _openSettingsTile(tester, 'Partner offers');
-
-    expect(find.text('Partner offers'), findsAtLeastNWidgets(1));
-    expect(find.text('Local offers only'), findsOneWidget);
-  });
-
-  testWidgets('settings opens the connected features screen', (
-    WidgetTester tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: appState,
-        child: MaterialApp(
-          home: const SettingsScreen(),
-          routes: {
-            AppRoutes.connectedFeatures: (_) => const ConnectedFeaturesScreen(),
-          },
-        ),
-      ),
-    );
-
-    await _openSettingsTile(tester, 'Connected features');
-
-    expect(find.text('Connected features'), findsAtLeastNWidgets(1));
-    expect(find.text('Cloud architecture status'), findsOneWidget);
-  });
-
-  testWidgets('resources hub shows the guided mediator entry', (
-    WidgetTester tester,
-  ) async {
-    SharedPreferences.setMockInitialValues({});
-    final storage = await LocalStorageService.create();
-    final appState = AppState(storage)..initialize();
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider.value(
-        value: appState,
-        child: const MaterialApp(home: ResourcesToolsHubScreen()),
-      ),
-    );
-
-    expect(find.text('Guided mediator'), findsOneWidget);
-    expect(
-      find.text(
-        'Use a local guided conflict script to slow escalation and end with one practical agreement',
-      ),
-      findsOneWidget,
-    );
   });
 
   testWidgets('booking submit saves the real send status', (

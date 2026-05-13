@@ -3,5 +3,5 @@ enum BackendMode { localOnly, connectedPreview, connectedLive }
 class BackendConfig {
   const BackendConfig._();
 
-  static const currentMode = BackendMode.connectedPreview;
+  static const currentMode = BackendMode.connectedLive;
 }

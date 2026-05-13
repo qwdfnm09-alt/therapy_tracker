@@ -38,6 +38,10 @@ class AppStrings {
           'Use a local guided conflict script to slow escalation and end with one practical agreement',
       'featureScenarioLab':
           'Compare how both people respond to realistic pressure scenarios without affecting the main compatibility score',
+      'featureProblemBox':
+          'Send a private relationship concern through the connected submission path and optionally forward it to WhatsApp',
+      'featureEmergencySupport':
+          'Open immediate support actions and review first-response guidance directly from Home',
       'featureSettings': 'Change language, theme, and clear saved data',
       'account': 'Account',
       'accountTileBody':
@@ -810,6 +814,10 @@ class AppStrings {
           'استخدم مسارًا محليًا موجهًا للخلاف لتهدئة التصعيد والخروج باتفاق عملي واحد',
       'featureScenarioLab':
           'قارن كيف يستجيب الطرفان لسيناريوهات ضغط واقعية بدون التأثير على نتيجة التوافق الأساسية',
+      'featureProblemBox':
+          'أرسل مشكلة خاصة عبر المسار المتصل مع إمكانية تمريرها إلى واتساب',
+      'featureEmergencySupport':
+          'افتح وسائل الدعم العاجل وراجع إرشادات الاستجابة الأولى مباشرة من الصفحة الرئيسية',
       'featureSettings': 'غيّر اللغة والمظهر وامسح البيانات المحفوظة',
       'account': 'الحساب',
       'accountTileBody':
