@@ -18,6 +18,15 @@ class AppStrings {
       'homeTitle': 'Choose the feature you want to open',
       'homeBody':
           'Start the assessment flow, open the test, review the latest result, or go directly to counseling and settings.',
+      'homeHeroTitle': 'Build a clearer marriage decision',
+      'homeHeroBody':
+          'Start the main journey first, then open support tools only when you need a more focused next step.',
+      'homeHeroStateProfilesIncomplete': 'Profiles incomplete',
+      'homeHeroStateInProgress': 'Assessment in progress',
+      'homeHeroStateResultReady': 'Result available',
+      'homeMainJourney': 'Main journey',
+      'homeSupportTools': 'Support & tools',
+      'homeProgress': 'Progress',
       'quickAccess': 'Quick access',
       'featurePersonality': 'Open the compatibility questions for both users',
       'featureResults': 'Review the latest calculated compatibility report',
@@ -795,6 +804,15 @@ class AppStrings {
       'homeTitle': 'اختر الميزة التي تريد فتحها',
       'homeBody':
           'ابدأ التقييم، وافتح الاختبار، وراجع آخر نتيجة، أو ادخل مباشرة إلى الحجز والإعدادات.',
+      'homeHeroTitle': 'اتخذ قرار زواج أوضح',
+      'homeHeroBody':
+          'ابدأ من الرحلة الأساسية أولًا، ثم افتح أدوات الدعم فقط عندما تحتاج خطوة أكثر تركيزًا.',
+      'homeHeroStateProfilesIncomplete': 'الملفات غير مكتملة',
+      'homeHeroStateInProgress': 'التقييم قيد التنفيذ',
+      'homeHeroStateResultReady': 'النتيجة متاحة',
+      'homeMainJourney': 'الرحلة الأساسية',
+      'homeSupportTools': 'الدعم والأدوات',
+      'homeProgress': 'التقدم',
       'quickAccess': 'وصول سريع',
       'featurePersonality': 'افتح أسئلة التوافق للشخصين',
       'featureResults': 'راجع آخر تقرير توافق تم حسابه',

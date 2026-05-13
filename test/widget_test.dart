@@ -1294,6 +1294,29 @@ void main() {
     );
   });
 
+  testWidgets('home screen renders on narrow mobile width without overflow', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    tester.view.physicalSize = const Size(360, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: HomeScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('home screen shows the problem box entry', (
     WidgetTester tester,
   ) async {
@@ -1309,6 +1332,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Anonymous problem box'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Anonymous problem box'), findsOneWidget);
     expect(
       find.text(
@@ -1333,6 +1361,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Emergency support'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Emergency support'), findsOneWidget);
     expect(
       find.text(
@@ -1357,6 +1390,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Guided mediator'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Guided mediator'), findsOneWidget);
     expect(
       find.text(
@@ -1381,6 +1419,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.text('Partner offers'),
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Partner offers'), findsOneWidget);
     expect(
       find.text(
