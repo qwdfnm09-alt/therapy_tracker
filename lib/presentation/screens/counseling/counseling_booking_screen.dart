@@ -3,18 +3,27 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/clinic_contact.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../core/config/connected_feature_dependency_container.dart';
 import '../../../core/localization/app_strings.dart';
 import '../../../core/widgets/app_page.dart';
 import '../../../core/widgets/form_text_field.dart';
 import '../../../core/widgets/section_card.dart';
 import '../../../domain/models/compatibility_result.dart';
+import '../../../domain/models/expert_support_request.dart';
+import '../../../domain/models/expert_support_submission_result.dart';
 import '../../../domain/services/booking_submission_service.dart';
+import '../../../domain/use_cases/create_expert_support_request_use_case.dart';
 import '../../providers/app_state.dart';
 
 class CounselingBookingScreen extends StatefulWidget {
-  const CounselingBookingScreen({super.key, this.submissionService});
+  const CounselingBookingScreen({
+    super.key,
+    this.submissionService,
+    this.createExpertSupportRequestUseCase,
+  });
 
   final BookingSubmissionService? submissionService;
+  final CreateExpertSupportRequestUseCase? createExpertSupportRequestUseCase;
 
   @override
   State<CounselingBookingScreen> createState() =>
@@ -27,6 +36,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   final _dateController = TextEditingController();
   final _messageController = TextEditingController();
   late final BookingSubmissionService _submissionService;
+  late final CreateExpertSupportRequestUseCase _createRequestUseCase;
   String _sessionType = 'family';
   CompatibilityResult? _resultSnapshot;
   bool _isSubmitting = false;
@@ -36,6 +46,10 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
   void initState() {
     super.initState();
     _submissionService = widget.submissionService ?? BookingSubmissionService();
+    final container = ConnectedFeatureDependencyContainer.forCurrentMode();
+    _createRequestUseCase =
+        widget.createExpertSupportRequestUseCase ??
+        CreateExpertSupportRequestUseCase(container.expertSupportRequests);
     _resultSnapshot = context.read<AppState>().result;
     _sessionType = _recommendedSessionType(_resultSnapshot);
   }
@@ -280,14 +294,49 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
       'createdAt': DateTime.now().toIso8601String(),
     };
     try {
-      final submission = await _submissionService.submit(
-        sessionTypeLabel: _sessionTypeLabel(_sessionType),
-        clientPhone: booking['phone'] ?? '',
-        preferredDate: booking['preferredDate'] ?? '',
-        message: booking['message'] ?? '',
-        recommendedReason: booking['recommendedReason'],
-        resultVerdict: booking['resultVerdict'],
-      );
+      ExpertSupportSubmissionResult remoteSubmission;
+      try {
+        remoteSubmission = await _createRequestUseCase.execute(
+          ExpertSupportRequest(
+            sessionType: _sessionType,
+            sessionTypeLabel: _sessionTypeLabel(_sessionType),
+            clientPhone: booking['phone'] ?? '',
+            preferredDate: booking['preferredDate'] ?? '',
+            message: booking['message'] ?? '',
+            recommendedReason: booking['recommendedReason'] ?? '',
+            resultVerdict: booking['resultVerdict'] ?? '',
+            createdAtIso:
+                booking['createdAt'] ?? DateTime.now().toIso8601String(),
+          ),
+        );
+      } catch (_) {
+        remoteSubmission = const ExpertSupportSubmissionResult(
+          submitted: false,
+          channel: 'remote_failed',
+        );
+      }
+
+      final submission = remoteSubmission.submitted
+          ? BookingSubmissionResult(
+              success: true,
+              channel: 'remote',
+              messageText: _submissionService.buildMessage(
+                sessionTypeLabel: _sessionTypeLabel(_sessionType),
+                clientPhone: booking['phone'] ?? '',
+                preferredDate: booking['preferredDate'] ?? '',
+                message: booking['message'] ?? '',
+                recommendedReason: booking['recommendedReason'],
+                resultVerdict: booking['resultVerdict'],
+              ),
+            )
+          : await _submissionService.submit(
+              sessionTypeLabel: _sessionTypeLabel(_sessionType),
+              clientPhone: booking['phone'] ?? '',
+              preferredDate: booking['preferredDate'] ?? '',
+              message: booking['message'] ?? '',
+              recommendedReason: booking['recommendedReason'],
+              resultVerdict: booking['resultVerdict'],
+            );
       await appState
           .saveBooking({...booking, 'sendStatus': submission.channel})
           .timeout(const Duration(seconds: 2), onTimeout: () {});
@@ -382,6 +431,7 @@ class _CounselingBookingScreenState extends State<CounselingBookingScreen> {
 
   String _submissionStatusLabel(BuildContext context, String? value) {
     return switch (value) {
+      'remote' => context.tr('bookingStatusRemote'),
       'whatsapp' => context.tr('bookingStatusWhatsapp'),
       'sms' => context.tr('bookingStatusSms'),
       'call' => context.tr('bookingStatusCall'),
@@ -435,6 +485,7 @@ class _BookingConfirmationPageState extends State<_BookingConfirmationPage> {
                 _BookingRow(
                   label: context.tr('bookingStatus'),
                   value: switch (_channel) {
+                    'remote' => context.tr('bookingStatusRemote'),
                     'whatsapp' => context.tr('bookingStatusWhatsapp'),
                     'sms' => context.tr('bookingStatusSms'),
                     'call' => context.tr('bookingStatusCall'),

@@ -14,6 +14,8 @@ class BookingSubmissionResult {
 }
 
 class BookingSubmissionService {
+  const BookingSubmissionService();
+
   Future<BookingSubmissionResult> submit({
     required String sessionTypeLabel,
     required String clientPhone,

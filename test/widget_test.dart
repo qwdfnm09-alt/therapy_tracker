@@ -3,11 +3,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:premarital_match/app.dart';
 import 'package:premarital_match/core/config/backend_mode.dart';
 import 'package:premarital_match/core/config/connected_feature_dependency_container.dart';
+import 'package:premarital_match/core/config/connected_feature_gates.dart';
 import 'package:premarital_match/core/constants/app_routes.dart';
 import 'package:premarital_match/data/local/budget_planner_service.dart';
 import 'package:premarital_match/data/local/connected_feature_stub_repositories.dart';
 import 'package:premarital_match/data/local/connected_features_service.dart';
 import 'package:premarital_match/data/local/gratitude_bank_service.dart';
+import 'package:premarital_match/data/local/local_auth_repository.dart';
 import 'package:premarital_match/data/local/love_language_quiz_service.dart';
 import 'package:premarital_match/data/local/local_storage_service.dart';
 import 'package:premarital_match/data/local/reminders_center_service.dart';
@@ -16,16 +18,28 @@ import 'package:premarital_match/data/local/scenario_lab_progress_service.dart';
 import 'package:premarital_match/data/local/scenario_lab_repository.dart';
 import 'package:premarital_match/data/local/weekly_challenge_progress_service.dart';
 import 'package:premarital_match/domain/models/budget_entry.dart';
+import 'package:premarital_match/domain/models/auth_action_result.dart';
+import 'package:premarital_match/domain/models/auth_user.dart';
 import 'package:premarital_match/domain/models/compatibility_result.dart';
+import 'package:premarital_match/domain/models/expert_support_request.dart';
+import 'package:premarital_match/domain/models/expert_support_submission_result.dart';
 import 'package:premarital_match/domain/models/gratitude_note.dart';
 import 'package:premarital_match/domain/models/love_language_quiz_result.dart';
 import 'package:premarital_match/domain/models/participant_profile.dart';
+import 'package:premarital_match/domain/models/problem_box_submission.dart';
+import 'package:premarital_match/domain/models/problem_box_submission_result.dart';
 import 'package:premarital_match/domain/models/question.dart';
 import 'package:premarital_match/domain/models/reminder_entry.dart';
 import 'package:premarital_match/domain/models/weekly_challenge_progress.dart';
+import 'package:premarital_match/domain/services/auth_repository.dart';
 import 'package:premarital_match/domain/services/booking_submission_service.dart';
+import 'package:premarital_match/domain/services/expert_support_request_repository.dart';
+import 'package:premarital_match/domain/services/problem_box_submission_repository.dart';
 import 'package:premarital_match/domain/services/scenario_lab_scoring_service.dart';
+import 'package:premarital_match/domain/use_cases/auth_use_cases.dart';
+import 'package:premarital_match/domain/use_cases/create_expert_support_request_use_case.dart';
 import 'package:premarital_match/domain/use_cases/connected_feature_status_use_cases.dart';
+import 'package:premarital_match/domain/use_cases/submit_problem_box_use_case.dart';
 import 'package:premarital_match/presentation/providers/app_state.dart';
 import 'package:premarital_match/presentation/screens/content/heritage_awareness_screen.dart';
 import 'package:premarital_match/presentation/screens/content/in_laws_guide_screen.dart';
@@ -33,16 +47,37 @@ import 'package:premarital_match/presentation/screens/content/marriage_readiness
 import 'package:premarital_match/presentation/screens/counseling/counseling_booking_screen.dart';
 import 'package:premarital_match/presentation/screens/forms/participant_form_screen.dart';
 import 'package:premarital_match/presentation/screens/personality/personality_test_screen.dart';
+import 'package:premarital_match/presentation/screens/settings/account_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/connected_features_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/privacy_policy_screen.dart';
 import 'package:premarital_match/presentation/screens/settings/settings_screen.dart';
+import 'package:premarital_match/presentation/screens/home/resources_tools_hub_screen.dart';
+import 'package:premarital_match/presentation/screens/support/anonymous_problem_box_screen.dart';
+import 'package:premarital_match/presentation/screens/support/emergency_support_screen.dart';
+import 'package:premarital_match/presentation/screens/support/partner_offers_screen.dart';
 import 'package:premarital_match/presentation/screens/tools/budget_planner_screen.dart';
+import 'package:premarital_match/presentation/screens/tools/guided_mediator_screen.dart';
 import 'package:premarital_match/presentation/screens/tools/scenario_lab_screen.dart';
+import 'package:premarital_match/presentation/screens/welcome/welcome_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Future<void> _openSettingsTile(WidgetTester tester, String label) async {
+  final tileFinder = find.widgetWithText(ListTile, label);
+
+  await tester.scrollUntilVisible(
+    tileFinder,
+    250,
+    scrollable: find.byType(Scrollable).first,
+  );
+  await tester.ensureVisible(tileFinder);
+  await tester.pumpAndSettle();
+  await tester.tap(tileFinder, warnIfMissed: false);
+  await tester.pumpAndSettle();
+}
+
 void main() {
-  testWidgets('shows welcome then navigates to home screen', (
+  testWidgets('welcome opens the account entry flow', (
     WidgetTester tester,
   ) async {
     SharedPreferences.setMockInitialValues({});
@@ -54,16 +89,71 @@ void main() {
         child: const PreMaritalMatchApp(),
       ),
     );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
-    expect(find.text('Start Usage'), findsOneWidget);
+    expect(find.text('Sign in or create account'), findsOneWidget);
 
-    await tester.tap(find.text('Start Usage'));
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.pump(const Duration(milliseconds: 900));
+    await tester.tap(find.text('Sign in or create account'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('Create account'), findsAtLeastNWidgets(1));
+    expect(find.text('Sign in'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('welcome opens create account screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => AppState(storage)..initialize(),
+        child: const PreMaritalMatchApp(),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    await tester.tap(find.text('Sign in or create account'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('Create account'), findsAtLeastNWidgets(1));
+    expect(
+      find.text(
+        'Use this mode to create a new account first, then enter the app directly when creation succeeds.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('welcome auto-opens home when a user is already signed in', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: WelcomeScreen(
+            getCurrentAuthUserUseCase: GetCurrentAuthUserUseCase(
+              const _SignedInAuthRepository(),
+            ),
+          ),
+          routes: {AppRoutes.home: (_) => const Scaffold(body: Text('Home'))},
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
-    expect(find.text('Quick access'), findsOneWidget);
-    expect(find.text('Personality test'), findsOneWidget);
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Sign in or create account'), findsNothing);
   });
 
   test('clears stale result after profile data changes', () async {
@@ -833,27 +923,30 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Cloud architecture status'), findsOneWidget);
-    expect(find.text('Mode: Local-only runtime'), findsOneWidget);
+    expect(find.text('Mode: Connected preview runtime'), findsOneWidget);
     expect(find.text('Expert chat and video'), findsOneWidget);
     expect(find.text('Gated by current app mode'), findsWidgets);
   });
 
-  test('connected features stay gated in local-only mode', () {
-    const service = ConnectedFeaturesService();
-    final items = service.items();
-    final overview = service.buildOverview(items);
+  test(
+    'connected features stay gated in preview mode while gates stay off',
+    () {
+      const service = ConnectedFeaturesService();
+      final items = service.items();
+      final overview = service.buildOverview(items);
 
-    expect(overview.mode, BackendMode.localOnly);
-    expect(overview.enabledCount, 0);
-    expect(overview.gatedCount, items.length);
-    expect(
-      service.runtimeStatusFor(items.first),
-      ConnectedFeatureRuntimeStatus.gated,
-    );
-  });
+      expect(overview.mode, BackendMode.connectedPreview);
+      expect(overview.enabledCount, 0);
+      expect(overview.gatedCount, items.length);
+      expect(
+        service.runtimeStatusFor(items.first),
+        ConnectedFeatureRuntimeStatus.gated,
+      );
+    },
+  );
 
   test(
-    'local connected feature stubs stay disabled in local-only mode',
+    'local connected feature stubs stay disabled while preview gates stay off',
     () async {
       const registry = LocalConnectedFeatureRepositoryRegistry();
 
@@ -865,7 +958,7 @@ void main() {
           .getContractStatus();
       final rewardsStatus = await registry.rewardsPartners.getContractStatus();
 
-      expect(expertStatus.mode, BackendMode.localOnly);
+      expect(expertStatus.mode, BackendMode.connectedPreview);
       expect(expertStatus.enabled, isFalse);
       expect(expertStatus.providerKey, 'local_stub');
       expect(expertStatus.featureId, 'expert_support');
@@ -884,40 +977,385 @@ void main() {
     },
   );
 
-  test('connected feature dependency container resolves local stubs', () async {
-    final container = ConnectedFeatureDependencyContainer.forCurrentMode();
+  test(
+    'connected feature dependency container falls back to local repos when preview mode has no initialized Firebase app',
+    () async {
+      final container = ConnectedFeatureDependencyContainer.forCurrentMode();
 
-    expect(container.mode, BackendMode.localOnly);
+      expect(container.mode, BackendMode.connectedPreview);
+      expect(
+        container.expertSupportRequests,
+        isA<LocalExpertSupportRequestRepository>(),
+      );
+      expect(container.auth, isA<LocalAuthRepository>());
+      expect(
+        container.problemBoxSubmissions,
+        isA<LocalProblemBoxSubmissionRepository>(),
+      );
 
-    final expertStatus = await container.expertSupport.getContractStatus();
-    final emergencyStatus = await container.emergencyButton.getContractStatus();
+      final expertStatus = await container.expertSupport.getContractStatus();
+      final emergencyStatus = await container.emergencyButton
+          .getContractStatus();
 
-    expect(expertStatus.providerKey, 'local_stub');
-    expect(expertStatus.enabled, isFalse);
-    expect(expertStatus.featureId, 'expert_support');
+      expect(expertStatus.providerKey, 'local_stub');
+      expect(expertStatus.enabled, isFalse);
+      expect(expertStatus.featureId, 'expert_support');
 
-    expect(emergencyStatus.providerKey, 'local_stub');
-    expect(emergencyStatus.enabled, isFalse);
-    expect(emergencyStatus.featureId, 'emergency_button');
+      expect(emergencyStatus.providerKey, 'local_stub');
+      expect(emergencyStatus.enabled, isFalse);
+      expect(emergencyStatus.featureId, 'emergency_button');
+    },
+  );
+
+  test(
+    'connected feature dependency container enables remote repositories per feature gate',
+    () {
+      const gates = ConnectedFeatureGates(
+        overrides: {
+          ConnectedFeatureGates.auth: true,
+          ConnectedFeatureGates.expertSupportRequests: true,
+          ConnectedFeatureGates.problemBoxSubmissions: false,
+        },
+      );
+
+      final container = ConnectedFeatureDependencyContainer.configured(
+        gates: gates,
+        mode: BackendMode.connectedPreview,
+        firebaseEnabled: true,
+        firebaseAppReady: true,
+        remoteAuthFactory: () => _FakeRemoteAuthRepository(),
+        remoteExpertSupportRequestFactory: () =>
+            _FakeRemoteExpertSupportRequestRepository(),
+      );
+
+      expect(container.auth, isA<_FakeRemoteAuthRepository>());
+      expect(
+        container.expertSupportRequests,
+        isA<_FakeRemoteExpertSupportRequestRepository>(),
+      );
+      expect(
+        container.problemBoxSubmissions,
+        isA<LocalProblemBoxSubmissionRepository>(),
+      );
+    },
+  );
+
+  test(
+    'connected feature dependency container keeps unrelated repositories local when one gate opens',
+    () {
+      const gates = ConnectedFeatureGates(
+        overrides: {
+          ConnectedFeatureGates.auth: false,
+          ConnectedFeatureGates.expertSupportRequests: false,
+          ConnectedFeatureGates.problemBoxSubmissions: true,
+        },
+      );
+
+      final container = ConnectedFeatureDependencyContainer.configured(
+        gates: gates,
+        mode: BackendMode.connectedPreview,
+        firebaseEnabled: true,
+        firebaseAppReady: true,
+        remoteProblemBoxSubmissionFactory: () =>
+            _FakeRemoteProblemBoxSubmissionRepository(),
+      );
+
+      expect(container.auth, isA<LocalAuthRepository>());
+      expect(
+        container.expertSupportRequests,
+        isA<LocalExpertSupportRequestRepository>(),
+      );
+      expect(
+        container.problemBoxSubmissions,
+        isA<_FakeRemoteProblemBoxSubmissionRepository>(),
+      );
+    },
+  );
+
+  test(
+    'connected feature use cases read preview-mode contract status while gates stay off',
+    () async {
+      final container = ConnectedFeatureDependencyContainer.forCurrentMode();
+      final expertUseCase = GetExpertSupportStatusUseCase(
+        container.expertSupport,
+      );
+      final aiUseCase = GetAiMediatorStatusUseCase(container.aiMediator);
+
+      final expertStatus = await expertUseCase.execute();
+      final aiStatus = await aiUseCase.execute();
+
+      expect(expertStatus.mode, BackendMode.connectedPreview);
+      expect(expertStatus.enabled, isFalse);
+      expect(expertStatus.featureId, 'expert_support');
+
+      expect(aiStatus.mode, BackendMode.connectedPreview);
+      expect(aiStatus.enabled, isFalse);
+      expect(aiStatus.featureId, 'ai_mediator');
+    },
+  );
+
+  test('local auth use case stays disabled in local-only mode', () async {
+    const repository = LocalAuthRepository();
+    final createAccountUseCase = CreateAccountWithEmailUseCase(repository);
+    final signInUseCase = SignInWithEmailUseCase(repository);
+    final currentUserUseCase = GetCurrentAuthUserUseCase(repository);
+
+    final createResult = await createAccountUseCase.execute(
+      email: 'test@example.com',
+      password: '123456',
+    );
+    final signInResult = await signInUseCase.execute(
+      email: 'test@example.com',
+      password: '123456',
+    );
+    final currentUser = await currentUserUseCase.execute();
+
+    expect(createResult.success, isFalse);
+    expect(createResult.providerKey, 'local_stub');
+    expect(createResult.message, 'connectedAuthDisabled');
+    expect(signInResult.success, isFalse);
+    expect(signInResult.providerKey, 'local_stub');
+    expect(signInResult.message, 'connectedAuthDisabled');
+    expect(currentUser, isNull);
   });
 
-  test('connected feature use cases read local-only contract status', () async {
-    final container = ConnectedFeatureDependencyContainer.forCurrentMode();
-    final expertUseCase = GetExpertSupportStatusUseCase(
-      container.expertSupport,
+  test(
+    'local expert support request use case stays disabled in local mode',
+    () async {
+      const registry = LocalConnectedFeatureRepositoryRegistry();
+      final useCase = CreateExpertSupportRequestUseCase(
+        registry.expertSupportRequests,
+      );
+
+      final result = await useCase.execute(
+        const ExpertSupportRequest(
+          sessionType: 'family',
+          sessionTypeLabel: 'Family counseling',
+          clientPhone: '+201234567890',
+          preferredDate: '12/05/2026',
+          message: 'Need support',
+          recommendedReason: 'Recommendation',
+          resultVerdict: 'Workable',
+          createdAtIso: '2026-05-11T10:00:00.000',
+        ),
+      );
+
+      expect(result.submitted, isFalse);
+      expect(result.channel, 'local_stub');
+    },
+  );
+
+  test('problem box use case stays disabled in local-only mode', () async {
+    const registry = LocalConnectedFeatureRepositoryRegistry();
+    final useCase = SubmitProblemBoxUseCase(registry.problemBoxSubmissions);
+
+    final result = await useCase.execute(
+      const ProblemBoxSubmission(
+        topic: 'Family pressure',
+        details: 'There is repeated interference and I need guidance.',
+        createdAtIso: '2026-05-11T12:00:00.000',
+      ),
     );
-    final aiUseCase = GetAiMediatorStatusUseCase(container.aiMediator);
 
-    final expertStatus = await expertUseCase.execute();
-    final aiStatus = await aiUseCase.execute();
+    expect(result.submitted, isFalse);
+    expect(result.providerKey, 'local_stub');
+    expect(result.message, 'problemBoxDisabled');
+  });
 
-    expect(expertStatus.mode, BackendMode.localOnly);
-    expect(expertStatus.enabled, isFalse);
-    expect(expertStatus.featureId, 'expert_support');
+  testWidgets('account screen renders local-only auth status', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
 
-    expect(aiStatus.mode, BackendMode.localOnly);
-    expect(aiStatus.enabled, isFalse);
-    expect(aiStatus.featureId, 'ai_mediator');
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const AccountScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Connected sign-in status'), findsOneWidget);
+    expect(find.text('Not signed in'), findsOneWidget);
+    expect(find.text('Create account'), findsOneWidget);
+    expect(find.text('Sign in'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('problem box screen renders local-only submission state', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const AnonymousProblemBoxScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Private write-only concern box'), findsOneWidget);
+    expect(find.text('Anonymous problem box'), findsAtLeastNWidgets(1));
+    expect(find.text('Open WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets(
+    'problem box shows permission denied feedback instead of crashing',
+    (WidgetTester tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final storage = await LocalStorageService.create();
+      final appState = AppState(storage)..initialize();
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider.value(
+          value: appState,
+          child: MaterialApp(
+            home: AnonymousProblemBoxScreen(
+              submitProblemBoxUseCase: SubmitProblemBoxUseCase(
+                const _PermissionDeniedProblemBoxRepository(),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byType(TextFormField).at(0),
+        'Family pressure',
+      );
+      await tester.enterText(
+        find.byType(TextFormField).at(1),
+        'There is repeated interference and I need direct guidance.',
+      );
+      await tester.tap(find.text('Submit concern'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Submission is blocked by the current Firestore rules.'),
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets('problem box can open WhatsApp with the written concern', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+    final fakeService = _FakeBookingSubmissionService(
+      result: const BookingSubmissionResult(
+        success: false,
+        channel: 'failed',
+        messageText: 'unused',
+      ),
+      openWhatsAppResult: true,
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: AnonymousProblemBoxScreen(
+            submissionService: fakeService,
+            submitProblemBoxUseCase: SubmitProblemBoxUseCase(
+              const _PermissionDeniedProblemBoxRepository(),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField).at(0), 'Family pressure');
+    await tester.enterText(
+      find.byType(TextFormField).at(1),
+      'There is repeated interference and I need direct guidance.',
+    );
+    final whatsappButton = find.widgetWithText(OutlinedButton, 'Open WhatsApp');
+    await tester.scrollUntilVisible(
+      whatsappButton,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    final buttonWidget = tester.widget<OutlinedButton>(whatsappButton);
+    buttonWidget.onPressed!.call();
+    await tester.pumpAndSettle();
+
+    expect(fakeService.openWhatsAppCallCount, 1);
+    expect(
+      find.text('WhatsApp opened with the concern message.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('emergency support screen renders core actions', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const EmergencySupportScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Immediate support routing'), findsOneWidget);
+    expect(find.text('Quick actions'), findsOneWidget);
+    expect(find.text('Call clinic'), findsOneWidget);
+    expect(find.text('Open WhatsApp'), findsOneWidget);
+  });
+
+  testWidgets('partner offers screen renders local offers', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const PartnerOffersScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Local offers only'), findsOneWidget);
+    expect(find.text('Available offers'), findsOneWidget);
+    expect(find.text('Copy code'), findsAtLeastNWidgets(1));
+  });
+
+  testWidgets('guided mediator screen renders local plan sections', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(home: const GuidedMediatorScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('A local conflict guide, not live mediation'),
+      findsOneWidget,
+    );
+    expect(find.text('Suggested mediation path'), findsOneWidget);
+    expect(find.text('Pause first'), findsOneWidget);
   });
 
   testWidgets('settings opens the privacy policy screen', (
@@ -937,11 +1375,104 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Privacy policy'));
-    await tester.pumpAndSettle();
+    await _openSettingsTile(tester, 'Privacy policy');
 
     expect(find.text('Privacy policy'), findsAtLeastNWidgets(1));
     expect(find.text('Data handled by the app'), findsOneWidget);
+  });
+
+  testWidgets('settings opens the account screen', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {AppRoutes.account: (_) => const AccountScreen()},
+        ),
+      ),
+    );
+
+    await _openSettingsTile(tester, 'Account');
+
+    expect(find.text('Sign in'), findsAtLeastNWidgets(1));
+    expect(find.text('Connected sign-in status'), findsOneWidget);
+  });
+
+  testWidgets('settings opens the problem box screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {
+            AppRoutes.problemBox: (_) => const AnonymousProblemBoxScreen(),
+          },
+        ),
+      ),
+    );
+
+    await _openSettingsTile(tester, 'Anonymous problem box');
+
+    expect(find.text('Anonymous problem box'), findsAtLeastNWidgets(1));
+    expect(find.text('Private write-only concern box'), findsOneWidget);
+  });
+
+  testWidgets('settings opens the emergency support screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {
+            AppRoutes.emergencySupport: (_) => const EmergencySupportScreen(),
+          },
+        ),
+      ),
+    );
+
+    await _openSettingsTile(tester, 'Emergency support');
+
+    expect(find.text('Emergency support'), findsAtLeastNWidgets(1));
+    expect(find.text('Immediate support routing'), findsOneWidget);
+  });
+
+  testWidgets('settings opens the partner offers screen', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: const SettingsScreen(),
+          routes: {AppRoutes.partnerOffers: (_) => const PartnerOffersScreen()},
+        ),
+      ),
+    );
+
+    await _openSettingsTile(tester, 'Partner offers');
+
+    expect(find.text('Partner offers'), findsAtLeastNWidgets(1));
+    expect(find.text('Local offers only'), findsOneWidget);
   });
 
   testWidgets('settings opens the connected features screen', (
@@ -963,11 +1494,33 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Connected features'));
-    await tester.pumpAndSettle();
+    await _openSettingsTile(tester, 'Connected features');
 
     expect(find.text('Connected features'), findsAtLeastNWidgets(1));
     expect(find.text('Cloud architecture status'), findsOneWidget);
+  });
+
+  testWidgets('resources hub shows the guided mediator entry', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: const MaterialApp(home: ResourcesToolsHubScreen()),
+      ),
+    );
+
+    expect(find.text('Guided mediator'), findsOneWidget);
+    expect(
+      find.text(
+        'Use a local guided conflict script to slow escalation and end with one practical agreement',
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('booking submit saves the real send status', (
@@ -1068,6 +1621,63 @@ void main() {
     expect(appState.bookingHistory, hasLength(1));
     expect(appState.bookingHistory.first['sendStatus'], 'whatsapp');
   });
+
+  testWidgets('booking prefers remote expert support when available', (
+    WidgetTester tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final storage = await LocalStorageService.create();
+    final appState = AppState(storage)..initialize();
+    final fakeService = _FakeBookingSubmissionService(
+      result: const BookingSubmissionResult(
+        success: true,
+        channel: 'whatsapp',
+        messageText: 'submitted text',
+      ),
+    );
+    final remoteUseCase = CreateExpertSupportRequestUseCase(
+      _FakeExpertSupportRequestRepository(
+        result: const ExpertSupportSubmissionResult(
+          submitted: true,
+          channel: 'remote',
+          requestId: 'req_1',
+        ),
+      ),
+    );
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider.value(
+        value: appState,
+        child: MaterialApp(
+          home: CounselingBookingScreen(
+            submissionService: fakeService,
+            createExpertSupportRequestUseCase: remoteUseCase,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final fields = find.byType(TextFormField);
+    final textFields = tester.widgetList<TextFormField>(fields).toList();
+    final submitLabel = find.text('Confirm booking');
+    await tester.enterText(fields.at(0), '+201234567890');
+    textFields[1].controller!.text = '05/05/2026';
+    await tester.pump();
+    await tester.enterText(fields.at(2), 'Need a consultation');
+
+    await tester.scrollUntilVisible(
+      submitLabel,
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(submitLabel);
+    await tester.pumpAndSettle();
+
+    expect(fakeService.submitCallCount, 0);
+    expect(appState.latestBooking?['sendStatus'], 'remote');
+    expect(find.text('Saved to backend'), findsAtLeastNWidgets(1));
+  });
 }
 
 Widget _buildTestApp(AppState appState, Widget home) {
@@ -1132,4 +1742,111 @@ class _FakeScenarioLabProgressService extends ScenarioLabProgressService {
 
   @override
   Future<void> saveProgress(ScenarioLabProgress progress) async {}
+}
+
+class _FakeExpertSupportRequestRepository
+    implements ExpertSupportRequestRepository {
+  const _FakeExpertSupportRequestRepository({required this.result});
+
+  final ExpertSupportSubmissionResult result;
+
+  @override
+  Future<ExpertSupportSubmissionResult> submitRequest(
+    ExpertSupportRequest request,
+  ) async => result;
+}
+
+class _FakeRemoteAuthRepository implements AuthRepository {
+  @override
+  Future<AuthUser?> getCurrentUser() async => null;
+
+  @override
+  Future<AuthActionResult> createAccountWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    return const AuthActionResult(success: true, providerKey: 'fake_remote');
+  }
+
+  @override
+  Future<AuthActionResult> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    return const AuthActionResult(success: true, providerKey: 'fake_remote');
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
+
+class _SignedInAuthRepository implements AuthRepository {
+  const _SignedInAuthRepository();
+
+  @override
+  Future<AuthUser?> getCurrentUser() async =>
+      const AuthUser(id: 'user-1', email: 'signed-in@example.com');
+
+  @override
+  Future<AuthActionResult> createAccountWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    return const AuthActionResult(success: true, providerKey: 'signed_in_fake');
+  }
+
+  @override
+  Future<AuthActionResult> signInWithEmail({
+    required String email,
+    required String password,
+  }) async {
+    return const AuthActionResult(success: true, providerKey: 'signed_in_fake');
+  }
+
+  @override
+  Future<void> signOut() async {}
+}
+
+class _FakeRemoteExpertSupportRequestRepository
+    implements ExpertSupportRequestRepository {
+  @override
+  Future<ExpertSupportSubmissionResult> submitRequest(
+    ExpertSupportRequest request,
+  ) async {
+    return const ExpertSupportSubmissionResult(
+      submitted: true,
+      channel: 'fake_remote',
+      message: 'ok',
+    );
+  }
+}
+
+class _FakeRemoteProblemBoxSubmissionRepository
+    implements ProblemBoxSubmissionRepository {
+  @override
+  Future<ProblemBoxSubmissionResult> submit(
+    ProblemBoxSubmission submission,
+  ) async {
+    return const ProblemBoxSubmissionResult(
+      submitted: true,
+      providerKey: 'fake_remote',
+      message: 'ok',
+    );
+  }
+}
+
+class _PermissionDeniedProblemBoxRepository
+    implements ProblemBoxSubmissionRepository {
+  const _PermissionDeniedProblemBoxRepository();
+
+  @override
+  Future<ProblemBoxSubmissionResult> submit(
+    ProblemBoxSubmission submission,
+  ) async {
+    return const ProblemBoxSubmissionResult(
+      submitted: false,
+      providerKey: 'fake_remote',
+      message: 'problemBoxPermissionDenied',
+    );
+  }
 }

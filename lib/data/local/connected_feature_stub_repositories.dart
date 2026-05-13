@@ -1,9 +1,15 @@
 import '../../core/config/connected_feature_gates.dart';
 import '../../domain/models/connected_feature_contract_status.dart';
+import '../../domain/models/expert_support_request.dart';
+import '../../domain/models/expert_support_submission_result.dart';
+import '../../domain/models/problem_box_submission.dart';
+import '../../domain/models/problem_box_submission_result.dart';
 import '../../domain/services/ai_mediator_repository.dart';
 import '../../domain/services/anonymous_problem_box_repository.dart';
 import '../../domain/services/emergency_button_repository.dart';
 import '../../domain/services/expert_support_repository.dart';
+import '../../domain/services/expert_support_request_repository.dart';
+import '../../domain/services/problem_box_submission_repository.dart';
 import '../../domain/services/rewards_partners_repository.dart';
 
 class LocalExpertSupportRepository implements ExpertSupportRepository {
@@ -22,6 +28,26 @@ class LocalExpertSupportRepository implements ExpertSupportRepository {
           'Local stub only. Expert chat and video are intentionally blocked until auth, scheduling, and backend delivery are introduced.',
       messageAr:
           'هذه مجرد وصلة محلية بديلة. دردشة ومكالمات الخبراء مقفولة عمدًا إلى أن تتم إضافة الهوية والجدولة والتنفيذ الخلفي.',
+    );
+  }
+}
+
+class LocalExpertSupportRequestRepository
+    implements ExpertSupportRequestRepository {
+  const LocalExpertSupportRequestRepository({
+    this.gates = const ConnectedFeatureGates(),
+  });
+
+  final ConnectedFeatureGates gates;
+
+  @override
+  Future<ExpertSupportSubmissionResult> submitRequest(
+    ExpertSupportRequest request,
+  ) async {
+    return const ExpertSupportSubmissionResult(
+      submitted: false,
+      channel: 'local_stub',
+      message: 'remote_request_disabled_in_local_mode',
     );
   }
 }
@@ -61,6 +87,22 @@ class LocalAnonymousProblemBoxRepository
           'Local stub only. Anonymous submissions are intentionally blocked until moderation and protected backend storage exist.',
       messageAr:
           'هذه مجرد وصلة محلية بديلة. الإرسال المجهول مقفول عمدًا إلى أن توجد مراجعة محتوى وتخزين خلفي محمي.',
+    );
+  }
+}
+
+class LocalProblemBoxSubmissionRepository
+    implements ProblemBoxSubmissionRepository {
+  const LocalProblemBoxSubmissionRepository();
+
+  @override
+  Future<ProblemBoxSubmissionResult> submit(
+    ProblemBoxSubmission submission,
+  ) async {
+    return const ProblemBoxSubmissionResult(
+      submitted: false,
+      providerKey: 'local_stub',
+      message: 'problemBoxDisabled',
     );
   }
 }
@@ -108,15 +150,19 @@ class LocalRewardsPartnersRepository implements RewardsPartnersRepository {
 class LocalConnectedFeatureRepositoryRegistry {
   const LocalConnectedFeatureRepositoryRegistry({
     this.expertSupport = const LocalExpertSupportRepository(),
+    this.expertSupportRequests = const LocalExpertSupportRequestRepository(),
     this.aiMediator = const LocalAiMediatorRepository(),
     this.anonymousProblemBox = const LocalAnonymousProblemBoxRepository(),
+    this.problemBoxSubmissions = const LocalProblemBoxSubmissionRepository(),
     this.emergencyButton = const LocalEmergencyButtonRepository(),
     this.rewardsPartners = const LocalRewardsPartnersRepository(),
   });
 
   final ExpertSupportRepository expertSupport;
+  final ExpertSupportRequestRepository expertSupportRequests;
   final AiMediatorRepository aiMediator;
   final AnonymousProblemBoxRepository anonymousProblemBox;
+  final ProblemBoxSubmissionRepository problemBoxSubmissions;
   final EmergencyButtonRepository emergencyButton;
   final RewardsPartnersRepository rewardsPartners;
 }

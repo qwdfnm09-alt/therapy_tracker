@@ -9,6 +9,7 @@ class AppStrings {
       'tagline': 'Marriage compatibility and family counseling',
       'startAssessment': 'Start assessment',
       'startUsage': 'Start Usage',
+      'welcomeAccountEntry': 'Sign in or create account',
       'continueAssessment': 'Continue assessment',
       'settings': 'Settings',
       'welcomeTitle': 'Build a clearer marriage decision',
@@ -33,9 +34,86 @@ class AppStrings {
           'Track simple income and expense items locally to reduce money ambiguity',
       'featureRemindersCenter':
           'Plan small recurring reminders locally for check-ins, gratitude, and budget follow-up',
+      'featureGuidedMediator':
+          'Use a local guided conflict script to slow escalation and end with one practical agreement',
       'featureScenarioLab':
           'Compare how both people respond to realistic pressure scenarios without affecting the main compatibility score',
       'featureSettings': 'Change language, theme, and clear saved data',
+      'account': 'Account',
+      'accountTileBody':
+          'Optional connected sign-in for future cloud features, without affecting current local use.',
+      'accountIntroTitle': 'Connected sign-in status',
+      'accountIntroBody':
+          'This screen prepares optional account access for future cloud features. The current app can still be used without signing in.',
+      'accountStatusTitle': 'Current account state',
+      'accountActionTitle': 'Account action',
+      'accountSignedOut': 'Not signed in',
+      'accountSignedInAs': 'Signed in as',
+      'accountEmail': 'Email',
+      'accountPassword': 'Password',
+      'accountPasswordTooShort': 'Password must be at least 6 characters',
+      'accountSignIn': 'Sign in',
+      'accountCreateAccount': 'Create account',
+      'accountSignOut': 'Sign out',
+      'invalidEmail': 'Enter a valid email address',
+      'connectedAuthDisabled':
+          'Connected sign-in is not enabled in the current app mode.',
+      'accountSignInModeBody':
+          'Use this mode to enter with an existing account without changing the current local flows.',
+      'accountCreateModeBody':
+          'Use this mode to create a new account first, then enter the app directly when creation succeeds.',
+      'signedIn': 'Signed in successfully.',
+      'accountCreated': 'Account created and signed in successfully.',
+      'signedOut': 'Signed out.',
+      'signInFailed': 'Could not sign in with the provided credentials.',
+      'accountCreateFailed': 'Could not create the account with these details.',
+      'accountEmailInUse': 'This email is already used by another account.',
+      'accountUserNotFound': 'No account was found for this email.',
+      'accountWrongPassword': 'The password is incorrect.',
+      'accountInvalidCredential':
+          'This email or password is not accepted by Firebase Auth.',
+      'accountTooManyRequests':
+          'Too many attempts were made. Try again in a moment.',
+      'problemBox': 'Anonymous problem box',
+      'problemBoxTileBody':
+          'Send a private relationship concern through the connected submission path when it becomes available.',
+      'problemBoxIntroTitle': 'Private write-only concern box',
+      'problemBoxIntroBody':
+          'Use this screen to submit a private relationship concern for later review. The first version keeps this flow separate from all assessment and tool data.',
+      'problemBoxTopic': 'Short topic',
+      'problemBoxDetails': 'Details',
+      'problemBoxTooShort': 'Write a slightly clearer description first.',
+      'problemBoxSubmit': 'Submit concern',
+      'problemBoxDisabled':
+          'Connected submission is not enabled in the current app mode.',
+      'problemBoxSubmitted': 'Concern submitted for review.',
+      'problemBoxPermissionDenied':
+          'Submission is blocked by the current Firestore rules.',
+      'problemBoxUnavailable':
+          'The problem box service is temporarily unavailable.',
+      'problemBoxSubmitFailed': 'The concern could not be submitted right now.',
+      'problemBoxWhatsappOpened': 'WhatsApp opened with the concern message.',
+      'emergencySupport': 'Emergency support',
+      'emergencySupportTileBody':
+          'Open immediate support actions and review first-response guidance without changing any saved assessment data.',
+      'emergencySupportIntroTitle': 'Immediate support routing',
+      'emergencySupportIntroBody':
+          'Use this screen when you need a fast support action. It does not trigger automatic escalation, background monitoring, or emergency dispatch.',
+      'emergencySupportQuickActionsTitle': 'Quick actions',
+      'emergencySupportActionNote':
+          'If the device cannot open the selected action, use your local emergency services first when there is immediate physical danger.',
+      'partnerOffers': 'Partner offers',
+      'partnerOffersTileBody':
+          'Review local partner offers and copy any available codes without affecting your current saved data.',
+      'partnerOffersIntroTitle': 'Local offers only',
+      'partnerOffersIntroBody':
+          'This first version is intentionally simple. It only shows local read-only offers and claim notes so the app does not depend on any partner backend yet.',
+      'partnerOffersAvailableTitle': 'Available offers',
+      'partnerOffersCodeLabel': 'Discount code',
+      'partnerOffersClaimLabel': 'How to use',
+      'partnerOffersNotesLabel': 'Notes',
+      'partnerOffersCopyCode': 'Copy code',
+      'partnerOffersCopied': 'Offer code copied.',
       'connectedFeatures': 'Connected features',
       'connectedFeaturesTileBody':
           'Review the deferred cloud features and what each one still needs before activation.',
@@ -65,6 +143,7 @@ class AppStrings {
       'educationalHub': 'Educational Hub',
       'resourcesToolsHub': 'Resources & Tools',
       'relationshipTools': 'Relationship tools',
+      'guidedMediator': 'Guided mediator',
       'scenarioLab': 'Scenario Lab',
       'gratitudeBank': 'Gratitude Bank',
       'budgetPlanner': 'Budget Planner',
@@ -219,6 +298,21 @@ class AppStrings {
           'If one tool feels unnatural, discuss why before treating it as failure.',
       'relationshipToolsUsagePoint3':
           'Use repetition to build trust. Small consistent care is more useful than rare dramatic effort.',
+      'guidedMediatorIntroTitle': 'A local conflict guide, not live mediation',
+      'guidedMediatorIntroBody':
+          'This tool does not use AI chat or live expert monitoring. It gives you a structured way to slow a tense conversation and end with one usable agreement.',
+      'guidedMediatorTracksTitle': 'Choose the current tension type',
+      'guidedMediatorTracksBody':
+          'Pick the closest conflict pattern first. The plan below will adapt the prompts and the next-step structure to that pattern.',
+      'guidedMediatorPlanTitle': 'Suggested mediation path',
+      'guidedMediatorPauseLabel': 'Pause first',
+      'guidedMediatorPersonALabel': 'Person A says',
+      'guidedMediatorPersonBLabel': 'Person B says',
+      'guidedMediatorAgreementLabel': 'End with one agreement',
+      'guidedMediatorEscalationLabel': 'When to move to counseling',
+      'guidedMediatorLocalNoteTitle': 'Current boundary',
+      'guidedMediatorLocalNoteBody':
+          'This is a local rule-based guide only. It does not save the conflict, send it to the cloud, or replace direct safety support when the situation is dangerous.',
       'scenarioLabIntroTitle': 'Stress-test the fit with realistic scenarios',
       'scenarioLabIntroBody':
           'This lab is separate from the main compatibility score. It gives both people a safer place to compare instincts under pressure before those moments happen in real life.',
@@ -575,6 +669,7 @@ class AppStrings {
       'bookingStatusWhatsapp': 'Opened in WhatsApp',
       'bookingStatusSms': 'Opened in SMS',
       'bookingStatusCall': 'Opened phone call',
+      'bookingStatusRemote': 'Saved to backend',
       'bookingStatusFailed': 'Saved locally only',
       'bookingConfirmationTitle': 'Booking request ready',
       'openWhatsapp': 'Open WhatsApp',
@@ -687,6 +782,7 @@ class AppStrings {
       'tagline': 'توافق الزواج والاستشارات الأسرية',
       'startAssessment': 'ابدأ التقييم',
       'startUsage': 'ابدأ الاستخدام',
+      'welcomeAccountEntry': 'سجل الدخول أو أنشئ حسابًا',
       'continueAssessment': 'استكمال التقييم',
       'settings': 'الإعدادات',
       'welcomeTitle': 'اتخذ قرار زواج أوضح',
@@ -710,9 +806,83 @@ class AppStrings {
           'تابع عناصر دخل ومصروفات بسيطة محليًا لتقليل غموض المال',
       'featureRemindersCenter':
           'خطط لتذكيرات صغيرة محليًا للمتابعة والامتنان ومراجعة المال',
+      'featureGuidedMediator':
+          'استخدم مسارًا محليًا موجهًا للخلاف لتهدئة التصعيد والخروج باتفاق عملي واحد',
       'featureScenarioLab':
           'قارن كيف يستجيب الطرفان لسيناريوهات ضغط واقعية بدون التأثير على نتيجة التوافق الأساسية',
       'featureSettings': 'غيّر اللغة والمظهر وامسح البيانات المحفوظة',
+      'account': 'الحساب',
+      'accountTileBody':
+          'تسجيل دخول متصل اختياري للميزات السحابية القادمة بدون التأثير على الاستخدام المحلي الحالي.',
+      'accountIntroTitle': 'حالة تسجيل الدخول المتصل',
+      'accountIntroBody':
+          'هذه الشاشة تجهز دخولًا اختياريًا للحساب من أجل الميزات السحابية القادمة. ما زال يمكن استخدام التطبيق الحالي بدون تسجيل دخول.',
+      'accountStatusTitle': 'حالة الحساب الحالية',
+      'accountActionTitle': 'إجراء الحساب',
+      'accountSignedOut': 'لا يوجد تسجيل دخول',
+      'accountSignedInAs': 'تم تسجيل الدخول باسم',
+      'accountEmail': 'البريد الإلكتروني',
+      'accountPassword': 'كلمة المرور',
+      'accountPasswordTooShort': 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+      'accountSignIn': 'تسجيل الدخول',
+      'accountCreateAccount': 'إنشاء حساب',
+      'accountSignOut': 'تسجيل الخروج',
+      'invalidEmail': 'أدخل بريدًا إلكترونيًا صحيحًا',
+      'connectedAuthDisabled':
+          'تسجيل الدخول المتصل غير مفعّل في وضع التطبيق الحالي.',
+      'accountSignInModeBody':
+          'استخدم هذا الوضع للدخول بحساب موجود بدون تغيير أي مسار محلي شغال حاليًا.',
+      'accountCreateModeBody':
+          'استخدم هذا الوضع لإنشاء حساب جديد أولًا ثم دخول التطبيق مباشرة عند نجاح الإنشاء.',
+      'signedIn': 'تم تسجيل الدخول بنجاح.',
+      'accountCreated': 'تم إنشاء الحساب وتسجيل الدخول بنجاح.',
+      'signedOut': 'تم تسجيل الخروج.',
+      'signInFailed': 'تعذر تسجيل الدخول بالبيانات المدخلة.',
+      'accountCreateFailed': 'تعذر إنشاء الحساب بهذه البيانات.',
+      'accountEmailInUse': 'هذا البريد مستخدم بالفعل في حساب آخر.',
+      'accountUserNotFound': 'لا يوجد حساب مرتبط بهذا البريد.',
+      'accountWrongPassword': 'كلمة المرور غير صحيحة.',
+      'accountInvalidCredential':
+          'هذا البريد أو كلمة المرور غير مقبولين في Firebase Auth.',
+      'accountTooManyRequests': 'تمت محاولات كثيرة. حاول مرة أخرى بعد قليل.',
+      'problemBox': 'صندوق مشاكل خاص',
+      'problemBoxTileBody':
+          'أرسل مشكلة علاقة بشكل خاص عبر مسار الإرسال المتصل عند توفره.',
+      'problemBoxIntroTitle': 'صندوق خاص للكتابة فقط',
+      'problemBoxIntroBody':
+          'استخدم هذه الشاشة لإرسال مشكلة علاقة بشكل خاص لمراجعتها لاحقًا. النسخة الأولى تُبقي هذا المسار منفصلًا عن كل بيانات التقييم والأدوات.',
+      'problemBoxTopic': 'عنوان مختصر',
+      'problemBoxDetails': 'التفاصيل',
+      'problemBoxTooShort': 'اكتب وصفًا أوضح قليلًا أولًا.',
+      'problemBoxSubmit': 'إرسال المشكلة',
+      'problemBoxDisabled': 'الإرسال المتصل غير مفعّل في وضع التطبيق الحالي.',
+      'problemBoxSubmitted': 'تم إرسال المشكلة للمراجعة.',
+      'problemBoxPermissionDenied':
+          'الإرسال مرفوض حاليًا بسبب قواعد Firestore الحالية.',
+      'problemBoxUnavailable': 'خدمة صندوق المشاكل غير متاحة مؤقتًا.',
+      'problemBoxSubmitFailed': 'تعذر إرسال المشكلة الآن.',
+      'problemBoxWhatsappOpened': 'تم فتح واتساب برسالة المشكلة.',
+      'emergencySupport': 'الدعم العاجل',
+      'emergencySupportTileBody':
+          'افتح وسائل دعم عاجلة سريعة وراجع إرشادات الاستجابة الأولى بدون تغيير أي بيانات تقييم محفوظة.',
+      'emergencySupportIntroTitle': 'توجيه دعم فوري',
+      'emergencySupportIntroBody':
+          'استخدم هذه الشاشة عندما تحتاج إلى خطوة دعم سريعة. هي لا تطلق تصعيدًا آليًا ولا مراقبة خلفية ولا ترسل جهات طوارئ.',
+      'emergencySupportQuickActionsTitle': 'إجراءات سريعة',
+      'emergencySupportActionNote':
+          'إذا لم يستطع الجهاز فتح الإجراء المحدد، فاستخدم خدمات الطوارئ المحلية أولًا عند وجود خطر جسدي فوري.',
+      'partnerOffers': 'عروض الشركاء',
+      'partnerOffersTileBody':
+          'راجع عروض الشركاء المحلية وانسخ أي أكواد متاحة بدون التأثير على بياناتك المحفوظة الحالية.',
+      'partnerOffersIntroTitle': 'عروض محلية فقط',
+      'partnerOffersIntroBody':
+          'هذه النسخة الأولى بسيطة عمدًا. هي تعرض عروضًا محلية للقراءة فقط مع ملاحظات الاستخدام حتى لا يعتمد التطبيق بعد على أي backend خاص بالشركاء.',
+      'partnerOffersAvailableTitle': 'العروض المتاحة',
+      'partnerOffersCodeLabel': 'كود الخصم',
+      'partnerOffersClaimLabel': 'طريقة الاستخدام',
+      'partnerOffersNotesLabel': 'ملاحظات',
+      'partnerOffersCopyCode': 'انسخ الكود',
+      'partnerOffersCopied': 'تم نسخ كود العرض.',
       'connectedFeatures': 'الميزات المتصلة',
       'connectedFeaturesTileBody':
           'راجع الميزات السحابية المؤجلة وما الذي ما زال كل جزء منها يحتاجه قبل التفعيل.',
@@ -742,6 +912,7 @@ class AppStrings {
       'educationalHub': 'المكتبة التوعوية',
       'resourcesToolsHub': 'المحتوى والأدوات',
       'relationshipTools': 'أدوات العلاقة',
+      'guidedMediator': 'الوسيط الموجه',
       'scenarioLab': 'مختبر السيناريوهات',
       'gratitudeBank': 'حصالة الامتنان',
       'budgetPlanner': 'مخطط الميزانية',
@@ -888,6 +1059,21 @@ class AppStrings {
           'إذا بدت أداة ما غير طبيعية، فناقش سبب ذلك قبل اعتبارها فشلًا.',
       'relationshipToolsUsagePoint3':
           'التكرار يبني الثقة. الاهتمام الصغير المستمر أنفع من الجهد الكبير النادر.',
+      'guidedMediatorIntroTitle': 'دليل محلي للخلاف وليس وساطة مباشرة',
+      'guidedMediatorIntroBody':
+          'هذه الأداة لا تستخدم محادثة ذكاء اصطناعي ولا متابعة حية من مختص. هي فقط تعطيكم طريقة منظمة لتهدئة نقاش متوتر والخروج باتفاق واحد قابل للتنفيذ.',
+      'guidedMediatorTracksTitle': 'اختر نوع التوتر الحالي',
+      'guidedMediatorTracksBody':
+          'ابدأ باختيار أقرب نمط للخلاف. الخطة بالأسفل ستكيّف الأسئلة والخطوة التالية حسب هذا النمط.',
+      'guidedMediatorPlanTitle': 'مسار وساطة مقترح',
+      'guidedMediatorPauseLabel': 'توقف أولًا',
+      'guidedMediatorPersonALabel': 'يقول الطرف الأول',
+      'guidedMediatorPersonBLabel': 'يقول الطرف الثاني',
+      'guidedMediatorAgreementLabel': 'اختموا باتفاق واحد',
+      'guidedMediatorEscalationLabel': 'متى تنتقلون إلى الاستشارة',
+      'guidedMediatorLocalNoteTitle': 'الحد الحالي',
+      'guidedMediatorLocalNoteBody':
+          'هذا دليل محلي مبني على قواعد ثابتة فقط. هو لا يحفظ الخلاف ولا يرسله إلى السحابة ولا يغني عن دعم السلامة المباشر عندما يكون الموقف خطيرًا.',
       'scenarioLabIntroTitle': 'اختبروا التوافق عبر مواقف واقعية',
       'scenarioLabIntroBody':
           'هذا المختبر منفصل عن نتيجة التوافق الأساسية. هو مساحة أكثر أمانًا لمقارنة ردود الفعل تحت الضغط قبل أن تحدث هذه المواقف فعليًا.',
@@ -1237,6 +1423,7 @@ class AppStrings {
       'bookingStatusWhatsapp': 'تم فتح واتساب',
       'bookingStatusSms': 'تم فتح الرسائل',
       'bookingStatusCall': 'تم فتح الاتصال',
+      'bookingStatusRemote': 'تم الحفظ في الخلفية',
       'bookingStatusFailed': 'محفوظ محليًا فقط',
       'bookingConfirmationTitle': 'طلب الحجز جاهز',
       'openWhatsapp': 'فتح واتساب',

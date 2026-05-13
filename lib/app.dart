@@ -20,11 +20,16 @@ import 'presentation/screens/home/resources_tools_hub_screen.dart';
 import 'presentation/screens/personality/personality_intro_screen.dart';
 import 'presentation/screens/personality/personality_test_screen.dart';
 import 'presentation/screens/results/compatibility_result_screen.dart';
+import 'presentation/screens/settings/account_screen.dart';
 import 'presentation/screens/settings/privacy_policy_screen.dart';
 import 'presentation/screens/settings/connected_features_screen.dart';
+import 'presentation/screens/support/anonymous_problem_box_screen.dart';
+import 'presentation/screens/support/emergency_support_screen.dart';
+import 'presentation/screens/support/partner_offers_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
 import 'presentation/screens/tools/budget_planner_screen.dart';
 import 'presentation/screens/tools/gratitude_bank_screen.dart';
+import 'presentation/screens/tools/guided_mediator_screen.dart';
 import 'presentation/screens/tools/reminders_center_screen.dart';
 import 'presentation/screens/tools/relationship_tools_screen.dart';
 import 'presentation/screens/tools/scenario_lab_screen.dart';
@@ -75,8 +80,17 @@ class PreMaritalMatchApp extends StatelessWidget {
         AppRoutes.gratitudeBank: (_) => const GratitudeBankScreen(),
         AppRoutes.budgetPlanner: (_) => const BudgetPlannerScreen(),
         AppRoutes.remindersCenter: (_) => const RemindersCenterScreen(),
+        AppRoutes.guidedMediator: (_) => const GuidedMediatorScreen(),
         AppRoutes.scenarioLab: (_) => const ScenarioLabScreen(),
         AppRoutes.settings: (_) => const SettingsScreen(),
+        AppRoutes.account: (_) => const AccountScreen(),
+        AppRoutes.createAccount: (_) => const AccountScreen(
+          initialMode: AccountScreenMode.createAccount,
+          redirectRouteOnSuccess: AppRoutes.home,
+        ),
+        AppRoutes.problemBox: (_) => const AnonymousProblemBoxScreen(),
+        AppRoutes.emergencySupport: (_) => const EmergencySupportScreen(),
+        AppRoutes.partnerOffers: (_) => const PartnerOffersScreen(),
         AppRoutes.connectedFeatures: (_) => const ConnectedFeaturesScreen(),
         AppRoutes.privacyPolicy: (_) => const PrivacyPolicyScreen(),
       },

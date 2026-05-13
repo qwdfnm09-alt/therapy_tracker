@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "420941478459",
+    "firebase_url": "https://taalof-bf72b-default-rtdb.firebaseio.com",
+    "project_id": "taalof-bf72b",
+    "storage_bucket": "taalof-bf72b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420941478459:android:502ea618219e2a0aa4fa1e",
+        "android_client_info": {
+          "package_name": "com.taalof.premarital"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420941478459-37vp8c40a010i40nj6sf2tt8av5m5o9i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.taalof.premarital",
+            "certificate_hash": "e505b20df0bca97b412f5e1b5325d4444373c829"
+          }
+        },
+        {
+          "client_id": "420941478459-u09mdo2valv7b7rdfvtdrv4sb7f6ol4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXyLBHMBpGyCcZ-BXlusfVrAG6GeDqFes"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420941478459-u09mdo2valv7b7rdfvtdrv4sb7f6ol4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

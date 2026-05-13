@@ -20,8 +20,14 @@ class AppRoutes {
   static const gratitudeBank = '/gratitude-bank';
   static const budgetPlanner = '/budget-planner';
   static const remindersCenter = '/reminders-center';
+  static const guidedMediator = '/guided-mediator';
   static const scenarioLab = '/scenario-lab';
   static const settings = '/settings';
+  static const account = '/account';
+  static const createAccount = '/create-account';
+  static const problemBox = '/problem-box';
+  static const emergencySupport = '/emergency-support';
+  static const partnerOffers = '/partner-offers';
   static const connectedFeatures = '/connected-features';
   static const privacyPolicy = '/privacy-policy';
 }

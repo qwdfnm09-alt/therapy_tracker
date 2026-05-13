@@ -15,6 +15,7 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.textInputAction,
     this.onChanged,
+    this.obscureText = false,
   });
 
   final TextEditingController controller;
@@ -29,6 +30,7 @@ class AppTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onChanged;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class AppTextField extends StatelessWidget {
       onTap: onTap,
       onChanged: onChanged,
       textInputAction: textInputAction,
+      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,

@@ -56,6 +56,14 @@ class ResourcesToolsHubScreen extends StatelessWidget {
                   onTap: () =>
                       Navigator.pushNamed(context, AppRoutes.remindersCenter),
                 ),
+                const SizedBox(height: 12),
+                _HubNavTile(
+                  title: context.tr('guidedMediator'),
+                  subtitle: context.tr('featureGuidedMediator'),
+                  icon: Icons.forum_outlined,
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.guidedMediator),
+                ),
               ],
             ),
           ),
